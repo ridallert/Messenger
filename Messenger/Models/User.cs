@@ -15,33 +15,37 @@ namespace Messenger.Models
     }
     public class User : BindableBase
     {
-        private string name;
-        private OnlineStatus isOnline;
-        private ObservableCollection<Message> messageList;
+        private string _name;
+        private OnlineStatus _isOnline;
+        private ObservableCollection<Message> _messageList;
 
         public string Name
         {
-            get { return name; }
+            get { return _name; }
             set
             {
-                if (value != name)
+                if (value != _name)
                 {
-                    SetProperty<string>(ref name, value);
+                    SetProperty<string>(ref _name, value);
                 }
             }
         }
         public OnlineStatus IsOnline
         {
-            get { return isOnline; }
+            get { return _isOnline; }
             set
             {
-                if (value != isOnline)
+                if (value != _isOnline)
                 {
-                    SetProperty<OnlineStatus>(ref isOnline, value);
+                    SetProperty<OnlineStatus>(ref _isOnline, value);
                 }
             }
         }
-        public ObservableCollection<Message> MessageList { get; set; }
+        public ObservableCollection<Message> MessageList
+        {
+            get { return _messageList; }
+            set { _messageList = value; }
+        }
 
         public User(string name, OnlineStatus isOnline)
         {

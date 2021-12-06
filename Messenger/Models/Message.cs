@@ -8,36 +8,36 @@ namespace Messenger.Models
 {
     public class Message
     {
-        private User sender;
-        private User receiver;
-        private string text;
-        private DateTime sendTime;
+        private User _sender;
+        private User _receiver;
+        private string _text;
+        private DateTime _sendTime;
 
         public User Sender
         {
-            get { return sender; }
-            set { sender = value; }
+            get { return _sender; }
+            set { _sender = value; }
         }
         public User Receiver
         {
-            get { return receiver; }
-            set { receiver = value; }
+            get { return _receiver; }
+            set { _receiver = value; }
         }
         public string Text
         {
-            get { return text; }
-            set { text = value; }
+            get { return _text; }
+            set { _text = value; }
         }
         public DateTime SendTime
         {
-            get { return sendTime; }
-            set { sendTime = value; }
+            get { return _sendTime; }
+            set { _sendTime = value; }
         }
 
-        public Message(User sender, User reciever, string text, DateTime sendTime)
+        public Message(User sender, User receiver, string text, DateTime sendTime)
         {
             Sender = sender;
-            Receiver = reciever;
+            Receiver = receiver;
             Text = text;
             SendTime = sendTime;
         }

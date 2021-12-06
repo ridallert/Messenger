@@ -9,63 +9,91 @@ namespace Messenger.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        private ObservableCollection<User> users;
-        private User me = new User("Ridal", OnlineStatus.Online);
-        private User selectedUser;
-        private string newMessage;
+        private string _title;
+        //private Server _myServer;
+        private ObservableCollection<User> _users;
+        private User _me;
+        private User _selectedUser;
+        private string _newMessage;
+        private DelegateCommand<object> _addMessageCommand;
 
-        //private RelayCommand addUserCommand;
-        //private RelayCommand addMessageCommand;
-
-        public ObservableCollection<User> Users { get; set; }
-
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
+        //private Server MyServer
+        //{
+        //    get { return _myServer; }
+        //    set { _myServer = value; }
+        //}
+        public ObservableCollection<User> Users
+        {
+            get { return _users; }
+            set { _users = value; }
+        }
         public User Me
         {
-            get { return me; }
+            get { return _me; }
             set
             {
-                if (value != me)
+                if (value != _me)
                 {
-                    SetProperty<User>(ref me, value);
+                    SetProperty<User>(ref _me, value);
                 }
             }
         }
-
         public User SelectedUser
         {
-            get { return selectedUser; }
+            get { return _selectedUser; }
             set
             {
-                if (value != selectedUser)
+                if (value != _selectedUser)
                 {
-                    SetProperty<User>(ref selectedUser, value);
+                    SetProperty<User>(ref _selectedUser, value);
                 }
             }
         }
-
         public string NewMessage
         {
-            get { return newMessage; }
+            get { return _newMessage; }
             set
             {
-                if (value != newMessage)
+                if (value != _newMessage)
                 {
-                    SetProperty<string>(ref newMessage, value);
+                    SetProperty<string>(ref _newMessage, value);
+                }
+            }
+        }
+        public DelegateCommand<object> AddMessageCommand
+        {   //public DelegateCommand<object> AddMessageCommand => _addMessageCommand ?? (_addMessageCommand = new DelegateCommand<object>(CommandLoadExecute));
+            get
+            {
+                if (_addMessageCommand != null)
+                {
+                    return _addMessageCommand;
+                }
+                else
+                {
+                    _addMessageCommand = new DelegateCommand<object>(CommandLoadExecute);
+                    return _addMessageCommand;
                 }
             }
         }
 
         public MainWindowViewModel()
         {
-            //Me = new User("Ridal", OnlineStatus.Online);
+            Title = "Prism Application";
+            Me = new User("Ridal", OnlineStatus.Online);
+            Users = Server.GetUsersList();
 
-            Users = new ObservableCollection<User>
-            {
-                new User ("User A", OnlineStatus.Online),
-                new User ("User B", OnlineStatus.Online),
-                new User ("User C", OnlineStatus.Online),
-                new User ("User D", OnlineStatus.Online),
-            };
+            //Users = new ObservableCollection<User>
+            //{
+            //    new User ("User A", OnlineStatus.Online),
+            //    new User ("User B", OnlineStatus.Online),
+            //    new User ("User C", OnlineStatus.Online),
+            //    new User ("User D", OnlineStatus.Online),
+            //};
 
             SelectedUser = Users.First();
 
@@ -80,9 +108,6 @@ namespace Messenger.ViewModels
             }
         }
 
-        private DelegateCommand<object> addMessageCommand;
-        public DelegateCommand<object> AddMessageCommand => addMessageCommand ?? (addMessageCommand = new DelegateCommand<object>(CommandLoadExecute));
-
         private void CommandLoadExecute(object obj)
         {
             string mes = obj as string;
@@ -91,20 +116,5 @@ namespace Messenger.ViewModels
                 SelectedUser.MessageList.Add(new Message(Me, SelectedUser, mes, DateTime.Now));
             }
         }
-
-
-
-
-
-
-
-
-        private string _title = "Prism Application";
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
-
     }
 }
