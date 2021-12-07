@@ -54,9 +54,7 @@ namespace Messenger.ViewModels
             Message = parameters.GetValue<string>("message");
         }
 
-        private DelegateCommand<string> _closeDialogCommand;
-        public DelegateCommand<string> CloseDialogCommand =>
-            _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand<string>(CloseDialog));
+        
 
         private string _message;
         public string Message
@@ -65,9 +63,25 @@ namespace Messenger.ViewModels
             set { SetProperty(ref _message, value); }
         }
 
-        
 
-        
+
+        private DelegateCommand<string> _closeDialogCommand;
+        public DelegateCommand<string> CloseDialogCommand
+        {
+            get
+            {
+                if (_closeDialogCommand != null)
+                {
+                    return _closeDialogCommand;
+                }
+                else
+                {
+                    return _closeDialogCommand = new DelegateCommand<string>(CloseDialog);
+                }
+            }
+        }
+     
+            
 
         protected virtual void CloseDialog(string parameter)
         {

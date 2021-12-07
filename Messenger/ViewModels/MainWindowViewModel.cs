@@ -146,7 +146,8 @@ namespace Messenger.ViewModels
         {
             var message = "This is a message that should be shown in the dialog.";
             //using the dialog service as-is
-            _dialogService.ShowDialog("NotificationDialog", new DialogParameters($"message={message}"), r =>
+            _dialogService.ShowDialog("NotificationDialog", new DialogParameters($"message={message}"),
+                r =>
             {
                 if (r.Result == ButtonResult.None)
                     Title = "Result is None";
