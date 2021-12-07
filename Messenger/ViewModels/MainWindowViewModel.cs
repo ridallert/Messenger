@@ -18,8 +18,8 @@ namespace Messenger.ViewModels
         private User _me;
         private User _selectedUser;
         private string _newMessage;
-        
-        
+
+
 
         public string Title
         {
@@ -69,7 +69,7 @@ namespace Messenger.ViewModels
                 }
             }
         }
-        
+
 
         public MainWindowViewModel(IDialogService dialogService)
         {
@@ -127,7 +127,7 @@ namespace Messenger.ViewModels
 
         private DelegateCommand<object> _showAuthorizationWindowCommand;
         public DelegateCommand<object> ShowAuthorizationWindowCommand
-        {   //public DelegateCommand<object> AddMessageCommand => _addMessageCommand ?? (_addMessageCommand = new DelegateCommand<object>(CommandLoadExecute));
+        {   //public DelegateCommand<object> ShowAuthorizationWindowCommand => _showAuthorizationWindowCommand ?? (_showAuthorizationWindowCommand = new DelegateCommand<object>(ShowAuthorizationWindowExecute));
             get
             {
                 if (_showAuthorizationWindowCommand != null)
@@ -144,21 +144,23 @@ namespace Messenger.ViewModels
 
         private void ShowAuthorizationWindowExecute(object obj)
         {
-            var message = "This is a message that should be shown in the dialog.";
-            //using the dialog service as-is
-            _dialogService.ShowDialog("NotificationDialog", new DialogParameters($"message={message}"),
-                r =>
-            {
-                if (r.Result == ButtonResult.None)
-                    Title = "Result is None";
-                else if (r.Result == ButtonResult.OK)
-                    Title = "Result is OK";
-                else if (r.Result == ButtonResult.Cancel)
-                    Title = "Result is Cancel";
-                else
-                    Title = "I Don't know what you did!?";
-            });
-        }
+            //string message = "This is a message that should be shown in the dialog.";
+            ////using the dialog service as-is
 
+            _dialogService.ShowDialog("AuthorizationDialog");
+
+            //_dialogService.ShowDialog("AuthorizationDialog", new DialogParameters($"message={message}"),
+            //r =>
+            //{
+            //    if (r.Result == ButtonResult.None)
+            //        Title = "Result is None";
+            //    else if (r.Result == ButtonResult.OK)
+            //        Title = "Result is OK";
+            //    else if (r.Result == ButtonResult.Cancel)
+            //        Title = "Result is Cancel";
+            //    else
+            //        Title = "I Don't know what you did!?";
+            //});
+        }
     }
 }

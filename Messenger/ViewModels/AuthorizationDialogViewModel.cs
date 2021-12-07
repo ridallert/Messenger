@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Messenger.ViewModels
 {
-    class NotificationDialogViewModel : BindableBase, IDialogAware
+    class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
         //public string Title => throw new NotImplementedException();
 
