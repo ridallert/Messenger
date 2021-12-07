@@ -1,6 +1,7 @@
 ﻿using Messenger.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,13 +10,16 @@ namespace Messenger.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private IDialogService _dialogService;
+
         private string _title;
         //private Server _myServer;
         private ObservableCollection<User> _users;
         private User _me;
         private User _selectedUser;
         private string _newMessage;
-        private DelegateCommand<object> _addMessageCommand;
+        
+        
 
         public string Title
         {
@@ -65,24 +69,12 @@ namespace Messenger.ViewModels
                 }
             }
         }
-        public DelegateCommand<object> AddMessageCommand
-        {   //public DelegateCommand<object> AddMessageCommand => _addMessageCommand ?? (_addMessageCommand = new DelegateCommand<object>(CommandLoadExecute));
-            get
-            {
-                if (_addMessageCommand != null)
-                {
-                    return _addMessageCommand;
-                }
-                else
-                {
-                    _addMessageCommand = new DelegateCommand<object>(CommandLoadExecute);
-                    return _addMessageCommand;
-                }
-            }
-        }
+        
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(IDialogService dialogService)
         {
+            _dialogService = dialogService;
+
             Title = "Prism Application";
             Me = new User("Ridal", OnlineStatus.Online);
             Users = Server.GetUsersList();
@@ -108,7 +100,23 @@ namespace Messenger.ViewModels
             }
         }
 
-        private void CommandLoadExecute(object obj)
+        private DelegateCommand<object> _addMessageCommand;
+        public DelegateCommand<object> AddMessageCommand
+        {   //public DelegateCommand<object> AddMessageCommand => _addMessageCommand ?? (_addMessageCommand = new DelegateCommand<object>(CommandLoadExecute));
+            get
+            {
+                if (_addMessageCommand != null)
+                {
+                    return _addMessageCommand;
+                }
+                else
+                {
+                    _addMessageCommand = new DelegateCommand<object>(AddMessageExecute);
+                    return _addMessageCommand;
+                }
+            }
+        }
+        private void AddMessageExecute(object obj)
         {
             string mes = obj as string;
             if (mes != null)
@@ -116,5 +124,40 @@ namespace Messenger.ViewModels
                 SelectedUser.MessageList.Add(new Message(Me, SelectedUser, mes, DateTime.Now));
             }
         }
+
+        private DelegateCommand<object> _showAuthorizationWindowCommand;
+        public DelegateCommand<object> ShowAuthorizationWindowCommand
+        {   //public DelegateCommand<object> AddMessageCommand => _addMessageCommand ?? (_addMessageCommand = new DelegateCommand<object>(CommandLoadExecute));
+            get
+            {
+                if (_showAuthorizationWindowCommand != null)
+                {
+                    return _showAuthorizationWindowCommand;
+                }
+                else
+                {
+                    _showAuthorizationWindowCommand = new DelegateCommand<object>(ShowAuthorizationWindowExecute);
+                    return _showAuthorizationWindowCommand;
+                }
+            }
+        }
+
+        private void ShowAuthorizationWindowExecute(object obj)
+        {
+            var message = "This is a message that should be shown in the dialog.";
+            //using the dialog service as-is
+            _dialogService.ShowDialog("NotificationDialog", new DialogParameters($"message={message}"), r =>
+            {
+                if (r.Result == ButtonResult.None)
+                    Title = "Result is None";
+                else if (r.Result == ButtonResult.OK)
+                    Title = "Result is OK";
+                else if (r.Result == ButtonResult.Cancel)
+                    Title = "Result is Cancel";
+                else
+                    Title = "I Don't know what you did!?";
+            });
+        }
+
     }
 }

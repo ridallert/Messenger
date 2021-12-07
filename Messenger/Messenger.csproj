@@ -56,12 +56,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Dialogs\NotificationDialog.xaml.cs">
+      <DependentUpon>NotificationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\NotificationDialogViewModel.cs" />
     <Compile Include="Views\Log.xaml.cs">
       <DependentUpon>Log.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ServerConfigs.xaml.cs">
       <DependentUpon>ServerConfigs.xaml</DependentUpon>
     </Compile>
+    <Page Include="Dialogs\NotificationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Authorization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

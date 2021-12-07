@@ -1,4 +1,6 @@
-﻿using Messenger.Views;
+﻿using Messenger.Dialogs;
+using Messenger.Views;
+using Messenger.ViewModels;
 using Prism.Ioc;
 using Prism.Modularity;
 using System.Windows;
@@ -17,7 +19,7 @@ namespace Messenger
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
+            containerRegistry.RegisterDialog<NotificationDialog, NotificationDialogViewModel>("myDialog");
         }
     }
 }
