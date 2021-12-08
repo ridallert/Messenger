@@ -56,17 +56,26 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Dialogs\AuthorizationDialog.xaml.cs">
+    <Compile Include="ViewModels\ChatWindowViewModel.cs" />
+    <Compile Include="ViewModels\ServerConfigViewModel.cs" />
+    <Compile Include="Views\AuthorizationDialog.xaml.cs">
       <DependentUpon>AuthorizationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AuthorizationDialogViewModel.cs" />
+    <Compile Include="Views\ChatWindow.xaml.cs">
+      <DependentUpon>ChatWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Log.xaml.cs">
       <DependentUpon>Log.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ServerConfigs.xaml.cs">
-      <DependentUpon>ServerConfigs.xaml</DependentUpon>
+    <Compile Include="Views\ServerConfig.xaml.cs">
+      <DependentUpon>ServerConfig.xaml</DependentUpon>
     </Compile>
-    <Page Include="Dialogs\AuthorizationDialog.xaml">
+    <Page Include="Views\AuthorizationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ChatWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -90,7 +99,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\ServerConfigs.xaml">
+    <Page Include="Views\ServerConfig.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -121,5 +130,6 @@
   <ItemGroup>
     <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

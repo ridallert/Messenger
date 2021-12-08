@@ -11,26 +11,8 @@ namespace Messenger.ViewModels
 {
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
-        //public string Title => throw new NotImplementedException();
 
-        //public event Action<IDialogResult> RequestClose;
-
-        //public bool CanCloseDialog()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void OnDialogClosed()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void OnDialogOpened(IDialogParameters parameters)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        private string _title = "Notification";
+        private string _title = "Authorization";
         public string Title
         {
             get { return _title; }
@@ -44,29 +26,8 @@ namespace Messenger.ViewModels
             return true;
         }
 
-        public virtual void OnDialogClosed()
-        {
-
-        }
-
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-            Message = parameters.GetValue<string>("message");
-        }
-
-        
-
-        private string _message;
-        public string Message
-        {
-            get { return _message; }
-            set { SetProperty(ref _message, value); }
-        }
-
-
-
-        private DelegateCommand<string> _closeDialogCommand;
-        public DelegateCommand<string> CloseDialogCommand
+        private DelegateCommand _closeDialogCommand;
+        public DelegateCommand CloseDialogCommand
         {
             get
             {
@@ -76,34 +37,65 @@ namespace Messenger.ViewModels
                 }
                 else
                 {
-                    return _closeDialogCommand = new DelegateCommand<string>(CloseDialog);
+                    return _closeDialogCommand = new DelegateCommand(CloseDialog);
                 }
             }
         }
-     
-            
 
-        protected virtual void CloseDialog(string parameter)
+        protected virtual void CloseDialog()
         {
             ButtonResult result = ButtonResult.None;
-
-            if (parameter?.ToLower() == "true")
-                result = ButtonResult.OK;
-            else if (parameter?.ToLower() == "false")
-                result = ButtonResult.Cancel;
-
             RaiseRequestClose(new DialogResult(result));
         }
-
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
             RequestClose?.Invoke(dialogResult);
         }
 
-       
+        public virtual void OnDialogClosed()
+        {
 
-        
+        }
 
-        
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            //Message = parameters.GetValue<string>("message");
+        }
+
+        //private string _message;
+        //public string Message
+        //{
+        //    get { return _message; }
+        //    set { SetProperty(ref _message, value); }
+        //}
+
+        protected virtual void CloseDialog(string parameter)
+        {
+            ButtonResult result = ButtonResult.None;
+
+            //if (parameter?.ToLower() == "true")
+            //    result = ButtonResult.OK;
+            //else if (parameter?.ToLower() == "false")
+            //    result = ButtonResult.Cancel;
+
+            RaiseRequestClose(new DialogResult(result));
+        }
+
+        // Открыть ServerConfigDialog
+        public AuthorizationDialogViewModel(IDialogService dialogService)
+        {
+            _dialogService = dialogService;
+        }
+
+        private IDialogService _dialogService;
+
+        private DelegateCommand<object> _showServerConfigCommand;        //Удалить <object>?
+        public DelegateCommand<object> ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand<object>(ShowServerConfigExecute));        //Удалить <object>?
+
+
+        private void ShowServerConfigExecute(object obj)        //Удалить <object>?
+        {
+            _dialogService.ShowDialog("ServerConfigDialog");
+        }
     }
 }
