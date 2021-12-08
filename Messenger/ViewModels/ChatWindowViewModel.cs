@@ -58,28 +58,10 @@ namespace Messenger.ViewModels
 
         public ChatWindowViewModel()
         {
-            Me = new User("Ridal", OnlineStatus.Online);
-            Users = Server.GetUsersList();
+            Me = State.AuthorizedUser;
+            Users = State.Users;
 
-            //Users = new ObservableCollection<User>
-            //{
-            //    new User ("User A", OnlineStatus.Online),
-            //    new User ("User B", OnlineStatus.Online),
-            //    new User ("User C", OnlineStatus.Online),
-            //    new User ("User D", OnlineStatus.Online),
-            //};
-
-            SelectedUser = Users.First();
-
-            for (int i = 0; i < Users.Count; i++)
-            {
-                Users[i].MessageList = new ObservableCollection<Message>
-                {
-                    new Message(Users[i], Me, Me.Name + "Привет! Это " + Users[i].Name, DateTime.Now),
-                    new Message(Users[i], Me, "Еще раз привет!", DateTime.Now),
-                    new Message(Users[i], Me, "Пока", DateTime.Now)
-                };
-            }
+            //SelectedUser = Users.First();
         }
 
         private DelegateCommand<object> _addMessageCommand;

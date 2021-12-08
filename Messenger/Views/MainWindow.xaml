@@ -4,22 +4,44 @@
         xmlns:prism="http://prismlibrary.com/"
         xmlns:uc="clr-namespace:Messenger.Views"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="450" Width="880" MinHeight="250" MinWidth="400" Background="WhiteSmoke" WindowStartupLocation="CenterScreen">
+        Title="{Binding Title}"
+        Height="450" Width="880"
+        MinHeight="250" MinWidth="400"
+        Background="WhiteSmoke"
+        WindowStartupLocation="CenterScreen">
+    
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
-            <ColumnDefinition Width="150"></ColumnDefinition>
+            <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"/>
             <RowDefinition/>
-            <RowDefinition Height="45"></RowDefinition>
+            <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
 
-        <Button Name="authorizationExitButton" Content="Log in" Grid.Column="0" Grid.Row="0" Panel.ZIndex="1" Margin="10,10,5,5" Command="{Binding ShowAuthorizationDialogCommand}"></Button>
-        <Button Name="showLogDataButton" Content="Show log data" Grid.Column="2" Grid.Row="0" Panel.ZIndex="1" Margin="5,10,10,5"></Button>
-        <uc:ChatWindow Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" Grid.RowSpan="3" Panel.ZIndex="0"></uc:ChatWindow>
-        
+        <Button Name="authorizationExitButton"
+                Content="Log in"
+                Grid.Column="0"
+                Grid.Row="0"
+                Panel.ZIndex="1"
+                Margin="10,10,5,5"
+                Command="{Binding ShowAuthorizationDialogCommand}"/>
+
+        <Button Name="showLogDataButton"
+                Content="Show log data"
+                Grid.Column="2"
+                Grid.Row="0"
+                Panel.ZIndex="1"
+                Margin="5,10,10,5"/>
+
+        <uc:ChatWindow Grid.Column="0"
+                       Grid.Row="0"
+                       Grid.ColumnSpan="3"
+                       Grid.RowSpan="3"
+                       Panel.ZIndex="0"/>
+
     </Grid>
 </Window>

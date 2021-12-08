@@ -26,15 +26,14 @@ namespace Messenger.ViewModels
             Title = "Prism Application";
         }
 
-        private DelegateCommand<object> _showAuthorizationDialogCommand;        //Удалить <object>?
-        public DelegateCommand<object> ShowAuthorizationDialogCommand => _showAuthorizationDialogCommand ?? (_showAuthorizationDialogCommand = new DelegateCommand<object>(ShowAuthorizationDialogExecute));        //Удалить <object>?
+        private DelegateCommand<object> _showAuthDialCommand;       //Удалить <object>?
+        public DelegateCommand<object> ShowAuthorizationDialogCommand => _showAuthDialCommand ?? (_showAuthDialCommand = new DelegateCommand<object>(ShowAuthDialogExecute));   //Удалить <object>?
 
-        private void ShowAuthorizationDialogExecute(object obj)        //Удалить <object>?
+        private void ShowAuthDialogExecute(object obj)              //Удалить <object>?
         {
-            //string message = "This is a message that should be shown in the dialog.";
-
             _dialogService.ShowDialog("AuthorizationDialog");
-
+            
+            //string message = "This is a message that should be shown in the dialog.";
             //_dialogService.ShowDialog("AuthorizationDialog", new DialogParameters($"message={message}"),
             //r =>
             //{
