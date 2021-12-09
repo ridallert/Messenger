@@ -44,7 +44,14 @@ namespace Messenger.Models
         public ObservableCollection<Message> MessageList
         {
             get { return _messageList; }
-            set { _messageList = value; }
+            set
+            {
+                _messageList = value;
+                if (MessageListChanged != null)
+                {
+                    MessageListChanged();
+                }
+            }
         }
 
         public User(string name, OnlineStatus isOnline)
@@ -53,5 +60,7 @@ namespace Messenger.Models
             IsOnline = isOnline;
             MessageList = new ObservableCollection<Message>();
         }
+
+        public static event Action MessageListChanged;
     }
 }

@@ -8,19 +8,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Messenger.ViewModels 
+namespace Messenger.ViewModels
 {
     public class ChatWindowViewModel : BindableBase
     {
-        private ObservableCollection<User> _users;
+        private bool _isGroopChatActive;
+        private ObservableCollection<User> _contactList;
+        private ObservableCollection<Message> _messageList;
         private User _me;
         private User _selectedUser;
         private string _newMessage;
 
-        public ObservableCollection<User> Users
+        public bool IsGropChatActive
         {
-            get { return _users; }
-            set { _users = value; }
+            get { return _isGroopChatActive; }
+            set
+            {
+                SetProperty<bool>(ref _isGroopChatActive, value);
+            }
+        }
+        public ObservableCollection<User> ContactList
+        {
+            get { return _contactList; }
+            set
+            {
+                //_contactList = value;
+                SetProperty<ObservableCollection<User>>(ref _contactList, value);
+            }
+        }
+        public ObservableCollection<Message> MessageList
+        {
+            get { return _messageList; }
+            set
+            {
+                //_contactList = value;
+                SetProperty<ObservableCollection<Message>>(ref _messageList, value);
+            }
         }
         public User Me
         {
@@ -30,6 +53,7 @@ namespace Messenger.ViewModels
                 if (value != _me)
                 {
                     SetProperty<User>(ref _me, value);
+                    SendMessageCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -41,6 +65,9 @@ namespace Messenger.ViewModels
                 if (value != _selectedUser)
                 {
                     SetProperty<User>(ref _selectedUser, value);
+                    NewMessage = null;
+                    SendMessageCommand.RaiseCanExecuteChanged();
+                    //MessageList = State.GetMessageList(Me, value);
                 }
             }
         }
@@ -52,29 +79,70 @@ namespace Messenger.ViewModels
                 if (value != _newMessage)
                 {
                     SetProperty<string>(ref _newMessage, value);
+                    SendMessageCommand.RaiseCanExecuteChanged();
                 }
             }
         }
 
         public ChatWindowViewModel()
         {
-            Me = State.AuthorizedUser;
-            Users = State.Users;
 
+            State.UserAuthorized += OnUserAuthorized;
+            State.UserListChanged += OnUserListChanged;
+            User.MessageListChanged += OnMessageListChanged;
             //SelectedUser = Users.First();
         }
 
-        private DelegateCommand<object> _addMessageCommand;
-        public DelegateCommand<object> AddMessageCommand => _addMessageCommand ?? (_addMessageCommand = new DelegateCommand<object>(AddMessageExecute));
+        private DelegateCommand _sendMessageCommand;
+        public DelegateCommand SendMessageCommand => _sendMessageCommand ?? (_sendMessageCommand = new DelegateCommand(SendMessageExecute, SendMessageCanExecute));
 
-        private void AddMessageExecute(object obj)
+        private void SendMessageExecute()
         {
-            string mes = obj as string;
-            if (mes != null)
+            if (NewMessage != null && (SelectedUser != null))
             {
-                SelectedUser.MessageList.Add(new Message(Me, SelectedUser, mes, DateTime.Now));
+                if (SelectedUser != null)
+                {
+                    State.SendMessage(Me, SelectedUser, NewMessage);
+
+                }
+                if (_isGroopChatActive)
+                {
+                    State.SendGroupMessage(Me, NewMessage);
+                }
+
+                NewMessage = null;
             }
         }
+        private bool SendMessageCanExecute()
+        {
+            return Me != null &&
+                    SelectedUser != null &&
+                    ContactList.Count != 0 &&
+                    NewMessage != null &&
+                    NewMessage != "";
+        }
+
+        private void OnUserAuthorized()
+        {
+            Me = State.AuthorizedUser;
+            ContactList = State.GetContacts(Me);
+        }
+        private void OnUserListChanged()
+        {
+            ContactList = State.GetContacts(Me);
+        }
+        private void OnMessageListChanged()
+        {
+            if (IsGropChatActive)
+            {
+                MessageList = State.GetGroupMessageList(Me);
+            }
+            else
+            {
+                MessageList = State.GetMessageList(Me, SelectedUser);
+            }
+        }
+
 
     }
 }

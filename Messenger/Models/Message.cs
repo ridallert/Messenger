@@ -12,6 +12,7 @@ namespace Messenger.Models
         private User _receiver;
         private string _text;
         private DateTime _sendTime;
+        private bool _isGroopchatMessage;
 
         public User Sender
         {
@@ -33,13 +34,19 @@ namespace Messenger.Models
             get { return _sendTime; }
             set { _sendTime = value; }
         }
+        public bool IsGroopChatMessage
+        {
+            get { return _isGroopchatMessage; }
+            set { _isGroopchatMessage = value; }
+        }
 
-        public Message(User sender, User receiver, string text, DateTime sendTime)
+        public Message(User sender, User receiver, string text, bool isGroopChatMess = false)
         {
             Sender = sender;
             Receiver = receiver;
             Text = text;
-            SendTime = sendTime;
+            SendTime = DateTime.Now;
+            IsGroopChatMessage = isGroopChatMess;
         }
     }
 }

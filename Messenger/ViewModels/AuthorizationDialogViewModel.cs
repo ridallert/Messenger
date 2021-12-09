@@ -23,39 +23,26 @@ namespace Messenger.ViewModels
         public string Login
         {
             get { return _login; }
-            set { SetProperty(ref _login, value); }
+            set
+            {
+                SetProperty(ref _login, value);
+                AuthorizeUserCommand.RaiseCanExecuteChanged();
+            }
         }
 
-
-
         private DelegateCommand<object> _authorizeUserCommand;
-        public DelegateCommand<object> AuthorizeUserCommand => _authorizeUserCommand ?? (_authorizeUserCommand = new DelegateCommand<object>(AuthorizeUserExecute));
+        public DelegateCommand<object> AuthorizeUserCommand => _authorizeUserCommand ?? (_authorizeUserCommand = new DelegateCommand<object>(AuthorizeUserExecute, AuthorizeUserCanExecute));
 
         private void AuthorizeUserExecute(object obj)
         {
-            string login = obj as string;
-            if (login != null)
-            {
-                User newUser = new User(login, OnlineStatus.Online);
-                State.AuthorizedUser = newUser;
-                State.Users.Add(newUser);
-                //SelectedUser.MessageList.Add(new Message(Me, SelectedUser, mes, DateTime.Now));
-            }
+            User newUser = new User(Login, OnlineStatus.Online);
+            State.AuthorizedUser = newUser;
+            State.Users.Add(newUser);
+            CloseDialogCommand.Execute();
         }
 
         private bool AuthorizeUserCanExecute(object obj)
         {
-            //string login = obj as string;
-
-            //if (login != null && login != "")
-            //{
-            //    return true;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
-
             if (Login != null && Login != "")
             {
                 return true;
@@ -65,8 +52,6 @@ namespace Messenger.ViewModels
                 return false;
             }
         }
-
-
 
 
 
@@ -81,7 +66,7 @@ namespace Messenger.ViewModels
                 }
                 else
                 {
-                    return _closeDialogCommand = new DelegateCommand(CloseDialog, CanCloseDialog);
+                    return _closeDialogCommand = new DelegateCommand(CloseDialog);
                 }
             }
         }
@@ -106,6 +91,11 @@ namespace Messenger.ViewModels
 
         }
 
+
+
+
+
+
         public AuthorizationDialogViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
@@ -113,11 +103,11 @@ namespace Messenger.ViewModels
 
         private IDialogService _dialogService;
 
-        private DelegateCommand<object> _showServerConfigCommand;        //Удалить <object>?
-        public DelegateCommand<object> ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand<object>(ShowServerConfigExecute));        //Удалить <object>?
+        private DelegateCommand _showServerConfigCommand;        
+        public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));       
 
 
-        private void ShowServerConfigExecute(object obj)        //Удалить <object>?
+        private void ShowServerConfigExecute()        
         {
             _dialogService.ShowDialog("ServerConfigDialog");
         }
