@@ -47,10 +47,6 @@ namespace Messenger.Models
             set
             {
                 _messageList = value;
-                if (MessageListChanged != null)
-                {
-                    MessageListChanged();
-                }
             }
         }
 
@@ -61,6 +57,6 @@ namespace Messenger.Models
             MessageList = new ObservableCollection<Message>();
         }
 
-        public static event Action MessageListChanged;
+        //public static event Action MessageListChanged;
     }
 }

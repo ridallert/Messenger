@@ -30,9 +30,13 @@ namespace Messenger.Models
             set
             {
                 _authorizedUser = value;
-                if (UserAuthorized != null)
+                if (value != null)
                 {
                     UserAuthorized();
+                }
+                else
+                {
+                    UserLoggedOut();
                 }
             }
         }
@@ -41,7 +45,8 @@ namespace Messenger.Models
         //public static event AccountHandler Notify;
 
         public static event Action UserListChanged;
-        public static event Action UserAuthorized; 
+        public static event Action UserAuthorized;
+        public static event Action UserLoggedOut;
 
 
         static State()
@@ -91,7 +96,7 @@ namespace Messenger.Models
             ObservableCollection<User> contactList = new ObservableCollection<User>();
             for (int i = 0; i < Users.Count; i++)
             {
-                if (me.Name != Users[i].Name)
+                if (me != null && me.Name != Users[i].Name) //me.Name != null &&
                 {
                     contactList.Add(Users[i]);
                 }
@@ -109,7 +114,9 @@ namespace Messenger.Models
                 {
                     for (int j = 0; j < Users[i].MessageList.Count; j++)
                     {
-                        if (Users[i].MessageList[j].Sender == contact && Users[i].MessageList[j].IsGroopChatMessage == false)
+                        if (((Users[i].MessageList[j].Sender.Name == contact.Name && Users[i].MessageList[j].Receiver.Name == me.Name) ||
+                            (Users[i].MessageList[j].Sender.Name == me.Name && Users[i].MessageList[j].Receiver.Name == contact.Name)) &&
+                            Users[i].MessageList[j].IsGroopChatMessage == false)
                         {
                             messages.Add(Users[i].MessageList[j]);
                         }

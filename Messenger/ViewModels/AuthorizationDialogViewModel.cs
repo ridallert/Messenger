@@ -35,10 +35,30 @@ namespace Messenger.ViewModels
 
         private void AuthorizeUserExecute(object obj)
         {
-            User newUser = new User(Login, OnlineStatus.Online);
-            State.AuthorizedUser = newUser;
-            State.Users.Add(newUser);
-            CloseDialogCommand.Execute();
+            //if (State.AuthorizedUser == null)
+            //{
+                bool isUserAlreadyExists = false;
+                User authorizedUser = new User(Login, OnlineStatus.Online);
+
+                for (int i = 0; i < State.Users.Count; i++)
+                {
+                    if (State.Users[i].Name == Login)
+                    {
+                        isUserAlreadyExists = true;
+                        State.Users[i].IsOnline = OnlineStatus.Online;
+                        authorizedUser = State.Users[i];
+                    }
+                }
+
+                if (isUserAlreadyExists == false)
+                {
+                    State.Users.Add(authorizedUser);
+                }
+
+                State.AuthorizedUser = authorizedUser;
+
+                CloseDialogCommand.Execute();
+            //}
         }
 
         private bool AuthorizeUserCanExecute(object obj)
@@ -92,10 +112,6 @@ namespace Messenger.ViewModels
         }
 
 
-
-
-
-
         public AuthorizationDialogViewModel(IDialogService dialogService)
         {
             _dialogService = dialogService;
@@ -103,11 +119,11 @@ namespace Messenger.ViewModels
 
         private IDialogService _dialogService;
 
-        private DelegateCommand _showServerConfigCommand;        
-        public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));       
+        private DelegateCommand _showServerConfigCommand;
+        public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));
 
 
-        private void ShowServerConfigExecute()        
+        private void ShowServerConfigExecute()
         {
             _dialogService.ShowDialog("ServerConfigDialog");
         }

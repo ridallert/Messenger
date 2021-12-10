@@ -20,19 +20,56 @@ namespace Messenger.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
+        public string _loginButtonContent;
+        public string LoginButtonContent
+        {
+            get { return _loginButtonContent; }
+            set
+            {
+                SetProperty(ref _loginButtonContent, value);
+            }
+        }
         public MainWindowViewModel(IDialogService dialogService)
-        {  
+        {
+            Title = "PrismMessenger";
+
+            LoginButtonContent = "Log in";
+
+            
             _dialogService = dialogService;
-            Title = "Prism Application";
+
+            State.UserAuthorized += OnUserAuthorized;
+            State.UserLoggedOut += OnUserLoggedOut;
+
         }
 
-        private DelegateCommand<object> _showAuthDialCommand;       //Удалить <object>?
-        public DelegateCommand<object> ShowAuthorizationDialogCommand => _showAuthDialCommand ?? (_showAuthDialCommand = new DelegateCommand<object>(ShowAuthDialogExecute));   //Удалить <object>?
-
-        private void ShowAuthDialogExecute(object obj)              //Удалить <object>?
+        private void OnUserAuthorized()
         {
-            _dialogService.ShowDialog("AuthorizationDialog");
+            LoginButtonContent = "Log out";
+        }
+
+        private void OnUserLoggedOut()
+        {
+            LoginButtonContent = "Log in";
+        }
+
+
+        private DelegateCommand _showAuthDialCommand;       
+        public DelegateCommand ShowAuthorizationDialogCommand => _showAuthDialCommand ?? (_showAuthDialCommand = new DelegateCommand(ShowAuthDialogExecute));  
+
+        private void ShowAuthDialogExecute()              
+        {
+            if (State.AuthorizedUser == null)
+            {
+                _dialogService.ShowDialog("AuthorizationDialog");
+            }
+            else
+            {
+                State.AuthorizedUser = null;
+            }
+
             
+
             //string message = "This is a message that should be shown in the dialog.";
             //_dialogService.ShowDialog("AuthorizationDialog", new DialogParameters($"message={message}"),
             //r =>

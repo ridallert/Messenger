@@ -23,7 +23,7 @@
         </Grid.RowDefinitions>
 
         <Button Name="authorizationExitButton"
-                Content="Log in"
+                Content="{Binding LoginButtonContent}"
                 Grid.Column="0"
                 Grid.Row="0"
                 Panel.ZIndex="1"
