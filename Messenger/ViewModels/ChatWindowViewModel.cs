@@ -12,6 +12,7 @@ namespace Messenger.ViewModels
 {
     public class ChatWindowViewModel : BindableBase
     {
+        private State _serverState;
         private bool _isGroopChatActive;
         private ObservableCollection<User> _contactList;
         private ObservableCollection<Message> _messageList;
@@ -24,7 +25,7 @@ namespace Messenger.ViewModels
             get { return _isGroopChatActive; }
             set
             {
-                SetProperty<bool>(ref _isGroopChatActive, value);
+                SetProperty(ref _isGroopChatActive, value);
             }
         }
         public ObservableCollection<User> ContactList
@@ -32,7 +33,6 @@ namespace Messenger.ViewModels
             get { return _contactList; }
             set
             {
-                //_contactList = value;
                 SetProperty(ref _contactList, value);
             }
         }
@@ -41,7 +41,6 @@ namespace Messenger.ViewModels
             get { return _messageList; }
             set
             {
-                //_contactList = value;
                 SetProperty(ref _messageList, value);
             }
         }
@@ -71,7 +70,7 @@ namespace Messenger.ViewModels
 
                     if (Me != null && value != null)
                     {
-                        MessageList = State.GetMessageList(Me, value);
+                        MessageList = _serverState.GetMessageList(Me, value);
                         IsGropChatActive = false;
                     }
                 }
@@ -90,12 +89,12 @@ namespace Messenger.ViewModels
             }
         }
 
-        public ChatWindowViewModel()
+        public ChatWindowViewModel(State state)
         {
-
-            State.UserAuthorized += OnUserAuthorized;
-            State.UserListChanged += OnUserListChanged;
-            State.UserLoggedOut += OnUserLoggedOut;
+            _serverState = state;
+            _serverState.UserAuthorized += OnUserAuthorized;
+            _serverState.UserListChanged += OnUserListChanged;
+            _serverState.UserLoggedOut += OnUserLoggedOut;
         }
 
         private DelegateCommand _sendMessageCommand;
@@ -107,14 +106,14 @@ namespace Messenger.ViewModels
             {
                 if (SelectedUser != null)
                 {
-                    State.SendMessage(Me, SelectedUser, NewMessage);
-                    MessageList = State.GetMessageList(Me, SelectedUser);
+                    _serverState.SendMessage(Me, SelectedUser, NewMessage);
+                    MessageList = _serverState.GetMessageList(Me, SelectedUser);
 
                 }
                 if (_isGroopChatActive)
                 {
-                    State.SendGroupMessage(Me, NewMessage);
-                    MessageList = State.GetGroupMessageList(Me);
+                    _serverState.SendGroupMessage(Me, NewMessage);
+                    MessageList = _serverState.GetGroupMessageList(Me);
                 }
                 
                 NewMessage = null;
@@ -147,7 +146,7 @@ namespace Messenger.ViewModels
         {
             IsGropChatActive = true;
             SelectedUser = null;
-            MessageList = State.GetGroupMessageList(Me);
+            MessageList = _serverState.GetGroupMessageList(Me);
 
         }
 
@@ -157,17 +156,17 @@ namespace Messenger.ViewModels
         }
         private void OnUserAuthorized()
         {
-            Me = State.AuthorizedUser;
-            ContactList = State.GetContacts(Me);
+            Me = _serverState.AuthorizedUser;
+            ContactList = _serverState.GetContacts(Me);
         }
 
         private void OnUserLoggedOut()
         {
-            for (int i = 0; i < State.Users.Count; i++)
+            for (int i = 0; i < _serverState.Users.Count; i++)
             {
-                if (Me.Name == State.Users[i].Name)
+                if (Me.Name == _serverState.Users[i].Name)
                 {
-                    State.Users[i].IsOnline = OnlineStatus.Offline;
+                    _serverState.Users[i].IsOnline = OnlineStatus.Offline;
                 }
             }
             Me = null;
@@ -177,7 +176,7 @@ namespace Messenger.ViewModels
 
         private void OnUserListChanged()
         {
-            ContactList = State.GetContacts(Me);
+            ContactList = _serverState.GetContacts(Me);
         }
 
         //private void OnMessageListChanged()

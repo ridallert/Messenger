@@ -3,6 +3,7 @@ using Messenger.ViewModels;
 using Prism.Ioc;
 using Prism.Modularity;
 using System.Windows;
+using Messenger.Models;
 
 namespace Messenger
 {
@@ -18,8 +19,10 @@ namespace Messenger
 
         protected override void RegisterTypes(IContainerRegistry container)
         {
+
             container.RegisterDialog<AuthorizationDialog, AuthorizationDialogViewModel>("AuthorizationDialog");
-            container.RegisterDialog<ServerConfig, ServerConfigViewModel>("ServerConfigDialog");
+
+            container.RegisterSingleton<IState, State>();  //State>("state");
         }
     }
 }

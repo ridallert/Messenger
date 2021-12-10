@@ -12,6 +12,8 @@ namespace Messenger.ViewModels
 {
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
+        private IState _serverState;
+
         private string _title = "Authorization";
         public string Title
         {
@@ -30,6 +32,19 @@ namespace Messenger.ViewModels
             }
         }
 
+        public AuthorizationDialogViewModel(IState state)
+        {
+        }
+        public AuthorizationDialogViewModel()
+        {
+            int a = 2;
+        }
+
+        public AuthorizationDialogViewModel(IDialogService dialogService, State state)
+        {
+            _dialogService = dialogService;
+        }
+
         private DelegateCommand<object> _authorizeUserCommand;
         public DelegateCommand<object> AuthorizeUserCommand => _authorizeUserCommand ?? (_authorizeUserCommand = new DelegateCommand<object>(AuthorizeUserExecute, AuthorizeUserCanExecute));
 
@@ -40,22 +55,22 @@ namespace Messenger.ViewModels
                 bool isUserAlreadyExists = false;
                 User authorizedUser = new User(Login, OnlineStatus.Online);
 
-                for (int i = 0; i < State.Users.Count; i++)
+                for (int i = 0; i < _serverState.Users.Count; i++)
                 {
-                    if (State.Users[i].Name == Login)
+                    if (_serverState.Users[i].Name == Login)
                     {
                         isUserAlreadyExists = true;
-                        State.Users[i].IsOnline = OnlineStatus.Online;
-                        authorizedUser = State.Users[i];
+                        _serverState.Users[i].IsOnline = OnlineStatus.Online;
+                        authorizedUser = _serverState.Users[i];
                     }
                 }
 
                 if (isUserAlreadyExists == false)
                 {
-                    State.Users.Add(authorizedUser);
+                    _serverState.Users.Add(authorizedUser);
                 }
 
-                State.AuthorizedUser = authorizedUser;
+                _serverState.AuthorizedUser = authorizedUser;
 
                 CloseDialogCommand.Execute();
             //}
@@ -110,13 +125,7 @@ namespace Messenger.ViewModels
         {
 
         }
-
-
-        public AuthorizationDialogViewModel(IDialogService dialogService)
-        {
-            _dialogService = dialogService;
-        }
-
+     
         private IDialogService _dialogService;
 
         private DelegateCommand _showServerConfigCommand;
@@ -129,7 +138,7 @@ namespace Messenger.ViewModels
         }
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            //Message = parameters.GetValue<string>("message");
+            _serverState = parameters.GetValue<IState>("state");
         }
 
         //private string _message;

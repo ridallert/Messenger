@@ -56,6 +56,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\IState.cs" />
     <Compile Include="ViewModels\ChatWindowViewModel.cs" />
     <Compile Include="ViewModels\ServerConfigViewModel.cs" />
     <Compile Include="Views\AuthorizationDialog.xaml.cs">

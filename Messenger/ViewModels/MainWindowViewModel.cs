@@ -10,6 +10,8 @@ namespace Messenger.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private readonly IState _serverState;
+
         private IDialogService _dialogService;
 
         private string _title;
@@ -29,17 +31,19 @@ namespace Messenger.ViewModels
                 SetProperty(ref _loginButtonContent, value);
             }
         }
-        public MainWindowViewModel(IDialogService dialogService)
+        public MainWindowViewModel(IDialogService dialogService, IState state)
         {
+            _serverState = state;
+
             Title = "PrismMessenger";
 
             LoginButtonContent = "Log in";
 
-            
+
             _dialogService = dialogService;
 
-            State.UserAuthorized += OnUserAuthorized;
-            State.UserLoggedOut += OnUserLoggedOut;
+            _serverState.UserAuthorized += OnUserAuthorized;
+            _serverState.UserLoggedOut += OnUserLoggedOut;
 
         }
 
@@ -54,21 +58,26 @@ namespace Messenger.ViewModels
         }
 
 
-        private DelegateCommand _showAuthDialCommand;       
-        public DelegateCommand ShowAuthorizationDialogCommand => _showAuthDialCommand ?? (_showAuthDialCommand = new DelegateCommand(ShowAuthDialogExecute));  
+        private DelegateCommand _showAuthDialCommand;
+        public DelegateCommand ShowAuthorizationDialogCommand => _showAuthDialCommand ?? (_showAuthDialCommand = new DelegateCommand(ShowAuthDialogExecute));
 
-        private void ShowAuthDialogExecute()              
+        private void ShowAuthDialogExecute()
         {
-            if (State.AuthorizedUser == null)
+            if (_serverState.AuthorizedUser == null)
             {
-                _dialogService.ShowDialog("AuthorizationDialog");
+                DialogParameters parameter = new DialogParameters();
+                parameter.Add("state", _serverState);
+
+                _dialogService.ShowDialog("AuthorizationDialog", parameter, r =>
+                {
+                    if (r.Result == ButtonResult.None)
+                        Title = "Result is None";
+                });
             }
             else
             {
-                State.AuthorizedUser = null;
+                _serverState.AuthorizedUser = null;
             }
-
-            
 
             //string message = "This is a message that should be shown in the dialog.";
             //_dialogService.ShowDialog("AuthorizationDialog", new DialogParameters($"message={message}"),

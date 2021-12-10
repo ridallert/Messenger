@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using Messenger.Models;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -11,11 +12,17 @@ namespace Messenger.ViewModels
 {
     class ServerConfigViewModel : BindableBase, IDialogAware
     {
+        private State _serverState;
         private string _title = "ServerConfig";
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
+        }
+
+        public ServerConfigViewModel(State state)
+        {
+            _serverState = state;
         }
         public event Action<IDialogResult> RequestClose;
 

@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Messenger.Models
 {
-    public static class State
+    public class State : IState
     {
-        static private ObservableCollection<User> _users;
-        static private User _authorizedUser;
+        private ObservableCollection<User> _users;
+        private User _authorizedUser;
 
-        static public ObservableCollection<User> Users
+        public ObservableCollection<User> Users
         {
             get { return _users; }
             set
@@ -24,7 +24,7 @@ namespace Messenger.Models
                 }
             }
         }
-        static public User AuthorizedUser
+        public User AuthorizedUser
         {
             get { return _authorizedUser; }
             set
@@ -41,62 +41,28 @@ namespace Messenger.Models
             }
         }
 
-        //public delegate void AccountHandler(string message);
-        //public static event AccountHandler Notify;
-
-        public static event Action UserListChanged;
-        public static event Action UserAuthorized;
-        public static event Action UserLoggedOut;
+        public event Action UserListChanged;
+        public event Action UserAuthorized;
+        public event Action UserLoggedOut;
 
 
-        static State()
+        public State()
         {
             Users = new ObservableCollection<User>();
-
-            //AuthorizedUser = new User("Ridal", OnlineStatus.Online);
 
             Users.Add(new User("Евгений", OnlineStatus.Offline));
             Users.Add(new User("Яков", OnlineStatus.Offline));
             Users.Add(new User("Виктория", OnlineStatus.Offline));
             Users.Add(new User("Мария", OnlineStatus.Offline));
             Users.Add(new User("Ридаль", OnlineStatus.Offline));
-
-            //Users[0].MessageList.Add(new Message(Users[1], Users[0], "Привет Евгению от Якова", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[1], Users[0], "Пока Евгению от Якова", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[2], Users[0], "Привет Евгению от Виктории", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[2], Users[0], "Пока Евгению от Виктории", DateTime.Now));
-
-            //Users[0].MessageList.Add(new Message(Users[3], Users[0], "Привет Марии от Виктории", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[3], Users[0], "Пока Марии от Виктории", DateTime.Now));
-
-            //Users[1].MessageList.Add(new Message(Users[1], Users[0], "Привет Марии от Якова", DateTime.Now));
-
-            //Users[0].MessageList.Add(new Message(Users[1], Users[0], "Привет Марии от Якова", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[1], Users[0], "Пока Марии от Якова", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[2], Users[0], "Привет Марии от Виктории", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[2], Users[0], "Пока Марии от Виктории", DateTime.Now));
-
-            //Users[0].MessageList.Add(new Message(Users[3], Users[0], "Привет Марии от Виктории", DateTime.Now));
-            //Users[0].MessageList.Add(new Message(Users[3], Users[0], "Пока Марии от Виктории", DateTime.Now));
-
-
-            //for (int i = 0; i < Users.Count; i++)
-            //{
-            //    Users[i].MessageList = new ObservableCollection<Message>
-            //    {
-            //        new Message(Users[i], AuthorizedUser, AuthorizedUser.Name + ", Привет! Это " + Users[i].Name, DateTime.Now),
-            //        new Message(Users[i], AuthorizedUser, "Еще раз привет!", DateTime.Now),
-            //        new Message(Users[i], AuthorizedUser, "Пока", DateTime.Now)
-            //    };
-            //}
         }
 
-        public static ObservableCollection<User> GetContacts(User me)
+        public ObservableCollection<User> GetContacts(User me)
         {
             ObservableCollection<User> contactList = new ObservableCollection<User>();
             for (int i = 0; i < Users.Count; i++)
             {
-                if (me != null && me.Name != Users[i].Name) //me.Name != null &&
+                if (me != null && me.Name != Users[i].Name)
                 {
                     contactList.Add(Users[i]);
                 }
@@ -104,11 +70,11 @@ namespace Messenger.Models
             return contactList;
         }
 
-        public static ObservableCollection<Message> GetMessageList(User me, User contact)
+        public ObservableCollection<Message> GetMessageList(User me, User contact)
         {
             ObservableCollection<Message> messages = new ObservableCollection<Message>();
-            
-            for(int i = 0; i < Users.Count; i++)
+
+            for (int i = 0; i < Users.Count; i++)
             {
                 if (Users[i].Name == me.Name)
                 {
@@ -127,7 +93,7 @@ namespace Messenger.Models
             return messages;
         }
 
-        public static ObservableCollection<Message> GetGroupMessageList(User me)
+        public ObservableCollection<Message> GetGroupMessageList(User me)
         {
             ObservableCollection<Message> messages = new ObservableCollection<Message>();
 
@@ -148,7 +114,7 @@ namespace Messenger.Models
             return messages;
         }
 
-        public static void SendMessage(User sender, User receiver, string text)
+        public void SendMessage(User sender, User receiver, string text)
         {
             for (int i = 0; i < Users.Count; i++)
             {
@@ -159,13 +125,12 @@ namespace Messenger.Models
             }
         }
 
-        public static void SendGroupMessage(User sender, string text)
+        public void SendGroupMessage(User sender, string text)
         {
             for (int i = 0; i < Users.Count; i++)
             {
                 Users[i].MessageList.Add(new Message(sender, Users[i], text, true));
             }
         }
-
     }
 }
