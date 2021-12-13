@@ -22,7 +22,7 @@ namespace Messenger
 
             container.RegisterDialog<AuthorizationDialog, AuthorizationDialogViewModel>("AuthorizationDialog");
 
-            container.RegisterSingleton<IState, State>();  //State>("state");
+            container.RegisterSingleton<IState, State>();
         }
     }
 }

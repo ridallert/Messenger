@@ -32,16 +32,9 @@ namespace Messenger.ViewModels
             }
         }
 
-        public AuthorizationDialogViewModel(IState state)
+        public AuthorizationDialogViewModel(IDialogService dialogService, IState state)
         {
-        }
-        public AuthorizationDialogViewModel()
-        {
-            int a = 2;
-        }
-
-        public AuthorizationDialogViewModel(IDialogService dialogService, State state)
-        {
+            _serverState = state;
             _dialogService = dialogService;
         }
 
@@ -138,25 +131,8 @@ namespace Messenger.ViewModels
         }
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            _serverState = parameters.GetValue<IState>("state");
+            //_serverState = parameters.GetValue<IState>("state");
         }
 
-        //private string _message;
-        //public string Message
-        //{
-        //    get { return _message; }
-        //    set { SetProperty(ref _message, value); }
-        //}
-        //protected virtual void CloseDialog(string parameter)
-        //{
-        //    ButtonResult result = ButtonResult.None;
-
-        //    if (parameter?.ToLower() == "true")
-        //        result = ButtonResult.OK;
-        //    else if (parameter?.ToLower() == "false")
-        //        result = ButtonResult.Cancel;
-
-        //    RaiseRequestClose(new DialogResult(result));
-        //}
     }
 }

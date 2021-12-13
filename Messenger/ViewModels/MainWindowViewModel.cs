@@ -68,11 +68,11 @@ namespace Messenger.ViewModels
                 DialogParameters parameter = new DialogParameters();
                 parameter.Add("state", _serverState);
 
-                _dialogService.ShowDialog("AuthorizationDialog", parameter, r =>
-                {
-                    if (r.Result == ButtonResult.None)
-                        Title = "Result is None";
-                });
+                _dialogService.ShowDialog("AuthorizationDialog");//, parameter, r =>
+                //{
+                //    if (r.Result == ButtonResult.None)
+                //        Title = "Result is None";
+                //});
             }
             else
             {

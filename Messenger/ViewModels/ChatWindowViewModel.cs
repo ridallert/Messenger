@@ -12,7 +12,7 @@ namespace Messenger.ViewModels
 {
     public class ChatWindowViewModel : BindableBase
     {
-        private State _serverState;
+        private IState _serverState;
         private bool _isGroopChatActive;
         private ObservableCollection<User> _contactList;
         private ObservableCollection<Message> _messageList;
@@ -89,7 +89,7 @@ namespace Messenger.ViewModels
             }
         }
 
-        public ChatWindowViewModel(State state)
+        public ChatWindowViewModel(IState state)
         {
             _serverState = state;
             _serverState.UserAuthorized += OnUserAuthorized;
