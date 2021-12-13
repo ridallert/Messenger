@@ -9,7 +9,7 @@
         MinHeight="250" MinWidth="400"
         Background="WhiteSmoke"
         WindowStartupLocation="CenterScreen">
-    
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -28,6 +28,7 @@
                 Grid.Row="0"
                 Panel.ZIndex="1"
                 Margin="10,10,5,5"
+                Style="{StaticResource ButtonStyle}"
                 Command="{Binding ShowAuthorizationDialogCommand}"/>
 
         <Button Name="showLogDataButton"
@@ -35,6 +36,7 @@
                 Grid.Column="2"
                 Grid.Row="0"
                 Panel.ZIndex="1"
+                Style="{StaticResource ButtonStyle}"
                 Margin="5,10,10,5"/>
 
         <uc:ChatWindow Grid.Column="0"

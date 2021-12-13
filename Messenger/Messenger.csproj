@@ -72,6 +72,10 @@
     <Compile Include="Views\ServerConfig.xaml.cs">
       <DependentUpon>ServerConfig.xaml</DependentUpon>
     </Compile>
+    <Page Include="Resources\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AuthorizationDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
