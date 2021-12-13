@@ -121,11 +121,13 @@ namespace Messenger.ViewModels
         }
         private bool SendMessageCanExecute()
         {
+
             if (_isGroopChatActive == false)
             {
-                return  Me != null &&
+                return Me != null &&
                         SelectedUser != null &&
-                        ContactList.Count != 0 &&
+                        SelectedUser.IsOnline == OnlineStatus.Online && //--------------
+                        ContactList.Count != 0 && 
                         NewMessage != null &&
                         NewMessage != "";
             }

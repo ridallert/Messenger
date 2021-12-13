@@ -52,7 +52,7 @@ namespace Messenger.Models
 
             Users.Add(new User("Евгений", OnlineStatus.Offline));
             Users.Add(new User("Яков", OnlineStatus.Offline));
-            Users.Add(new User("Виктория", OnlineStatus.Offline));
+            Users.Add(new User("Виктория", OnlineStatus.Online));
             Users.Add(new User("Мария", OnlineStatus.Offline));
             Users.Add(new User("Ридаль", OnlineStatus.Offline));
         }
