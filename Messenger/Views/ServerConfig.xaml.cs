@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace Messenger.Views
 {
     /// <summary>
-    /// Логика взаимодействия для Authorization.xaml
+    /// Логика взаимодействия для ServerConfigs.xaml
     /// </summary>
-    public partial class Authorization : Window
+    public partial class ServerConfig : UserControl
     {
-        public Authorization()
+        public ServerConfig()
         {
             InitializeComponent();
         }

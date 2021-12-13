@@ -1,7 +1,9 @@
 ﻿using Messenger.Views;
+using Messenger.ViewModels;
 using Prism.Ioc;
 using Prism.Modularity;
 using System.Windows;
+using Messenger.Models;
 
 namespace Messenger
 {
@@ -15,9 +17,12 @@ namespace Messenger
             return Container.Resolve<MainWindow>();
         }
 
-        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        protected override void RegisterTypes(IContainerRegistry container)
         {
 
+            container.RegisterDialog<AuthorizationDialog, AuthorizationDialogViewModel>("AuthorizationDialog");
+
+            container.RegisterSingleton<IState, State>();
         }
     }
 }
