@@ -1,6 +1,7 @@
 ﻿using Messenger.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,112 +10,88 @@ namespace Messenger.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private readonly IState _serverState;
+
+        private IDialogService _dialogService;
+
         private string _title;
-        //private Server _myServer;
-        private ObservableCollection<User> _users;
-        private User _me;
-        private User _selectedUser;
-        private string _newMessage;
-        private DelegateCommand<object> _addMessageCommand;
 
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
-        //private Server MyServer
-        //{
-        //    get { return _myServer; }
-        //    set { _myServer = value; }
-        //}
-        public ObservableCollection<User> Users
+
+        public string _loginButtonContent;
+        public string LoginButtonContent
         {
-            get { return _users; }
-            set { _users = value; }
-        }
-        public User Me
-        {
-            get { return _me; }
+            get { return _loginButtonContent; }
             set
             {
-                if (value != _me)
-                {
-                    SetProperty<User>(ref _me, value);
-                }
+                SetProperty(ref _loginButtonContent, value);
             }
         }
-        public User SelectedUser
+        public MainWindowViewModel(IDialogService dialogService, IState state)
         {
-            get { return _selectedUser; }
-            set
-            {
-                if (value != _selectedUser)
-                {
-                    SetProperty<User>(ref _selectedUser, value);
-                }
-            }
-        }
-        public string NewMessage
-        {
-            get { return _newMessage; }
-            set
-            {
-                if (value != _newMessage)
-                {
-                    SetProperty<string>(ref _newMessage, value);
-                }
-            }
-        }
-        public DelegateCommand<object> AddMessageCommand
-        {   //public DelegateCommand<object> AddMessageCommand => _addMessageCommand ?? (_addMessageCommand = new DelegateCommand<object>(CommandLoadExecute));
-            get
-            {
-                if (_addMessageCommand != null)
-                {
-                    return _addMessageCommand;
-                }
-                else
-                {
-                    _addMessageCommand = new DelegateCommand<object>(CommandLoadExecute);
-                    return _addMessageCommand;
-                }
-            }
+            _serverState = state;
+
+            Title = "PrismMessenger";
+
+            LoginButtonContent = "Log in";
+
+
+            _dialogService = dialogService;
+
+            _serverState.UserAuthorized += OnUserAuthorized;
+            _serverState.UserLoggedOut += OnUserLoggedOut;
+
         }
 
-        public MainWindowViewModel()
+        private void OnUserAuthorized()
         {
-            Title = "Prism Application";
-            Me = new User("Ridal", OnlineStatus.Online);
-            Users = Server.GetUsersList();
+            LoginButtonContent = "Log out";
+        }
 
-            //Users = new ObservableCollection<User>
+        private void OnUserLoggedOut()
+        {
+            LoginButtonContent = "Log in";
+        }
+
+
+        private DelegateCommand _showAuthDialCommand;
+        public DelegateCommand ShowAuthorizationDialogCommand => _showAuthDialCommand ?? (_showAuthDialCommand = new DelegateCommand(ShowAuthDialogExecute));
+
+        private void ShowAuthDialogExecute()
+        {
+            if (_serverState.AuthorizedUser == null)
+            {
+                DialogParameters parameter = new DialogParameters();
+                parameter.Add("state", _serverState);
+
+                _dialogService.ShowDialog("AuthorizationDialog");//, parameter, r =>
+                //{
+                //    if (r.Result == ButtonResult.None)
+                //        Title = "Result is None";
+                //});
+            }
+            else
+            {
+                _serverState.AuthorizedUser = null;
+            }
+
+            //string message = "This is a message that should be shown in the dialog.";
+            //_dialogService.ShowDialog("AuthorizationDialog", new DialogParameters($"message={message}"),
+            //r =>
             //{
-            //    new User ("User A", OnlineStatus.Online),
-            //    new User ("User B", OnlineStatus.Online),
-            //    new User ("User C", OnlineStatus.Online),
-            //    new User ("User D", OnlineStatus.Online),
-            //};
-
-            SelectedUser = Users.First();
-
-            for (int i = 0; i < Users.Count; i++)
-            {
-                Users[i].MessageList = new ObservableCollection<Message>
-                {
-                    new Message(Users[i], Me, Me.Name + "Привет! Это " + Users[i].Name, DateTime.Now),
-                    new Message(Users[i], Me, "Еще раз привет!", DateTime.Now),
-                    new Message(Users[i], Me, "Пока", DateTime.Now)
-                };
-            }
-        }
-
-        private void CommandLoadExecute(object obj)
-        {
-            string mes = obj as string;
-            if (mes != null)
-            {
-                SelectedUser.MessageList.Add(new Message(Me, SelectedUser, mes, DateTime.Now));
-            }
+            //    if (r.Result == ButtonResult.None)
+            //        Title = "Result is None";
+            //    else if (r.Result == ButtonResult.OK)
+            //        Title = "Result is OK";
+            //    else if (r.Result == ButtonResult.Cancel)
+            //        Title = "Result is Cancel";
+            //    else
+            //        Title = "I Don't know what you did!?";
+            //});
         }
     }
 }

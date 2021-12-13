@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Messenger.Views
 {
     /// <summary>
-    /// Логика взаимодействия для ServerConfigs.xaml
+    /// Логика взаимодействия для NotificationDialog.xaml
     /// </summary>
-    public partial class ServerConfigs : Window
+    public partial class AuthorizationDialog : UserControl
     {
-        public ServerConfigs()
+        public AuthorizationDialog()
         {
             InitializeComponent();
         }

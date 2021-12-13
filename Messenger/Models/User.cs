@@ -26,7 +26,7 @@ namespace Messenger.Models
             {
                 if (value != _name)
                 {
-                    SetProperty<string>(ref _name, value);
+                    SetProperty(ref _name, value);
                 }
             }
         }
@@ -37,14 +37,17 @@ namespace Messenger.Models
             {
                 if (value != _isOnline)
                 {
-                    SetProperty<OnlineStatus>(ref _isOnline, value);
+                    SetProperty(ref _isOnline, value);
                 }
             }
         }
         public ObservableCollection<Message> MessageList
         {
             get { return _messageList; }
-            set { _messageList = value; }
+            set
+            {
+                SetProperty(ref _messageList, value);
+            }
         }
 
         public User(string name, OnlineStatus isOnline)
