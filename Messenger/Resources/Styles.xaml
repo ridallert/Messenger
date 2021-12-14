@@ -2,24 +2,24 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Brushes.xaml" />
+        <!--<ResourceDictionary Source="Brushes.xaml" />-->
     </ResourceDictionary.MergedDictionaries>
 
     
     <!--ГЛАВНОЕ ОКНО-->
     <Style x:Key="WindowStyle" TargetType="Window">
-        <Setter Property="Background" Value="#c8c8dc" />
+        <Setter Property="Background" Value="WhiteSmoke" />
     </Style>
 
     <!--ОКНО АВТОРИЗАЦИИ И НАСТРОЕК СЕРВЕРА-->
-    <Style x:Key="DialogStyle" TargetType="UserControl">
+    <Style x:Key="DialogStyle" TargetType="UserControl" >
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="UserControl">
-                    <Border Background="LightSlateGray"
+                    <Border Background="WhiteSmoke"
                             BorderThickness="1.5"
-                            BorderBrush="White"
-                            CornerRadius="15,15,15,15">
+                            BorderBrush="White"> 
+                        <!-- CornerRadius="15,15,15,15"-->
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
@@ -33,7 +33,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="UserControl">
-                    <Border Background="LightSlateGray" >
+                    <Border Background="WhiteSmoke" >
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
@@ -42,12 +42,65 @@
         </Setter>
     </Style>
     
-    <Style x:Key="TextBlockStyle" TargetType="TextBlock">
-        <Setter Property="Background" Value="White" />
-        <Setter Property="Foreground" Value="Gray" />
+
+    <!--КНОПКИ-->
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="#506482"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Candara" />
+        <Setter Property="BorderBrush" Value="White"/>
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="2" />
+        <!--<Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border Background="{TemplateBinding Background}" BorderBrush="White" BorderThickness="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>-->
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Background" Value="#64646e" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#6482aa" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#326482"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
-    
+    <Style TargetType="ToggleButton">
+        <Setter Property="Background" Value="#506482"/>
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Candara" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="2"/>
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="Red"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+
+
+    <!--<Style x:Key="TextBlockStyle" TargetType="TextBlock">
+        -->
+    <!--<Setter Property="Background" Value="White" />-->
+    <!--
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Candara" />
+        <Setter Property="Foreground" Value="Black" />
+    </Style>-->
+
+
     <!--<ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
         <Border BorderBrush="White"
                 BorderThickness="1.5"
@@ -60,8 +113,8 @@
         </Border>
         
     </ControlTemplate>-->
-    
-    <ControlTemplate x:Key="ContactsListBoxTemplate" TargetType="ListBox">
+
+    <!--<ControlTemplate x:Key="ContactsListBoxTemplate" TargetType="ListBox">
         <Border BorderBrush="White"
                 BorderThickness="1.5"
                 CornerRadius="15,15,15,15"
@@ -70,9 +123,9 @@
             <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
         </Border>
-    </ControlTemplate>
+    </ControlTemplate>-->
 
-    <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+    <!--<Style TargetType="ListBoxItem">
         <Setter Property="Background" Value="{StaticResource TransparentBrush}" />
         <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
         <Setter Property="FontSize" Value="14.667" />
@@ -84,192 +137,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="1" />
         
-    </Style>
-
-
-
-
-
-    <!--КНОПКИ-->
-    <Style x:Key="ButtonStyle" TargetType="Button">
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="Candara" />
-        <Setter Property="Padding" Value="10,0,10,2" />
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Grid>
-                        <VisualStateManager.VisualStateGroups>
-
-                            <VisualStateGroup x:Name="CommonStates">
-
-                                <VisualState x:Name="Normal" />
-
-                                <VisualState x:Name="MouseOver">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="Fill">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ButtonHoverBackgroundBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="Stroke">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ButtonHoverBorderBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentControl">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource LightForegroundBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-
-                                <VisualState x:Name="Pressed">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="Fill">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ButtonPressedBackgroundBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Bd" Storyboard.TargetProperty="Stroke">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ButtonPressedBorderBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Foreground" Storyboard.TargetName="ContentControl">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource LightForegroundBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="DisabledVisualElement">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Visible</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-
-                            </VisualStateGroup>
-
-                            <!--<VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="FocusedVisualElement">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Visible</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unfocused" />
-                            </VisualStateGroup>-->
-
-                        </VisualStateManager.VisualStateGroups>
-
-                        <Rectangle x:Name="Bd" Fill="#18303a" Stroke="WhiteSmoke" StrokeThickness="1.5" />
-                        <ContentControl x:Name="ContentControl" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                            <ContentPresenter x:Name="contentPresenter" />
-                        </ContentControl>
-                        <Rectangle x:Name="FocusedVisualElement" Stroke="{StaticResource ButtonPressedBorderBrush}" Visibility="Collapsed" StrokeThickness="2" />
-                        <Rectangle x:Name="DisabledVisualElement" Fill="{StaticResource DisabledVisualElement}" Visibility="Collapsed" />
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-
-
-
-    <Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="Candara" />
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-        <Setter Property="BorderBrush" Value="White" />
-        <Setter Property="Background" Value="{StaticResource ComboBoxToggleButtonBackgroundBrush}"/>
-
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="2" />
-        
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
-                    <Grid>
-                        <VisualStateManager.VisualStateGroups>
-                            
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal" />
-                                <VisualState x:Name="MouseOver">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Fill" Storyboard.TargetName="Arrow">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource GlyphHoverBackgroundBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Fill" Storyboard.TargetName="Bd">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ComboBoxToggleButtonHoverBackgroundBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Stroke" Storyboard.TargetName="Bd">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource ComboBoxToggleButtonHoverBorderBrush}"/>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Pressed">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Fill" Storyboard.TargetName="Arrow">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource GlyphPressedBackgroundBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Disabled">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Fill" Storyboard.TargetName="Arrow">
-                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource GlyphDisabledBackgroundBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                            </VisualStateGroup>
-                            
-                            <VisualStateGroup x:Name="CheckStates">
-                                <VisualState x:Name="Checked">
-                                    <Storyboard>
-                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ArrowSelected">
-                                            <DiscreteObjectKeyFrame KeyTime="0">
-                                                <DiscreteObjectKeyFrame.Value>
-                                                    <Visibility>Visible</Visibility>
-                                                </DiscreteObjectKeyFrame.Value>
-                                            </DiscreteObjectKeyFrame>
-                                        </ObjectAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </VisualState>
-                                <VisualState x:Name="Unchecked" />
-                                <VisualState x:Name="Indeterminate" />
-                            </VisualStateGroup>
-                            <VisualStateGroup x:Name="FocusStates">
-                                <VisualState x:Name="Focused" />
-                                <VisualState x:Name="Unfocused" />
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                        
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="30" />
-                        </Grid.ColumnDefinitions>
-                        <Rectangle x:Name="Bd" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{TemplateBinding BorderThickness}"  Grid.ColumnSpan="2" />
-                        
-                        <Grid Grid.Column="1">
-                            <Rectangle Width="1" Fill="{StaticResource ComboBoxToggleButtonDropDownSeparatorBackgroundBrush}" HorizontalAlignment="Left" Margin="-1,5,0,5" />
-                            <Path x:Name="Arrow" Width="10" Height="6" Fill="{StaticResource GlyphBackgroundBrush}" Stretch="Fill" />
-                            <Path x:Name="ArrowSelected" Width="10" Height="6" Visibility="Collapsed" Fill="{StaticResource GlyphPressedBackgroundBrush}" Stretch="Fill" />
-                        </Grid>
-                    </Grid>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-
-
-
-
+    </Style>-->
 
 
 

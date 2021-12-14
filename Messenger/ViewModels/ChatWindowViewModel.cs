@@ -107,9 +107,9 @@ namespace Messenger.ViewModels
         }
 
         private DelegateCommand _newLineCommand;
-        public DelegateCommand NewLineCommand => _newLineCommand ?? (_newLineCommand = new DelegateCommand(NewLineeExecute, NewLineCanExecute));
+        public DelegateCommand NewLineCommand => _newLineCommand ?? (_newLineCommand = new DelegateCommand(NewLineExecute, NewLineCanExecute));
 
-        private void NewLineeExecute()
+        private void NewLineExecute()
         {
             int temp = CaretPosition;
             NewMessage = NewMessage.Insert(CaretPosition, "\n");
