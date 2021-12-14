@@ -7,8 +7,9 @@
         Title="{Binding Title}"
         Height="450" Width="880"
         MinHeight="250" MinWidth="400"
-        Background="WhiteSmoke"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource WindowStyle}">
+             <!--Background="WhiteSmoke"-->
 
     <Grid>
         <Grid.ColumnDefinitions>

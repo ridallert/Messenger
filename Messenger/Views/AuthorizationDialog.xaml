@@ -3,8 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
-             Height="130" Width="300" Background="WhiteSmoke" BorderBrush="DarkGray" BorderThickness="1">
-    
+             Style="{StaticResource DialogStyle}"
+             Height="130" Width="300">      
+
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterOwner" />

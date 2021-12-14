@@ -13,7 +13,7 @@ namespace Messenger.ViewModels
     public class ChatWindowViewModel : BindableBase
     {
         private IState _serverState;
-        private bool _isGroopChatActive;
+        private bool? _isGroopChatActive;
         private ObservableCollection<User> _contactList;
         private ObservableCollection<Message> _messageList;
         private User _me;
@@ -29,7 +29,7 @@ namespace Messenger.ViewModels
                 SetProperty(ref _caretPosition, value);
             }
         }
-        public bool IsGropChatActive
+        public bool? IsGropChatActive
         {
             get { return _isGroopChatActive; }
             set
@@ -111,7 +111,9 @@ namespace Messenger.ViewModels
 
         private void NewLineeExecute()
         {
-            NewMessage += "\n";
+            int temp = CaretPosition;
+            NewMessage = NewMessage.Insert(CaretPosition, "\n");
+            CaretPosition = temp+1;
         }
 
         private bool NewLineCanExecute()
@@ -132,7 +134,7 @@ namespace Messenger.ViewModels
                     MessageList = _serverState.GetMessageList(Me, SelectedUser);
 
                 }
-                if (_isGroopChatActive)
+                if (_isGroopChatActive == true)
                 {
                     _serverState.SendGroupMessage(Me, NewMessage);
                     MessageList = _serverState.GetGroupMessageList(Me);
