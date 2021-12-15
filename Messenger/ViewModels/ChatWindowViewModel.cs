@@ -111,9 +111,12 @@ namespace Messenger.ViewModels
 
         private void NewLineExecute()
         {
-            int temp = CaretPosition;
-            NewMessage = NewMessage.Insert(CaretPosition, "\n");
-            CaretPosition = temp+1;
+            if (NewMessage != null)
+            {
+                int temp = CaretPosition;
+                NewMessage = NewMessage.Insert(CaretPosition, "\n");
+                CaretPosition = temp + 1;
+            }
         }
 
         private bool NewLineCanExecute()
