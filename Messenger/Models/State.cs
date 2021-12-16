@@ -18,10 +18,7 @@ namespace Messenger.Models
             set
             {
                 _users = value;
-                if (UserListChanged != null)
-                {
-                    UserListChanged();
-                }
+                UserListChanged?.Invoke();
             }
         }
         public User AuthorizedUser
@@ -74,21 +71,37 @@ namespace Messenger.Models
         {
             ObservableCollection<Message> messages = new ObservableCollection<Message>();
 
-            for (int i = 0; i < Users.Count; i++)
+            for (int i = 0; i < me.MessageList.Count; i++)
             {
-                if (Users[i].Name == me.Name)
+                bool isF = ((me.MessageList[i].Sender.Name == contact.Name && me.MessageList[i].Receiver.Name == me.Name) ||
+                            (me.MessageList[i].Sender.Name == me.Name && me.MessageList[i].Receiver.Name == contact.Name)) &&
+                            me.MessageList[i].IsGroopChatMessage == false;
+
+                if (isF)
                 {
-                    for (int j = 0; j < Users[i].MessageList.Count; j++)
-                    {
-                        if (((Users[i].MessageList[j].Sender.Name == contact.Name && Users[i].MessageList[j].Receiver.Name == me.Name) ||
-                            (Users[i].MessageList[j].Sender.Name == me.Name && Users[i].MessageList[j].Receiver.Name == contact.Name)) &&
-                            Users[i].MessageList[j].IsGroopChatMessage == false)
-                        {
-                            messages.Add(Users[i].MessageList[j]);
-                        }
-                    }
+                    messages.Add(me.MessageList[i]);
                 }
             }
+
+            //for (int i = 0; i < Users.Count; i++)
+            //{
+            //    if (Users[i].Name == me.Name)
+            //    {
+            //        for (int j = 0; j < Users[i].MessageList.Count; j++)
+            //        {
+            //            bool isF = ((Users[i].MessageList[j].Sender.Name == contact.Name &&
+            //                        Users[i].MessageList[j].Receiver.Name == me.Name) ||
+            //                        (Users[i].MessageList[j].Sender.Name == me.Name &&
+            //                        Users[i].MessageList[j].Receiver.Name == contact.Name)) &&
+            //                        Users[i].MessageList[j].IsGroopChatMessage == false;
+
+            //            if (isF)
+            //            {
+            //                messages.Add(Users[i].MessageList[j]);
+            //            }
+            //        }
+            //    }
+            //}
 
             return messages;
         }
@@ -97,19 +110,27 @@ namespace Messenger.Models
         {
             ObservableCollection<Message> messages = new ObservableCollection<Message>();
 
-            for (int i = 0; i < Users.Count; i++)
+            for (int i = 0; i < me.MessageList.Count; i++)
             {
-                if (Users[i].Name == me.Name)
+                if (me.MessageList[i].IsGroopChatMessage == true)
                 {
-                    for (int j = 0; j < Users[i].MessageList.Count; j++)
-                    {
-                        if (Users[i].MessageList[j].IsGroopChatMessage == true)
-                        {
-                            messages.Add(Users[i].MessageList[j]);
-                        }
-                    }
+                    messages.Add(me.MessageList[i]);
                 }
             }
+
+            //for (int i = 0; i < Users.Count; i++)
+            //{
+            //    if (Users[i].Name == me.Name)
+            //    {
+            //        for (int j = 0; j < Users[i].MessageList.Count; j++)
+            //        {
+            //            if (Users[i].MessageList[j].IsGroopChatMessage == true)
+            //            {
+            //                messages.Add(Users[i].MessageList[j]);
+            //            }
+            //        }
+            //    }
+            //}
 
             return messages;
         }

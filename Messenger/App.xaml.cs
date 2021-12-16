@@ -21,6 +21,8 @@ namespace Messenger
         {
 
             container.RegisterDialog<AuthorizationDialog, AuthorizationDialogViewModel>("AuthorizationDialog");
+            container.RegisterDialog<ServerConfig, ServerConfigViewModel>("ServerConfigDialog");
+            
 
             container.RegisterSingleton<IState, State>();
         }

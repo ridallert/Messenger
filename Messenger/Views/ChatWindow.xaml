@@ -51,6 +51,20 @@
 
         <DockPanel LastChildFill="True" Grid.Column="1">
 
+            <!--<TextBlock Name="meLabel"
+                   Height="30"
+                   Margin="5,10,5,5"
+                  
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left"
+                   DockPanel.Dock="Top">
+                
+                <Run Text="{Binding StringFormat = You are logged in as {0}, Path=Me.Name}" Foreground="Aqua"></Run>
+                <Run Text="{Binding Path=Me.Name}"></Run>
+                --><!--<Bold></Bold>--><!--
+                
+            </TextBlock>-->
+
             <Label Name="meLabel"
                    Height="30"
                    Margin="5,10,5,5"
@@ -69,11 +83,13 @@
 
                 <controls:CustomTextBox x:Name="messageTextBox"
                                         MinHeight="30"
+                                        MaxHeight="100"
                                         Margin="5,5,5,10"
                                         TextWrapping="Wrap"
                                         Grid.Column="0"
                                         Text="{Binding Path=NewMessage, UpdateSourceTrigger=PropertyChanged}"
-                                        CaretPosition="{Binding CaretPosition}"/>
+                                        CaretPosition="{Binding CaretPosition}"
+                                        SpellCheck.IsEnabled="True" Language="ru-ru"/>
 
                 <DockPanel Grid.Column="1" LastChildFill="False">
                     <Button Name="sendButton"

@@ -153,7 +153,6 @@ namespace Messenger.ViewModels
             {
                 return Me != null &&
                         SelectedUser != null &&
-                        SelectedUser.IsOnline == OnlineStatus.Online && //--------------
                         ContactList.Count != 0 && 
                         NewMessage != null &&
                         NewMessage != "";
@@ -219,7 +218,6 @@ namespace Messenger.ViewModels
         //        MessageList = State.GetMessageList(Me, SelectedUser);
         //    }
         //}
-
 
     }
 }

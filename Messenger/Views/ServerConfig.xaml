@@ -34,21 +34,21 @@
         <Label Content="Interface"
                Grid.Column="0"
                Grid.Row="0"
-               Margin="5"
+               Margin="5,0,0,0"
                HorizontalContentAlignment="Left"
                VerticalContentAlignment="Center"/>
 
         <Label Content="IP Address"
                Grid.Column="0"
                Grid.Row="1"
-               Margin="5"
+               Margin="5,0,0,0"
                HorizontalContentAlignment="Left"
                VerticalContentAlignment="Center"/>
 
         <Label Content="Port"
                Grid.Column="0"
                Grid.Row="2"
-               Margin="5"
+               Margin="5,0,0,0"
                HorizontalContentAlignment="Left"
                VerticalContentAlignment="Center"/>
 

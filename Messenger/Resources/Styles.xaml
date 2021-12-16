@@ -1,11 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Messenger.Resources">
 
     <ResourceDictionary.MergedDictionaries>
         <!--<ResourceDictionary Source="Brushes.xaml" />-->
     </ResourceDictionary.MergedDictionaries>
 
-    
+
     <!--ГЛАВНОЕ ОКНО-->
     <Style x:Key="WindowStyle" TargetType="Window">
         <Setter Property="Background" Value="WhiteSmoke" />
@@ -18,8 +19,8 @@
                 <ControlTemplate TargetType="UserControl">
                     <Border Background="WhiteSmoke"
                             BorderThickness="1.5"
-                            BorderBrush="White"> 
-                        <!-- CornerRadius="15,15,15,15"-->
+                            BorderBrush="White">
+
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
@@ -41,7 +42,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 
     <!--КНОПКИ-->
     <Style TargetType="Button">
@@ -61,7 +62,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>-->
-        <Style.Triggers>
+        <!--<Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
                 <Setter Property="Background" Value="#64646e" />
             </Trigger>
@@ -70,8 +71,8 @@
             </Trigger>
             <Trigger Property="IsPressed" Value="True">
                 <Setter Property="Background" Value="#326482"/>
-            </Trigger>
-        </Style.Triggers>
+            </Trigger>-->
+        <!--</Style.Triggers>-->
     </Style>
 
     <Style TargetType="ToggleButton">
@@ -83,7 +84,8 @@
         <Setter Property="Padding" Value="2"/>
         <Style.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="Red"/>
+                <Setter Property="Foreground" Value="#FF143342"/>
+                <Setter Property="FontWeight" Value="Bold"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -91,15 +93,24 @@
 
 
 
-    <!--<Style x:Key="TextBlockStyle" TargetType="TextBlock">
-        -->
-    <!--<Setter Property="Background" Value="White" />-->
-    <!--
+    <Style TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="Candara" />
-        <Setter Property="Foreground" Value="Black" />
-    </Style>-->
+    </Style>
+    
+    <Style TargetType="TextBox">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Candara" />
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
 
+    <Style TargetType="controls:CustomTextBox">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontFamily" Value="Candara" />
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
 
     <!--<ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
         <Border BorderBrush="White"
@@ -173,7 +184,9 @@
                 <ControlTemplate TargetType="ToggleButton">
                     <Border BorderThickness="1.5" BorderBrush="White" 
                             Background="{TemplateBinding Background}" >
-                        --><!--CornerRadius="15,15,15,15"--><!--
+                        -->
+    <!--CornerRadius="15,15,15,15"-->
+    <!--
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
@@ -194,7 +207,7 @@
             <Setter Property="WindowStyle" Value="None" />
         </Style>
     </prism:Dialog.WindowStyle>-->
-    
-    
-    
+
+
+
 </ResourceDictionary>

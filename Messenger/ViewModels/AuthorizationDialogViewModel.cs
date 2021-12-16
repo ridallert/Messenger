@@ -13,8 +13,7 @@ namespace Messenger.ViewModels
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
         private IState _serverState;
-
-        private string _title = "Authorization";
+        private string _title;
         public string Title
         {
             get { return _title; }
@@ -34,6 +33,7 @@ namespace Messenger.ViewModels
 
         public AuthorizationDialogViewModel(IDialogService dialogService, IState state)
         {
+            _title = "Authorization";
             _serverState = state;
             _dialogService = dialogService;
         }
@@ -80,8 +80,6 @@ namespace Messenger.ViewModels
                 return false;
             }
         }
-
-
 
         private DelegateCommand _closeDialogCommand;
         public DelegateCommand CloseDialogCommand
@@ -131,7 +129,7 @@ namespace Messenger.ViewModels
         }
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            //_serverState = parameters.GetValue<IState>("state");
+
         }
 
     }
