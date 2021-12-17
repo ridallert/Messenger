@@ -13,6 +13,8 @@ namespace Messenger.ViewModels
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
         private IState _serverState;
+        private IDialogService _dialogService;
+
         private string _title;
         public string Title
         {
@@ -43,30 +45,27 @@ namespace Messenger.ViewModels
 
         private void AuthorizeUserExecute(object obj)
         {
-            //if (State.AuthorizedUser == null)
-            //{
-                bool isUserAlreadyExists = false;
-                User authorizedUser = new User(Login, OnlineStatus.Online);
+            bool isUserAlreadyExists = false;
+            User authorizedUser = new User(Login, OnlineStatus.Online);
 
-                for (int i = 0; i < _serverState.Users.Count; i++)
+            for (int i = 0; i < _serverState.Users.Count; i++)
+            {
+                if (_serverState.Users[i].Name == Login)
                 {
-                    if (_serverState.Users[i].Name == Login)
-                    {
-                        isUserAlreadyExists = true;
-                        _serverState.Users[i].IsOnline = OnlineStatus.Online;
-                        authorizedUser = _serverState.Users[i];
-                    }
+                    isUserAlreadyExists = true;
+                    _serverState.Users[i].IsOnline = OnlineStatus.Online;
+                    authorizedUser = _serverState.Users[i];
                 }
+            }
 
-                if (isUserAlreadyExists == false)
-                {
-                    _serverState.Users.Add(authorizedUser);
-                }
+            if (isUserAlreadyExists == false)
+            {
+                _serverState.Users.Add(authorizedUser);
+            }
 
-                _serverState.AuthorizedUser = authorizedUser;
+            _serverState.AuthorizedUser = authorizedUser;
 
-                CloseDialogCommand.Execute();
-            //}
+            CloseDialogCommand.Execute();
         }
 
         private bool AuthorizeUserCanExecute(object obj)
@@ -117,11 +116,10 @@ namespace Messenger.ViewModels
 
         }
      
-        private IDialogService _dialogService;
+
 
         private DelegateCommand _showServerConfigCommand;
         public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));
-
 
         private void ShowServerConfigExecute()
         {
@@ -131,6 +129,5 @@ namespace Messenger.ViewModels
         {
 
         }
-
     }
 }

@@ -1,10 +1,13 @@
 ﻿using Messenger.Models;
+using Messenger.Network;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,16 +16,46 @@ namespace Messenger.ViewModels
     class ServerConfigViewModel : BindableBase, IDialogAware
     {
         private State _serverState;
-        private string _title = "ServerConfig";
-        public string Title
+
+        private ObservableCollection<Protocol> _interfaceItems;
+        private Protocol _interfaceSelectedItem;
+        private IPAddress _address;
+        private int? _port;
+
+        public ObservableCollection<Protocol> InterfaceItems
         {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
+            get { return _interfaceItems; }
+            set { SetProperty(ref _interfaceItems, value); }
         }
+        public Protocol InterfaceSelectedItem
+        {
+            get { return _interfaceSelectedItem; }
+            set { SetProperty(ref _interfaceSelectedItem, value); }
+        }
+        public IPAddress Address
+        {
+            get { return _address; }
+            set { SetProperty(ref _address, value); }
+        }
+        public int? Port
+        {
+            get { return _port; }
+            set { SetProperty(ref _port, value); }
+        }
+
+
 
         public ServerConfigViewModel(State state)
         {
             _serverState = state;
+
+            InterfaceItems = new ObservableCollection<Protocol>();
+            InterfaceItems.Add(Protocol.WS);
+            InterfaceItems.Add(Protocol.TCP);
+
+            InterfaceSelectedItem = Protocol.WS;
+            Address = IPAddress.Loopback;
+            Port = 65000;
         }
         public event Action<IDialogResult> RequestClose;
 
@@ -72,5 +105,12 @@ namespace Messenger.ViewModels
 
         //    RaiseRequestClose(new DialogResult(result));
         //}
+
+        private string _title = "ServerConfig";
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
     }
 }
