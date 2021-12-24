@@ -7,13 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Messenger.Models;
+using Messenger.Network;
+using Messenger.Common;
 
 namespace Messenger.ViewModels
 {
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
         private IState _serverState;
+        private WebSocketClient _webSocketClient; //--------------
         private IDialogService _dialogService;
+
 
         private string _title;
         public string Title
@@ -33,11 +37,19 @@ namespace Messenger.ViewModels
             }
         }
 
-        public AuthorizationDialogViewModel(IDialogService dialogService, IState state)
+        public AuthorizationDialogViewModel(IDialogService dialogService, IState state, WebSocketClient webSocketClient)
         {
             _title = "Authorization";
             _serverState = state;
             _dialogService = dialogService;
+
+            _webSocketClient = webSocketClient; //---------------
+            _webSocketClient.Connected += OnClientConnected;
+        }
+
+        void OnClientConnected()
+        {
+            AuthorizeUserCommand.RaiseCanExecuteChanged();
         }
 
         private DelegateCommand<object> _authorizeUserCommand;
@@ -70,7 +82,7 @@ namespace Messenger.ViewModels
 
         private bool AuthorizeUserCanExecute(object obj)
         {
-            if (Login != null && Login != "")
+            if (Login != null && Login != "" && _webSocketClient.IsConnected==true) //----------
             {
                 return true;
             }
@@ -79,6 +91,31 @@ namespace Messenger.ViewModels
                 return false;
             }
         }
+
+
+
+        //private DelegateCommand<object> _updateCanAuthorizeCommand;
+        //public DelegateCommand<object> UpdateCanAuthorizeCommand => _updateCanAuthorizeCommand ?? (_updateCanAuthorizeCommand = new DelegateCommand<object>(UpdateCanAuthorizeExecute, UpdateCanAuthorizeCanExecute));
+
+        //private void UpdateCanAuthorizeExecute(object obj)
+        //{
+        //    AuthorizeUserCommand.RaiseCanExecuteChanged();
+        //}
+
+        //private bool UpdateCanAuthorizeCanExecute(object obj)
+        //{
+        //    return true;
+        //}
+
+
+
+
+
+
+
+
+
+
 
         private DelegateCommand _closeDialogCommand;
         public DelegateCommand CloseDialogCommand

@@ -4,6 +4,7 @@ using Prism.Ioc;
 using Prism.Modularity;
 using System.Windows;
 using Messenger.Models;
+using Messenger.Network;
 
 namespace Messenger
 {
@@ -25,6 +26,7 @@ namespace Messenger
             
 
             container.RegisterSingleton<IState, State>();
+            container.RegisterSingleton<WebSocketClient>();
         }
     }
 }

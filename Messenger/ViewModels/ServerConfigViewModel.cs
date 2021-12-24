@@ -16,11 +16,12 @@ namespace Messenger.ViewModels
     class ServerConfigViewModel : BindableBase, IDialogAware
     {
         private State _serverState;
+        private WebSocketClient _webSocketClient; //-----------
 
         private ObservableCollection<Protocol> _interfaceItems;
         private Protocol _interfaceSelectedItem;
-        private IPAddress _address;
-        private int? _port;
+        private string _address;
+        private int _port;
 
         public ObservableCollection<Protocol> InterfaceItems
         {
@@ -32,31 +33,55 @@ namespace Messenger.ViewModels
             get { return _interfaceSelectedItem; }
             set { SetProperty(ref _interfaceSelectedItem, value); }
         }
-        public IPAddress Address
+        public string Address
         {
             get { return _address; }
             set { SetProperty(ref _address, value); }
         }
-        public int? Port
+        public int Port
         {
             get { return _port; }
             set { SetProperty(ref _port, value); }
         }
 
 
-
-        public ServerConfigViewModel(State state)
+        public ServerConfigViewModel(State state, WebSocketClient webSocketClient)
         {
             _serverState = state;
-
+            _webSocketClient = webSocketClient; //------
             InterfaceItems = new ObservableCollection<Protocol>();
             InterfaceItems.Add(Protocol.WS);
-            InterfaceItems.Add(Protocol.TCP);
+            //InterfaceItems.Add(Protocol.TCP);
 
             InterfaceSelectedItem = Protocol.WS;
-            Address = IPAddress.Loopback;
-            Port = 65000;
+            Address = IPAddress.Loopback.ToString();
+            Port = 7890;
         }
+
+
+        private DelegateCommand _connectCommand;
+        public DelegateCommand ConnectCommand => _connectCommand ?? (_connectCommand = new DelegateCommand(ConnectExecute, ConnectCanExecute));
+
+        private void ConnectExecute()
+        {
+            _webSocketClient.SetParams(Address, Port);
+            _webSocketClient.Connect();
+            CloseDialogCommand.Execute();
+        }
+        private bool ConnectCanExecute()
+        {
+            return _webSocketClient != null;
+        }
+
+
+
+
+
+
+
+
+        //CLOSING WINDOW
+
         public event Action<IDialogResult> RequestClose;
 
         public virtual bool CanCloseDialog()
@@ -77,34 +102,12 @@ namespace Messenger.ViewModels
             RequestClose?.Invoke(dialogResult);
         }
 
-        public void OnDialogClosed()
-        {
-            
-        }
 
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-            //Message = parameters.GetValue<string>("message");
-        }
 
-        //private string _message;
-        //public string Message
-        //{
-        //    get { return _message; }
-        //    set { SetProperty(ref _message, value); }
-        //}
 
-        //protected virtual void CloseDialog(string parameter)
-        //{
-        //    ButtonResult result = ButtonResult.None;
 
-        //    if (parameter?.ToLower() == "true")
-        //        result = ButtonResult.OK;
-        //    else if (parameter?.ToLower() == "false")
-        //        result = ButtonResult.Cancel;
 
-        //    RaiseRequestClose(new DialogResult(result));
-        //}
+
 
         private string _title = "ServerConfig";
         public string Title
@@ -112,5 +115,14 @@ namespace Messenger.ViewModels
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
+        public void OnDialogClosed()
+        {
+            
+        }
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+
+        }
+       
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Messenger.Common;
+using System;
 using System.Collections.ObjectModel;
 
 namespace Messenger.Models

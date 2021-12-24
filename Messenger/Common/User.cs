@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Messenger.Network;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,13 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Messenger.Models
+namespace Messenger.Common
 {
-    public enum OnlineStatus
-    {
-        Online,
-        Offline
-    }
     public class User : BindableBase
     {
         private string _name;

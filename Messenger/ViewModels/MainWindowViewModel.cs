@@ -1,4 +1,5 @@
 ﻿using Messenger.Models;
+using Messenger.Network;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -10,6 +11,7 @@ namespace Messenger.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        private WebSocketClient _webSocketClient;
         private readonly IState _serverState;
         private IDialogService _dialogService;
         private string _title;
@@ -29,8 +31,9 @@ namespace Messenger.ViewModels
                 SetProperty(ref _loginButtonContent, value);
             }
         }
-        public MainWindowViewModel(IDialogService dialogService, IState state)
+        public MainWindowViewModel(IDialogService dialogService, IState state, WebSocketClient webSocketClient)
         {
+            _webSocketClient = webSocketClient;
             _serverState = state;
             _dialogService = dialogService;
 
@@ -49,6 +52,7 @@ namespace Messenger.ViewModels
         private void OnUserLoggedOut()
         {
             LoginButtonContent = "Log in";
+            _webSocketClient.Disconnect();
         }
 
 

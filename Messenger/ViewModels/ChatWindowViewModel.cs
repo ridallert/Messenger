@@ -1,4 +1,6 @@
-﻿using Messenger.Models;
+﻿using Messenger.Common;
+using Messenger.Models;
+using Messenger.Network;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -12,7 +14,8 @@ namespace Messenger.ViewModels
 {
     public class ChatWindowViewModel : BindableBase
     {
-        private IState _serverState;
+        private WebSocketClient _webSocketClient;
+        private IState _state;
         private bool? _isGroopChatActive;
         private ObservableCollection<User> _contactList;
         private ObservableCollection<Message> _messageList;
@@ -79,7 +82,7 @@ namespace Messenger.ViewModels
 
                     if (Me != null && value != null)
                     {
-                        MessageList = _serverState.GetMessageList(Me, value);
+                        MessageList = _state.GetMessageList(Me, value);
                         IsGropChatActive = false;
                     }
                 }
@@ -98,12 +101,13 @@ namespace Messenger.ViewModels
             }
         }
 
-        public ChatWindowViewModel(IState state)
+        public ChatWindowViewModel(IState state, WebSocketClient webSocketClient)
         {
-            _serverState = state;
-            _serverState.UserAuthorized += OnUserAuthorized;
-            _serverState.UserListChanged += OnUserListChanged;
-            _serverState.UserLoggedOut += OnUserLoggedOut;
+            _webSocketClient = webSocketClient;
+            _state = state;
+            _state.UserAuthorized += OnUserAuthorized;
+            _state.UserListChanged += OnUserListChanged;
+            _state.UserLoggedOut += OnUserLoggedOut;
         }
 
         private DelegateCommand _newLineCommand;
@@ -133,14 +137,15 @@ namespace Messenger.ViewModels
             {
                 if (SelectedUser != null)
                 {
-                    _serverState.SendMessage(Me, SelectedUser, NewMessage);
-                    MessageList = _serverState.GetMessageList(Me, SelectedUser);
-
+                    _state.SendMessage(Me, SelectedUser, NewMessage);
+                    MessageList = _state.GetMessageList(Me, SelectedUser);
+                    _webSocketClient.SendPrivateMessage(Me, SelectedUser, NewMessage, DateTime.Now);
+                    
                 }
                 if (_isGroopChatActive == true)
                 {
-                    _serverState.SendGroupMessage(Me, NewMessage);
-                    MessageList = _serverState.GetGroupMessageList(Me);
+                    _state.SendGroupMessage(Me, NewMessage);
+                    MessageList = _state.GetGroupMessageList(Me);
                 }
                 
                 NewMessage = null;
@@ -174,8 +179,7 @@ namespace Messenger.ViewModels
         {
             IsGropChatActive = true;
             SelectedUser = null;
-            MessageList = _serverState.GetGroupMessageList(Me);
-
+            MessageList = _state.GetGroupMessageList(Me);
         }
 
         public bool StartGroopChatCanExecute()
@@ -184,17 +188,17 @@ namespace Messenger.ViewModels
         }
         private void OnUserAuthorized()
         {
-            Me = _serverState.AuthorizedUser;
-            ContactList = _serverState.GetContacts(Me);
+            Me = _state.AuthorizedUser;
+            ContactList = _state.GetContacts(Me);
         }
 
         private void OnUserLoggedOut()
         {
-            for (int i = 0; i < _serverState.Users.Count; i++)
+            for (int i = 0; i < _state.Users.Count; i++)
             {
-                if (Me.Name == _serverState.Users[i].Name)
+                if (Me.Name == _state.Users[i].Name)
                 {
-                    _serverState.Users[i].IsOnline = OnlineStatus.Offline;
+                    _state.Users[i].IsOnline = OnlineStatus.Offline;
                 }
             }
             Me = null;
@@ -204,7 +208,7 @@ namespace Messenger.ViewModels
 
         private void OnUserListChanged()
         {
-            ContactList = _serverState.GetContacts(Me);
+            ContactList = _state.GetContacts(Me);
         }
 
         //private void OnMessageListChanged()

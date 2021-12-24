@@ -42,7 +42,7 @@
             </ListBox>
 
             <ToggleButton Name="groupChatButton"
-                          Content="Group chat"
+                          Content="Public chat"
                           Grid.Row="2"
                           Margin="10,5,5,10"
                           IsChecked="{Binding IsGropChatActive, UpdateSourceTrigger=PropertyChanged}"
