@@ -44,7 +44,7 @@ namespace Messenger.ViewModels
             _dialogService = dialogService;
 
             _webSocketClient = webSocketClient; //---------------
-            _webSocketClient.Connected += OnClientConnected;
+            //_webSocketClient.Connected += OnClientConnected;
         }
 
         void OnClientConnected()

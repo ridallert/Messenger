@@ -60,6 +60,7 @@
     <Compile Include="Models\IState.cs" />
     <Compile Include="Network\Broadcasts\PublicMessageDeliveredBroadcast.cs" />
     <Compile Include="Network\Broadcasts\UserStatusChangedBroadcast.cs" />
+    <Compile Include="Network\EventArgs\ConnectionStateChangedEventArgs.cs" />
     <Compile Include="Network\MessageContainer.cs" />
     <Compile Include="Network\OnlineStatus.cs" />
     <Compile Include="Network\Requests\AuthorizationRequest.cs" />
