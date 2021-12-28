@@ -57,7 +57,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\LogEntry.cs" />
-    <Compile Include="Models\IState.cs" />
     <Compile Include="Network\Broadcasts\PublicMessageDeliveredBroadcast.cs" />
     <Compile Include="Network\Broadcasts\UserStatusChangedBroadcast.cs" />
     <Compile Include="Network\EventArgs\ConnectionStateChangedEventArgs.cs" />
@@ -83,11 +82,15 @@
     <Compile Include="Network\Protocol.cs" />
     <Compile Include="Resources\CustomTextBox.cs" />
     <Compile Include="ViewModels\ChatWindowViewModel.cs" />
+    <Compile Include="ViewModels\NotificationWindowViewModel.cs" />
     <Compile Include="ViewModels\ServerConfigViewModel.cs" />
     <Compile Include="Views\AuthorizationDialog.xaml.cs">
       <DependentUpon>AuthorizationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AuthorizationDialogViewModel.cs" />
+    <Compile Include="Views\NotificationWindow.xaml.cs">
+      <DependentUpon>NotificationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ChatWindow.xaml.cs">
       <DependentUpon>ChatWindow.xaml</DependentUpon>
     </Compile>
@@ -102,6 +105,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AuthorizationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NotificationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -122,7 +129,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Message.cs" />
-    <Compile Include="Models\State.cs" />
+    <Compile Include="Models\ClientState.cs" />
     <Compile Include="Common\User.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">

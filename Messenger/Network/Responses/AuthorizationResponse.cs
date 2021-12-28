@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Responses
 {
-    class AuthorizationResponse
+    public class AuthorizationResponse
     {
         public string Result { get; set; }
         public string Name { get; set; }

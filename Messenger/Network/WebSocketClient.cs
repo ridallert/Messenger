@@ -10,6 +10,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
 using Messenger.Network.Requests;
+using Messenger.Network.Responses;
+using System.Windows;
+using System.Net;
 
 namespace Messenger.Network
 {
@@ -27,13 +30,18 @@ namespace Messenger.Network
                 return _socket?.ReadyState == WebSocketState.Open;
             }
         }
+        public event Action<AuthorizationResponse> AuthorizationResponseСame;
+        public event Action Connected;
+        public event Action Disconnected;
 
-        public event EventHandler<ConnectionStateChangedEventArgs> Connected;
-        public event EventHandler<ConnectionStateChangedEventArgs> Disconnected;
+        //public event EventHandler<ConnectionStateChangedEventArgs> Connected;
+        //public event EventHandler<ConnectionStateChangedEventArgs> Disconnected;
+
         public event EventHandler MessageReceived;
 
         public WebSocketClient()
         {
+            _socket = new WebSocket($"ws://127.0.0.1:7890");
             _sendQueue = new ConcurrentQueue<MessageContainer>();
             _sending = 0;
         }
@@ -53,7 +61,8 @@ namespace Messenger.Network
             if (!completed)
             {
                 Disconnect();
-                Disconnected?.Invoke(this, new ConnectionStateChangedEventArgs(_login));
+                Disconnected?.Invoke();
+                //Disconnected?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false));
                 return;
             }
             Send();
@@ -61,20 +70,37 @@ namespace Messenger.Network
 
         private void OnMessage(object sender, MessageEventArgs e)
         {
-            //if (e.IsText == false)
-            //    return;
+            if (e.IsText == false)
+                return;
 
-            //MessageContainer container = JsonConvert.DeserializeObject<MessageContainer>(e.Data);
+            MessageContainer container = JsonConvert.DeserializeObject<MessageContainer>(e.Data);
 
-            //switch (container.Identifier)
-            //{
-            //   // case nameof()
-            //}
+            switch (container.Identifier)
+            {
+                case nameof(AuthorizationResponse):
+                    AuthorizationResponse authorizationResponse = JsonConvert.DeserializeObject<AuthorizationResponse>(container.Payload.ToString());
+                    AuthorizationResponseСame?.Invoke(authorizationResponse);
+                    if (authorizationResponse.Result == "NameIsTaken")
+                    {
+                        MessageBox.Show("NameIsTaken");
+                    }
+                    if (authorizationResponse.Result == "NewUserAdded")
+                    {
+                        
+                    }
+                    if (authorizationResponse.Result == "AlreadyExists")
+                    {
+
+                    }
+                    
+                    
+                    break;
+            }
 
 
 
-            Console.WriteLine(e.Data);
-            Console.WriteLine("Enter message:");
+            //Console.WriteLine(e.Data);
+            //Console.WriteLine("Enter message:");
         }
         public void SetParams(string ipAddress, int port)
         {
@@ -94,7 +120,7 @@ namespace Messenger.Network
             _socket?.CloseAsync();
         }
 
-        public void Login(string login)
+        public void Authorize(string login)
         {
             _sendQueue.Enqueue(new AuthorizationRequest(login).GetContainer());
 
@@ -113,11 +139,13 @@ namespace Messenger.Network
 
         private void OnOpen(object sender, System.EventArgs e)
         {
-            Connected?.Invoke(this, new ConnectionStateChangedEventArgs(_login));
+            Connected?.Invoke();
+            //Connected?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true));
         }
         private void OnClose(object sender, CloseEventArgs e)
         {
-            Disconnected?.Invoke(this, new ConnectionStateChangedEventArgs(_login));
+            Disconnected?.Invoke();
+            //Disconnected?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false));
         }
     }
 }

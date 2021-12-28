@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Messenger.Models
 {
-    public class State : IState
+    public class ClientState
     {
         private ObservableCollection<User> _users;
         private User _authorizedUser;
@@ -45,15 +45,15 @@ namespace Messenger.Models
         public event Action UserLoggedOut;
 
 
-        public State()
+        public ClientState()
         {
             Users = new ObservableCollection<User>();
 
-            Users.Add(new User("Евгений", OnlineStatus.Offline));
-            Users.Add(new User("Яков", OnlineStatus.Offline));
-            Users.Add(new User("Виктория", OnlineStatus.Online));
-            Users.Add(new User("Мария", OnlineStatus.Offline));
-            Users.Add(new User("Ридаль", OnlineStatus.Offline));
+            //Users.Add(new User("Евгений", OnlineStatus.Offline));
+            //Users.Add(new User("Яков", OnlineStatus.Offline));
+            //Users.Add(new User("Виктория", OnlineStatus.Online));
+            //Users.Add(new User("Мария", OnlineStatus.Offline));
+            //Users.Add(new User("Ридаль", OnlineStatus.Offline));
         }
 
         public ObservableCollection<User> GetContacts(User me)
@@ -85,26 +85,6 @@ namespace Messenger.Models
                 }
             }
 
-            //for (int i = 0; i < Users.Count; i++)
-            //{
-            //    if (Users[i].Name == me.Name)
-            //    {
-            //        for (int j = 0; j < Users[i].MessageList.Count; j++)
-            //        {
-            //            bool isF = ((Users[i].MessageList[j].Sender.Name == contact.Name &&
-            //                        Users[i].MessageList[j].Receiver.Name == me.Name) ||
-            //                        (Users[i].MessageList[j].Sender.Name == me.Name &&
-            //                        Users[i].MessageList[j].Receiver.Name == contact.Name)) &&
-            //                        Users[i].MessageList[j].IsGroopChatMessage == false;
-
-            //            if (isF)
-            //            {
-            //                messages.Add(Users[i].MessageList[j]);
-            //            }
-            //        }
-            //    }
-            //}
-
             return messages;
         }
 
@@ -119,21 +99,6 @@ namespace Messenger.Models
                     messages.Add(me.MessageList[i]);
                 }
             }
-
-            //for (int i = 0; i < Users.Count; i++)
-            //{
-            //    if (Users[i].Name == me.Name)
-            //    {
-            //        for (int j = 0; j < Users[i].MessageList.Count; j++)
-            //        {
-            //            if (Users[i].MessageList[j].IsGroopChatMessage == true)
-            //            {
-            //                messages.Add(Users[i].MessageList[j]);
-            //            }
-            //        }
-            //    }
-            //}
-
             return messages;
         }
 
@@ -147,6 +112,46 @@ namespace Messenger.Models
                 }
             }
         }
+
+        public void AddNewUser(string name)
+        {
+            AuthorizedUser = new User(name, OnlineStatus.Online);
+            //Users.Add(AuthorizedUser);
+        }
+        public void SetUserOnline(string name)
+        {
+            //for (int i = 0; i < Users.Count; i++)
+            //{
+            //    if (Users[i].Name == user.Name)
+            //    {
+            //        isUserAlreadyExists = true;
+            //        Users[i].IsOnline = OnlineStatus.Online;
+            //        user = Users[i];
+            //    }
+            //}
+        }
+
+        //public void AuthorizeUser(User user)
+        //{
+        //    bool isUserAlreadyExists = false;
+
+        //    for (int i = 0; i < Users.Count; i++)
+        //    {
+        //        if (Users[i].Name == user.Name)
+        //        {
+        //            isUserAlreadyExists = true;
+        //            Users[i].IsOnline = OnlineStatus.Online;
+        //            user = Users[i];
+        //        }
+        //    }
+
+        //    if (isUserAlreadyExists == false)
+        //    {
+        //        Users.Add(user);
+        //    }
+
+        //    AuthorizedUser = user;
+        //}
 
         public void SendGroupMessage(User sender, string text)
         {

@@ -9,9 +9,11 @@ namespace Messenger.Network.EventArgs
     public class ConnectionStateChangedEventArgs
     {
         public string ClientName { get; }
-        public ConnectionStateChangedEventArgs(string clientName)
+        public bool Connected { get; }
+        public ConnectionStateChangedEventArgs(string clientName, bool connected)
         {
             ClientName = clientName;
+            Connected = connected;
         }
     }
 }

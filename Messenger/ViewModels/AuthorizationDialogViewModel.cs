@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 using Messenger.Models;
 using Messenger.Network;
 using Messenger.Common;
+using Messenger.Network.Responses;
 
 namespace Messenger.ViewModels
 {
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
-        private IState _serverState;
+        private ClientState _clientState;
         private WebSocketClient _webSocketClient; //--------------
         private IDialogService _dialogService;
 
@@ -37,19 +38,15 @@ namespace Messenger.ViewModels
             }
         }
 
-        public AuthorizationDialogViewModel(IDialogService dialogService, IState state, WebSocketClient webSocketClient)
+        public AuthorizationDialogViewModel(IDialogService dialogService, ClientState state, WebSocketClient webSocketClient)
         {
             _title = "Authorization";
-            _serverState = state;
+            _clientState = state;
             _dialogService = dialogService;
-
-            _webSocketClient = webSocketClient; //---------------
-            //_webSocketClient.Connected += OnClientConnected;
-        }
-
-        void OnClientConnected()
-        {
-            AuthorizeUserCommand.RaiseCanExecuteChanged();
+            _webSocketClient = webSocketClient;
+            _webSocketClient.Connected += AuthorizeUserCommand.RaiseCanExecuteChanged;
+            _webSocketClient.AuthorizationResponseСame += ShowAuthorizationResult;
+            _webSocketClient.Connect();
         }
 
         private DelegateCommand<object> _authorizeUserCommand;
@@ -57,32 +54,14 @@ namespace Messenger.ViewModels
 
         private void AuthorizeUserExecute(object obj)
         {
-            bool isUserAlreadyExists = false;
-            User authorizedUser = new User(Login, OnlineStatus.Online);
-
-            for (int i = 0; i < _serverState.Users.Count; i++)
-            {
-                if (_serverState.Users[i].Name == Login)
-                {
-                    isUserAlreadyExists = true;
-                    _serverState.Users[i].IsOnline = OnlineStatus.Online;
-                    authorizedUser = _serverState.Users[i];
-                }
-            }
-
-            if (isUserAlreadyExists == false)
-            {
-                _serverState.Users.Add(authorizedUser);
-            }
-
-            _serverState.AuthorizedUser = authorizedUser;
-
+            _webSocketClient.Authorize(Login);
+           // _clientState.AuthorizeUser(new User(Login, OnlineStatus.Online));
             CloseDialogCommand.Execute();
         }
 
         private bool AuthorizeUserCanExecute(object obj)
         {
-            if (Login != null && Login != "" && _webSocketClient.IsConnected==true) //----------
+            if (Login != null && Login != "" && _webSocketClient.IsConnected==true)
             {
                 return true;
             }
@@ -91,28 +70,6 @@ namespace Messenger.ViewModels
                 return false;
             }
         }
-
-
-
-        //private DelegateCommand<object> _updateCanAuthorizeCommand;
-        //public DelegateCommand<object> UpdateCanAuthorizeCommand => _updateCanAuthorizeCommand ?? (_updateCanAuthorizeCommand = new DelegateCommand<object>(UpdateCanAuthorizeExecute, UpdateCanAuthorizeCanExecute));
-
-        //private void UpdateCanAuthorizeExecute(object obj)
-        //{
-        //    AuthorizeUserCommand.RaiseCanExecuteChanged();
-        //}
-
-        //private bool UpdateCanAuthorizeCanExecute(object obj)
-        //{
-        //    return true;
-        //}
-
-
-
-
-
-
-
 
 
 
@@ -152,8 +109,11 @@ namespace Messenger.ViewModels
         {
 
         }
-     
 
+        private void ShowAuthorizationResult(AuthorizationResponse response)
+        {
+            _dialogService.ShowDialog("NotificationWindow");
+        }
 
         private DelegateCommand _showServerConfigCommand;
         public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));

@@ -15,7 +15,7 @@ namespace Messenger.ViewModels
     public class ChatWindowViewModel : BindableBase
     {
         private WebSocketClient _webSocketClient;
-        private IState _state;
+        private ClientState _clientState;
         private bool? _isGroopChatActive;
         private ObservableCollection<User> _contactList;
         private ObservableCollection<Message> _messageList;
@@ -82,7 +82,7 @@ namespace Messenger.ViewModels
 
                     if (Me != null && value != null)
                     {
-                        MessageList = _state.GetMessageList(Me, value);
+                        MessageList = _clientState.GetMessageList(Me, value);
                         IsGropChatActive = false;
                     }
                 }
@@ -101,13 +101,13 @@ namespace Messenger.ViewModels
             }
         }
 
-        public ChatWindowViewModel(IState state, WebSocketClient webSocketClient)
+        public ChatWindowViewModel(ClientState state, WebSocketClient webSocketClient)
         {
             _webSocketClient = webSocketClient;
-            _state = state;
-            _state.UserAuthorized += OnUserAuthorized;
-            _state.UserListChanged += OnUserListChanged;
-            _state.UserLoggedOut += OnUserLoggedOut;
+            _clientState = state;
+            _clientState.UserAuthorized += OnUserAuthorized;
+            _clientState.UserListChanged += OnUserListChanged;
+            _clientState.UserLoggedOut += OnUserLoggedOut;
         }
 
         private DelegateCommand _newLineCommand;
@@ -137,15 +137,15 @@ namespace Messenger.ViewModels
             {
                 if (SelectedUser != null)
                 {
-                    _state.SendMessage(Me, SelectedUser, NewMessage);
-                    MessageList = _state.GetMessageList(Me, SelectedUser);
+                    _clientState.SendMessage(Me, SelectedUser, NewMessage);
+                    MessageList = _clientState.GetMessageList(Me, SelectedUser);
                     _webSocketClient.SendPrivateMessage(Me, SelectedUser, NewMessage, DateTime.Now);
                     
                 }
                 if (_isGroopChatActive == true)
                 {
-                    _state.SendGroupMessage(Me, NewMessage);
-                    MessageList = _state.GetGroupMessageList(Me);
+                    _clientState.SendGroupMessage(Me, NewMessage);
+                    MessageList = _clientState.GetGroupMessageList(Me);
                 }
                 
                 NewMessage = null;
@@ -179,7 +179,7 @@ namespace Messenger.ViewModels
         {
             IsGropChatActive = true;
             SelectedUser = null;
-            MessageList = _state.GetGroupMessageList(Me);
+            MessageList = _clientState.GetGroupMessageList(Me);
         }
 
         public bool StartGroopChatCanExecute()
@@ -188,17 +188,17 @@ namespace Messenger.ViewModels
         }
         private void OnUserAuthorized()
         {
-            Me = _state.AuthorizedUser;
-            ContactList = _state.GetContacts(Me);
+            Me = _clientState.AuthorizedUser;
+            ContactList = _clientState.GetContacts(Me);
         }
 
         private void OnUserLoggedOut()
         {
-            for (int i = 0; i < _state.Users.Count; i++)
+            for (int i = 0; i < _clientState.Users.Count; i++)
             {
-                if (Me.Name == _state.Users[i].Name)
+                if (Me.Name == _clientState.Users[i].Name)
                 {
-                    _state.Users[i].IsOnline = OnlineStatus.Offline;
+                    _clientState.Users[i].IsOnline = OnlineStatus.Offline;
                 }
             }
             Me = null;
@@ -208,7 +208,7 @@ namespace Messenger.ViewModels
 
         private void OnUserListChanged()
         {
-            ContactList = _state.GetContacts(Me);
+            ContactList = _clientState.GetContacts(Me);
         }
 
         //private void OnMessageListChanged()

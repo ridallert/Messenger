@@ -12,7 +12,7 @@ namespace Messenger.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private WebSocketClient _webSocketClient;
-        private readonly IState _serverState;
+        private readonly ClientState _clientState;
         private IDialogService _dialogService;
         private string _title;
         public string _loginButtonContent;
@@ -31,17 +31,17 @@ namespace Messenger.ViewModels
                 SetProperty(ref _loginButtonContent, value);
             }
         }
-        public MainWindowViewModel(IDialogService dialogService, IState state, WebSocketClient webSocketClient)
+        public MainWindowViewModel(IDialogService dialogService, ClientState state, WebSocketClient webSocketClient)
         {
             _webSocketClient = webSocketClient;
-            _serverState = state;
+            _clientState = state;
             _dialogService = dialogService;
 
             Title = "PrismMessenger";
             LoginButtonContent = "Log in";
 
-            _serverState.UserAuthorized += OnUserAuthorized;
-            _serverState.UserLoggedOut += OnUserLoggedOut;
+            _clientState.UserAuthorized += OnUserAuthorized;
+            _clientState.UserLoggedOut += OnUserLoggedOut;
         }
 
         private void OnUserAuthorized()
@@ -61,13 +61,13 @@ namespace Messenger.ViewModels
 
         private void ShowAuthDialogExecute()
         {
-            if (_serverState.AuthorizedUser == null)
+            if (_clientState.AuthorizedUser == null)
             {
                 _dialogService.ShowDialog("AuthorizationDialog");
             }
             else
             {
-                _serverState.AuthorizedUser = null;
+                _clientState.AuthorizedUser = null;
             }
         }
     }
