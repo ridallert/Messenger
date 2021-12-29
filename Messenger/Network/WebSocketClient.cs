@@ -13,11 +13,13 @@ using Messenger.Network.Requests;
 using Messenger.Network.Responses;
 using System.Windows;
 using System.Net;
+using Messenger.Models;
 
 namespace Messenger.Network
 {
     public class WebSocketClient
     {
+        private ClientState _clientState;
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
         private int _sending;
         private string _login;
@@ -39,8 +41,9 @@ namespace Messenger.Network
 
         public event EventHandler MessageReceived;
 
-        public WebSocketClient()
+        public WebSocketClient(ClientState clientState)
         {
+            _clientState = clientState;
             _socket = new WebSocket($"ws://127.0.0.1:7890");
             _sendQueue = new ConcurrentQueue<MessageContainer>();
             _sending = 0;
@@ -82,18 +85,17 @@ namespace Messenger.Network
                     AuthorizationResponseСame?.Invoke(authorizationResponse);
                     if (authorizationResponse.Result == "NameIsTaken")
                     {
-                        MessageBox.Show("NameIsTaken");
+                        //
                     }
                     if (authorizationResponse.Result == "NewUserAdded")
                     {
-                        
+                        _clientState.AddNewUser(authorizationResponse.Name);
+                        _clientState.AuthorizeUser(authorizationResponse.Name);
                     }
                     if (authorizationResponse.Result == "AlreadyExists")
                     {
-
-                    }
-                    
-                    
+                        _clientState.AuthorizeUser(authorizationResponse.Name);
+                    }   
                     break;
             }
 
@@ -134,6 +136,22 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
+        public void GetUserList()
+        {
+            _sendQueue.Enqueue(new GetUserListRequest().GetContainer());
+
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                Send();
+        }
+        public void GetPrivateMessageList(string sender, string receiver)
+        { 
+            _sendQueue.Enqueue(new GetPrivateMessageListRequest(sender, receiver).GetContainer());
+
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                Send();
+        }
+
+
 
 
 

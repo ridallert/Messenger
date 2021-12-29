@@ -23,7 +23,7 @@ namespace Messenger
 
             container.RegisterDialog<AuthorizationDialog, AuthorizationDialogViewModel>("AuthorizationDialog");
             container.RegisterDialog<ServerConfig, ServerConfigViewModel>("ServerConfigDialog");
-            container.RegisterDialog<NotificationWindow, NotificationWindowViewModel>("NotificationWindow");
+            container.RegisterDialog<NotificationWindow>();
 
             container.RegisterSingleton<ClientState>();
             container.RegisterSingleton<WebSocketClient>();

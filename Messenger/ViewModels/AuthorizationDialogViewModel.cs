@@ -10,6 +10,9 @@ using Messenger.Models;
 using Messenger.Network;
 using Messenger.Common;
 using Messenger.Network.Responses;
+using System.Windows.Threading;
+using System.Threading;
+using System.Windows;
 
 namespace Messenger.ViewModels
 {
@@ -44,24 +47,30 @@ namespace Messenger.ViewModels
             _clientState = state;
             _dialogService = dialogService;
             _webSocketClient = webSocketClient;
-            _webSocketClient.Connected += AuthorizeUserCommand.RaiseCanExecuteChanged;
-            _webSocketClient.AuthorizationResponseСame += ShowAuthorizationResult;
-            _webSocketClient.Connect();
+
+            if (_webSocketClient.IsConnected == false)
+            {
+                _webSocketClient.Connect();
+            }
+            //callBack += ShowNotifiacationDialog;
         }
 
-        private DelegateCommand<object> _authorizeUserCommand;
-        public DelegateCommand<object> AuthorizeUserCommand => _authorizeUserCommand ?? (_authorizeUserCommand = new DelegateCommand<object>(AuthorizeUserExecute, AuthorizeUserCanExecute));
+        //void ShowNotifiacationDialog()
+        //{
+        //    _dialogService.ShowDialog("NotificationWindow");
+        //}
 
-        private void AuthorizeUserExecute(object obj)
+        private DelegateCommand _authorizeUserCommand;
+        public DelegateCommand AuthorizeUserCommand => _authorizeUserCommand ?? (_authorizeUserCommand = new DelegateCommand(AuthorizeUserExecute, AuthorizeUserCanExecute));
+
+        private void AuthorizeUserExecute()
         {
             _webSocketClient.Authorize(Login);
-           // _clientState.AuthorizeUser(new User(Login, OnlineStatus.Online));
-            CloseDialogCommand.Execute();
         }
 
-        private bool AuthorizeUserCanExecute(object obj)
+        private bool AuthorizeUserCanExecute()
         {
-            if (Login != null && Login != "" && _webSocketClient.IsConnected==true)
+            if (Login != null && Login != "" && _webSocketClient.IsConnected == true)
             {
                 return true;
             }
@@ -96,8 +105,20 @@ namespace Messenger.ViewModels
         {
             RequestClose?.Invoke(dialogResult);
         }
+
+        public virtual void OnDialogOpened(IDialogParameters parameters)
+        {
+            
+            _webSocketClient.Connected += AuthorizeUserCommand.RaiseCanExecuteChanged;
+
+            _webSocketClient.AuthorizationResponseСame += ShowAuthorizationResult;
+        }
         protected virtual void CloseDialog()
         {
+            _webSocketClient.Connected -= AuthorizeUserCommand.RaiseCanExecuteChanged;
+
+            _webSocketClient.AuthorizationResponseСame -= ShowAuthorizationResult;
+
             ButtonResult result = ButtonResult.None;
             RaiseRequestClose(new DialogResult(result));
         }
@@ -112,7 +133,25 @@ namespace Messenger.ViewModels
 
         private void ShowAuthorizationResult(AuthorizationResponse response)
         {
-            _dialogService.ShowDialog("NotificationWindow");
+            //callBack += callBackMethod;
+            Application.Current.Dispatcher.InvokeAsync(()=>ShowNotificationWindow(response));
+             
+        }
+
+        // Action callBack;
+        private void ShowNotificationWindow(AuthorizationResponse response)
+        {
+            var par = new DialogParameters
+            {
+                { "name", response.Name },
+                { "result", response.Result }
+            };
+
+            _dialogService.ShowDialog("NotificationWindow", par, Callback);
+        }
+        void Callback(IDialogResult result)
+        {
+            //tcs.SetResult(result.Parameters.GetValue<bool>("confirmed"));
         }
 
         private DelegateCommand _showServerConfigCommand;
@@ -122,9 +161,6 @@ namespace Messenger.ViewModels
         {
             _dialogService.ShowDialog("ServerConfigDialog");
         }
-        public virtual void OnDialogOpened(IDialogParameters parameters)
-        {
-
-        }
+        
     }
 }

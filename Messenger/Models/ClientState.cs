@@ -112,23 +112,31 @@ namespace Messenger.Models
                 }
             }
         }
-
-        public void AddNewUser(string name)
+        public void AuthorizeUser(string name)
         {
-            AuthorizedUser = new User(name, OnlineStatus.Online);
-            //Users.Add(AuthorizedUser);
+            for (int i = 0; i < Users.Count; i++)
+            {
+                if (Users[i].Name == name)
+                {
+                    Users[i].IsOnline = OnlineStatus.Online;
+                    AuthorizedUser = Users[i];
+                }
+            }       
+        }
+        
+        public void AddNewUser(string name)
+        {  
+            Users.Add(new User(name, OnlineStatus.Offline));
         }
         public void SetUserOnline(string name)
         {
-            //for (int i = 0; i < Users.Count; i++)
-            //{
-            //    if (Users[i].Name == user.Name)
-            //    {
-            //        isUserAlreadyExists = true;
-            //        Users[i].IsOnline = OnlineStatus.Online;
-            //        user = Users[i];
-            //    }
-            //}
+            for (int i = 0; i < Users.Count; i++)
+            {
+                if (Users[i].Name == name)
+                {
+                    Users[i].IsOnline = OnlineStatus.Online;
+                }
+            }
         }
 
         //public void AuthorizeUser(User user)

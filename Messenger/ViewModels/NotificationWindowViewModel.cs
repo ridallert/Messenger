@@ -15,7 +15,7 @@ namespace Messenger.ViewModels
     {
         private string _message;
 
-        private WebSocketClient _webSocketClient;
+        //private WebSocketClient _webSocketClient;
         public string Message
         {
             get { return _message; }
@@ -29,26 +29,27 @@ namespace Messenger.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
-        public NotificationWindowViewModel(WebSocketClient webSocketClient)
-        {
+        //public NotificationWindowViewModel() { }
 
-            _webSocketClient = webSocketClient;
-            //_webSocketClient.AuthorizationResponseСame += SetMessageText;
-        }
-
-        private void SetMessageText(AuthorizationResponse response)
+        public void OnDialogOpened(IDialogParameters parameters)
         {
-            //Message = response.Result;
+            if (parameters.ContainsKey("result"))
+            {
+                string name = parameters.GetValue<string>("name");
+                string response = parameters.GetValue<string>("result");
+
+                if (response == "NameIsTaken")
+                    Message = "Name '" + name + "' is taken";
+                if (response == "AlreadyExists")
+                    Message = "You logged in as '" + name + "'";
+                if (response == "NewUserAdded")
+                    Message = "User '" + name + "' is added";
+            }
         }
         public void OnDialogClosed()
         {
 
         }
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-
-        }
-
 
 
 
