@@ -137,15 +137,15 @@ namespace Messenger.ViewModels
             {
                 if (SelectedUser != null)
                 {
-                    _clientState.SendMessage(Me, SelectedUser, NewMessage);
-                    MessageList = _clientState.GetMessageList(Me, SelectedUser);
+                    //_clientState.SendMessage(Me, SelectedUser, NewMessage);
+                    //MessageList = _clientState.GetMessageList(Me, SelectedUser);
                     _webSocketClient.SendPrivateMessage(Me, SelectedUser, NewMessage, DateTime.Now);
                     
                 }
                 if (_isGroopChatActive == true)
                 {
-                    _clientState.SendGroupMessage(Me, NewMessage);
-                    MessageList = _clientState.GetGroupMessageList(Me);
+                    //_clientState.SendGroupMessage(Me, NewMessage);
+                    //MessageList = _clientState.GetGroupMessageList(Me);
                 }
                 
                 NewMessage = null;
