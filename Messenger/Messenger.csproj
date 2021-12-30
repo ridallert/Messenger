@@ -64,6 +64,7 @@
     <Compile Include="Network\OnlineStatus.cs" />
     <Compile Include="Network\Requests\AuthorizationRequest.cs" />
     <Compile Include="Network\Requests\GetEventListRequest.cs" />
+    <Compile Include="Network\Requests\GetMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetPrivateMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetPublicMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetUserListRequest.cs" />
@@ -71,12 +72,13 @@
     <Compile Include="Network\Requests\SendPrivateMessageRequest.cs" />
     <Compile Include="Network\Requests\SendPublicMessageRequest.cs" />
     <Compile Include="Network\Responses\AuthorizationResponse.cs" />
-    <Compile Include="Network\Responses\GetEventListResponce.cs" />
-    <Compile Include="Network\Responses\GetPrivateMessageListResponce.cs" />
-    <Compile Include="Network\Responses\GetPublicMessageListResponce.cs" />
-    <Compile Include="Network\Responses\GetUserListResponce.cs" />
+    <Compile Include="Network\Responses\GetEventListResponse.cs" />
+    <Compile Include="Network\Responses\GetMessageListResponse.cs" />
+    <Compile Include="Network\Responses\GetPrivateMessageListResponse.cs" />
+    <Compile Include="Network\Responses\GetPublicMessageListResponse.cs" />
+    <Compile Include="Network\Responses\GetUserListResponse.cs" />
     <Compile Include="Network\Responses\LogOutResponse.cs" />
-    <Compile Include="Network\Responses\PrivateMessageDeliveredResponce.cs" />
+    <Compile Include="Network\Responses\PrivateMessageDeliveredResponse.cs" />
     <Compile Include="Network\Responses\SendMessageResponse.cs" />
     <Compile Include="Network\WebSocketClient.cs" />
     <Compile Include="Network\Protocol.cs" />
@@ -129,7 +131,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Common\Message.cs" />
-    <Compile Include="Models\ClientState.cs" />
+    <Compile Include="Models\ClientStateManager.cs" />
     <Compile Include="Common\User.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">

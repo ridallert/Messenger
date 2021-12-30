@@ -1,20 +1,24 @@
 ﻿using Messenger.Common;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Messenger.Network.Responses
 {
-    class GetPublicMessageListResponce
+    class GetPrivateMessageListResponse
     {
         public string Result { get; set; }
         public List<Message> MessageList { get; set; }
 
-        public GetPublicMessageListResponce(string result, List<Message> messageList)
+        public GetPrivateMessageListResponse(string result, List<Message> messageList)
         {
             Result = result;
             MessageList = messageList;
         }
 
-        //public GetPublicMessageListResponce(string result)
+        //public GetPrivateMessageListResponce(string result)
         //{
         //    Result = result;
         //    MessageList = new List<Message>();
@@ -24,7 +28,7 @@ namespace Messenger.Network.Responses
         {
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(GetPublicMessageListResponce),
+                Identifier = nameof(GetPrivateMessageListResponse),
                 Payload = this
             };
 

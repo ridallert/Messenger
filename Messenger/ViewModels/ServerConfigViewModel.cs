@@ -15,7 +15,7 @@ namespace Messenger.ViewModels
 {
     class ServerConfigViewModel : BindableBase, IDialogAware
     {
-        private ClientState _clientState;
+        private ClientStateManager _clientState;
         private WebSocketClient _webSocketClient; //-----------
 
         private ObservableCollection<Protocol> _interfaceItems;
@@ -45,7 +45,7 @@ namespace Messenger.ViewModels
         }
 
 
-        public ServerConfigViewModel(ClientState state, WebSocketClient webSocketClient)
+        public ServerConfigViewModel(ClientStateManager state, WebSocketClient webSocketClient)
         {
             _clientState = state;
             _webSocketClient = webSocketClient; //------

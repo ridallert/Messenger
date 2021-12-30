@@ -25,7 +25,7 @@ namespace Messenger
             container.RegisterDialog<ServerConfig, ServerConfigViewModel>("ServerConfigDialog");
             container.RegisterDialog<NotificationWindow>();
 
-            container.RegisterSingleton<ClientState>();
+            container.RegisterSingleton<ClientStateManager>();
             container.RegisterSingleton<WebSocketClient>();
         }
     }

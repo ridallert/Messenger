@@ -18,8 +18,8 @@ namespace Messenger.ViewModels
 {
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
-        private ClientState _clientState;
-        private WebSocketClient _webSocketClient; //--------------
+        private ClientStateManager _clientState;
+        private WebSocketClient _webSocketClient;
         private IDialogService _dialogService;
 
 
@@ -41,7 +41,7 @@ namespace Messenger.ViewModels
             }
         }
 
-        public AuthorizationDialogViewModel(IDialogService dialogService, ClientState state, WebSocketClient webSocketClient)
+        public AuthorizationDialogViewModel(IDialogService dialogService, ClientStateManager state, WebSocketClient webSocketClient)
         {
             _title = "Authorization";
             _clientState = state;
@@ -52,13 +52,7 @@ namespace Messenger.ViewModels
             {
                 _webSocketClient.Connect();
             }
-            //callBack += ShowNotifiacationDialog;
         }
-
-        //void ShowNotifiacationDialog()
-        //{
-        //    _dialogService.ShowDialog("NotificationWindow");
-        //}
 
         private DelegateCommand _authorizeUserCommand;
         public DelegateCommand AuthorizeUserCommand => _authorizeUserCommand ?? (_authorizeUserCommand = new DelegateCommand(AuthorizeUserExecute, AuthorizeUserCanExecute));
@@ -79,8 +73,6 @@ namespace Messenger.ViewModels
                 return false;
             }
         }
-
-
 
 
         private DelegateCommand _closeDialogCommand;
@@ -133,9 +125,15 @@ namespace Messenger.ViewModels
 
         private void ShowAuthorizationResult(AuthorizationResponse response)
         {
+            if (response.Result == "AlreadyExists" || response.Result == "NewUserAdded")
+            {
+                Application.Current.Dispatcher.InvokeAsync(CloseDialog);
+                _webSocketClient.GetUserList();
+               // _webSocketClient.Authorize(response.Name);
+               // _webSocketClient.GetMessageList(response.Name);
+            }
             //callBack += callBackMethod;
-            Application.Current.Dispatcher.InvokeAsync(()=>ShowNotificationWindow(response));
-             
+            Application.Current.Dispatcher.InvokeAsync(()=>ShowNotificationWindow(response));         
         }
 
         // Action callBack;

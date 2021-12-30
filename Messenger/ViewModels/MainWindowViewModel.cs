@@ -12,7 +12,7 @@ namespace Messenger.ViewModels
     public class MainWindowViewModel : BindableBase
     {
         private WebSocketClient _webSocketClient;
-        private readonly ClientState _clientState;
+        private readonly ClientStateManager _clientState;
         private IDialogService _dialogService;
         private string _title;
         public string _loginButtonContent;
@@ -31,7 +31,7 @@ namespace Messenger.ViewModels
                 SetProperty(ref _loginButtonContent, value);
             }
         }
-        public MainWindowViewModel(IDialogService dialogService, ClientState state, WebSocketClient webSocketClient)
+        public MainWindowViewModel(IDialogService dialogService, ClientStateManager state, WebSocketClient webSocketClient)
         {
             _webSocketClient = webSocketClient;
             _clientState = state;

@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Responses
 {
-    class GetPrivateMessageListResponce
+    public class GetMessageListResponse
     {
         public string Result { get; set; }
         public List<Message> MessageList { get; set; }
 
-        public GetPrivateMessageListResponce(string result, List<Message> messageList)
+        public GetMessageListResponse(string result, List<Message> messageList)
         {
             Result = result;
             MessageList = messageList;
         }
 
-        //public GetPrivateMessageListResponce(string result)
+        //public GetMessageListResponse(string result)
         //{
         //    Result = result;
         //    MessageList = new List<Message>();
@@ -28,8 +28,8 @@ namespace Messenger.Network.Responses
         {
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(GetPrivateMessageListResponce),
-                Payload = this
+                Identifier = nameof(GetMessageListResponse),
+                Payload = this,
             };
 
             return container;

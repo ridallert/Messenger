@@ -15,7 +15,7 @@ namespace Messenger.ViewModels
     public class ChatWindowViewModel : BindableBase
     {
         private WebSocketClient _webSocketClient;
-        private ClientState _clientState;
+        private ClientStateManager _clientState;
         private bool? _isGroopChatActive;
         private ObservableCollection<User> _contactList;
         private ObservableCollection<Message> _messageList;
@@ -101,7 +101,7 @@ namespace Messenger.ViewModels
             }
         }
 
-        public ChatWindowViewModel(ClientState state, WebSocketClient webSocketClient)
+        public ChatWindowViewModel(ClientStateManager state, WebSocketClient webSocketClient)
         {
             _webSocketClient = webSocketClient;
             _clientState = state;
@@ -158,6 +158,7 @@ namespace Messenger.ViewModels
             {
                 return Me != null &&
                         SelectedUser != null &&
+                        ContactList != null &&
                         ContactList.Count != 0 && 
                         NewMessage != null &&
                         NewMessage != "";
@@ -165,6 +166,7 @@ namespace Messenger.ViewModels
             else
             {
                 return  Me != null &&
+                        ContactList != null &&
                         ContactList.Count != 0 &&
                         NewMessage != null &&
                         NewMessage != "";

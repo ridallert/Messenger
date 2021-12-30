@@ -1,5 +1,6 @@
 ﻿using Messenger.Common;
 using Messenger.Network;
+using Messenger.Network.Responses;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace Messenger.Models
 {
-    public class ClientState
+    public class ClientStateManager
     {
+        private WebSocketClient _webSocketClient;
         private ObservableCollection<User> _users;
         private User _authorizedUser;
 
@@ -45,8 +47,14 @@ namespace Messenger.Models
         public event Action UserLoggedOut;
 
 
-        public ClientState()
+        public ClientStateManager(WebSocketClient webSocketClient)
         {
+            _webSocketClient = webSocketClient;
+
+            _webSocketClient.AuthorizationResponseСame += AuthorizeUser;
+            _webSocketClient.GetUserListResponseСame += LoadUserList;
+            _webSocketClient.GetMessageListResponseCame += LoadMessageList;
+
             Users = new ObservableCollection<User>();
 
             //Users.Add(new User("Евгений", OnlineStatus.Offline));
@@ -55,6 +63,32 @@ namespace Messenger.Models
             //Users.Add(new User("Мария", OnlineStatus.Offline));
             //Users.Add(new User("Ридаль", OnlineStatus.Offline));
         }
+
+        public void AuthorizeUser(AuthorizationResponse authorizationResponse)
+        {
+            if (authorizationResponse.Result == "NewUserAdded")
+            {
+                AddNewUser(authorizationResponse.Name);
+            }
+            for (int i = 0; i < Users.Count; i++)
+            {
+                if (Users[i].Name == authorizationResponse.Name)
+                {
+                    Users[i].IsOnline = OnlineStatus.Online;
+                    AuthorizedUser = Users[i];
+                }
+            }
+            _webSocketClient.GetUserList();
+        }
+        private void LoadUserList(GetUserListResponse getUserListResponse)
+        {
+            Users = new ObservableCollection<User>(getUserListResponse.UserList);
+        }
+        public void LoadMessageList(GetMessageListResponse getMessageListResponse)
+        {
+            AuthorizedUser.MessageList = new ObservableCollection<Message>(getMessageListResponse.MessageList);
+        }
+
 
         public ObservableCollection<User> GetContacts(User me)
         {

@@ -19,7 +19,7 @@ namespace Messenger.Network
 {
     public class WebSocketClient
     {
-        private ClientState _clientState;
+        //private ClientStateManager _clientState;
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
         private int _sending;
         private string _login;
@@ -32,18 +32,24 @@ namespace Messenger.Network
                 return _socket?.ReadyState == WebSocketState.Open;
             }
         }
+
         public event Action<AuthorizationResponse> AuthorizationResponseСame;
+        public event Action<GetUserListResponse> GetUserListResponseСame;
+        public event Action<GetMessageListResponse> GetMessageListResponseCame;
+
+
         public event Action Connected;
         public event Action Disconnected;
+        public event EventHandler MessageReceived;
 
         //public event EventHandler<ConnectionStateChangedEventArgs> Connected;
         //public event EventHandler<ConnectionStateChangedEventArgs> Disconnected;
 
-        public event EventHandler MessageReceived;
 
-        public WebSocketClient(ClientState clientState)
+
+        public WebSocketClient()
         {
-            _clientState = clientState;
+            //_clientState = clientState;
             _socket = new WebSocket($"ws://127.0.0.1:7890");
             _sendQueue = new ConcurrentQueue<MessageContainer>();
             _sending = 0;
@@ -83,26 +89,17 @@ namespace Messenger.Network
                 case nameof(AuthorizationResponse):
                     AuthorizationResponse authorizationResponse = JsonConvert.DeserializeObject<AuthorizationResponse>(container.Payload.ToString());
                     AuthorizationResponseСame?.Invoke(authorizationResponse);
-                    if (authorizationResponse.Result == "NameIsTaken")
-                    {
-                        //
-                    }
-                    if (authorizationResponse.Result == "NewUserAdded")
-                    {
-                        _clientState.AddNewUser(authorizationResponse.Name);
-                        _clientState.AuthorizeUser(authorizationResponse.Name);
-                    }
-                    if (authorizationResponse.Result == "AlreadyExists")
-                    {
-                        _clientState.AuthorizeUser(authorizationResponse.Name);
-                    }   
+                    break;
+                case nameof(GetUserListResponse):
+                    GetUserListResponse getUserListResponse = JsonConvert.DeserializeObject<GetUserListResponse>(container.Payload.ToString());
+                    GetUserListResponseСame?.Invoke(getUserListResponse);
+                    break;
+
+                case nameof(GetMessageListResponse):
+                    GetMessageListResponse getMessageListResponse = JsonConvert.DeserializeObject<GetMessageListResponse>(container.Payload.ToString());
+                    GetMessageListResponseCame?.Invoke(getMessageListResponse);
                     break;
             }
-
-
-
-            //Console.WriteLine(e.Data);
-            //Console.WriteLine("Enter message:");
         }
         public void SetParams(string ipAddress, int port)
         {
@@ -150,9 +147,6 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-
-
-
 
 
         private void OnOpen(object sender, System.EventArgs e)

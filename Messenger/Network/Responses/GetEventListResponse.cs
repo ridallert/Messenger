@@ -7,12 +7,12 @@ using Messenger.Common;
 
 namespace Messenger.Network.Responses
 {
-    class GetEventListResponce
+    class GetEventListResponse
     {
         public string Result { get; set; }
         public List<LogEntry> EventList {get;set;}
 
-        public GetEventListResponce(string result, List<LogEntry> eventList)
+        public GetEventListResponse(string result, List<LogEntry> eventList)
         {
             Result = result;
             EventList = eventList;
@@ -28,7 +28,7 @@ namespace Messenger.Network.Responses
         {
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(GetEventListResponce),
+                Identifier = nameof(GetEventListResponse),
                 Payload = this
             };
 

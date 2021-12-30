@@ -2,13 +2,13 @@
 
 namespace Messenger.Network.Responses
 {
-    class PrivateMessageDeliveredResponce
+    class PrivateMessageDeliveredResponse
     {
         public string Sender { get; set; }
         public string Text { get; set; }
         public DateTime SendTime { get; set; }
 
-        public PrivateMessageDeliveredResponce(string sender, string text, DateTime sendTime)
+        public PrivateMessageDeliveredResponse(string sender, string text, DateTime sendTime)
         {
             Sender = sender;
             Text = text;
@@ -19,7 +19,7 @@ namespace Messenger.Network.Responses
         {
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(PrivateMessageDeliveredResponce),
+                Identifier = nameof(PrivateMessageDeliveredResponse),
                 Payload = this
             };
 
