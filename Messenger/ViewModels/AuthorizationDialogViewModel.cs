@@ -100,15 +100,13 @@ namespace Messenger.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            
-            _webSocketClient.Connected += AuthorizeUserCommand.RaiseCanExecuteChanged;
 
+            _webSocketClient.Connected += AuthorizeUserCommand.RaiseCanExecuteChanged;
             _webSocketClient.AuthorizationResponseСame += ShowAuthorizationResult;
         }
         protected virtual void CloseDialog()
         {
             _webSocketClient.Connected -= AuthorizeUserCommand.RaiseCanExecuteChanged;
-
             _webSocketClient.AuthorizationResponseСame -= ShowAuthorizationResult;
 
             ButtonResult result = ButtonResult.None;
@@ -128,12 +126,12 @@ namespace Messenger.ViewModels
             if (response.Result == "AlreadyExists" || response.Result == "NewUserAdded")
             {
                 Application.Current.Dispatcher.InvokeAsync(CloseDialog);
-                _webSocketClient.GetUserList();
-               // _webSocketClient.Authorize(response.Name);
-               // _webSocketClient.GetMessageList(response.Name);
+                _clientState.AuthorizeUser(response.Name);
+                _webSocketClient.GetContacts(Login);
+                _webSocketClient.GetPrivateMessageList(Login);
+                _webSocketClient.GetPublicMessageList(Login);
             }
-            //callBack += callBackMethod;
-            Application.Current.Dispatcher.InvokeAsync(()=>ShowNotificationWindow(response));         
+            Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response));
         }
 
         // Action callBack;
@@ -159,6 +157,6 @@ namespace Messenger.ViewModels
         {
             _dialogService.ShowDialog("ServerConfigDialog");
         }
-        
+
     }
 }

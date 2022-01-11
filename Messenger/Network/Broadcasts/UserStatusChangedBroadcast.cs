@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Broadcasts
 {
-    class UserStatusChangedBroadcast
+    public class UserStatusChangedBroadcast
     {
         public string Name { get; set; }
         public OnlineStatus Status { get; set; }

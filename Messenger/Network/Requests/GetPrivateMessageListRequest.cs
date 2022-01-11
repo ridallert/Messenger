@@ -8,13 +8,11 @@ namespace Messenger.Network.Requests
 {
     class GetPrivateMessageListRequest
     {
-        public string Sender { get; set; }
-        public string Receiver { get; set; }
+        public string Name { get; set; }
 
-        public GetPrivateMessageListRequest(string sender, string receiver)
+        public GetPrivateMessageListRequest(string name)
         {
-            Sender = sender;
-            Receiver = receiver;
+            Name = name;
         }
 
         public MessageContainer GetContainer()

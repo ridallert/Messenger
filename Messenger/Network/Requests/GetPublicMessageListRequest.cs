@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Requests
 {
-    class GetPublicMessageListRequest
+    public class GetPublicMessageListRequest
     {
+        public string Name { get; set; }
+
+        public GetPublicMessageListRequest(string name)
+        {
+            Name = name;
+        }
         public MessageContainer GetContainer()
         {
             MessageContainer container = new MessageContainer

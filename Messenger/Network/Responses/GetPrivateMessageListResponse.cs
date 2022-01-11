@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Responses
 {
-    class GetPrivateMessageListResponse
+    public class GetPrivateMessageListResponse
     {
         public string Result { get; set; }
         public List<Message> MessageList { get; set; }

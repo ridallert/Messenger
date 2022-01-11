@@ -8,18 +8,18 @@ namespace Messenger.Common
 {
     public class Message
     {
-        private User _sender;
-        private User _receiver;
+        private string _sender;
+        private string _receiver;
         private string _text;
         private DateTime _sendTime;
-        private bool _isGroopchatMessage;
+        private bool _isGroopChatMessage;
 
-        public User Sender
+        public string Sender
         {
             get { return _sender; }
             set { _sender = value; }
         }
-        public User Receiver
+        public string Receiver
         {
             get { return _receiver; }
             set { _receiver = value; }
@@ -36,17 +36,17 @@ namespace Messenger.Common
         }
         public bool IsGroopChatMessage
         {
-            get { return _isGroopchatMessage; }
-            set { _isGroopchatMessage = value; }
+            get { return _isGroopChatMessage; }
+            set { _isGroopChatMessage = value; }
         }
 
-        public Message(User sender, User receiver, string text, bool isGroopChatMess = false)
+        public Message(string sender, string receiver, string text, DateTime sendTime, bool isGroopChatMessage = false)
         {
             Sender = sender;
             Receiver = receiver;
             Text = text;
-            SendTime = DateTime.Now;
-            IsGroopChatMessage = isGroopChatMess;
+            SendTime = sendTime;
+            IsGroopChatMessage = isGroopChatMessage;
         }
     }
 }

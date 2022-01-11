@@ -1,5 +1,6 @@
 ﻿using Messenger.Common;
 using Messenger.Network;
+using Messenger.Network.Broadcasts;
 using Messenger.Network.Responses;
 using System;
 using System.Collections.Generic;
@@ -7,30 +8,23 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Messenger.Models
 {
     public class ClientStateManager
     {
         private WebSocketClient _webSocketClient;
-        private ObservableCollection<User> _users;
-        private User _authorizedUser;
 
-        public ObservableCollection<User> Users
+        private string _login;
+        private ObservableCollection<User> _contacts;
+        private ObservableCollection<Message> _publicMessageList;
+        public string Login
         {
-            get { return _users; }
+            get { return _login; }
             set
             {
-                _users = value;
-                UserListChanged?.Invoke();
-            }
-        }
-        public User AuthorizedUser
-        {
-            get { return _authorizedUser; }
-            set
-            {
-                _authorizedUser = value;
+                _login = value;
                 if (value != null)
                 {
                     UserAuthorized();
@@ -41,166 +35,153 @@ namespace Messenger.Models
                 }
             }
         }
+        public ObservableCollection<User> Contacts
+        {
+            get { return _contacts; }
+            set
+            {
+                _contacts = value;
+                ContactListChanged?.Invoke();
+            }
+        }
+        public ObservableCollection<Message> PublicMessageList
+        {
+            get { return _publicMessageList; }
+            set
+            {
+                _publicMessageList = value;
+                PublicMessageListChanged?.Invoke();
+            }
+        }
 
-        public event Action UserListChanged;
+        public event Action ContactListChanged;
         public event Action UserAuthorized;
         public event Action UserLoggedOut;
-
+        public event Action<Message> NewMessageAdded;
+        public event Action PublicMessageListChanged;
 
         public ClientStateManager(WebSocketClient webSocketClient)
         {
+            Contacts = new ObservableCollection<User>();
+            PublicMessageList = new ObservableCollection<Message>();
+
             _webSocketClient = webSocketClient;
-
-            _webSocketClient.AuthorizationResponseСame += AuthorizeUser;
-            _webSocketClient.GetUserListResponseСame += LoadUserList;
-            _webSocketClient.GetMessageListResponseCame += LoadMessageList;
-
-            Users = new ObservableCollection<User>();
-
-            //Users.Add(new User("Евгений", OnlineStatus.Offline));
-            //Users.Add(new User("Яков", OnlineStatus.Offline));
-            //Users.Add(new User("Виктория", OnlineStatus.Online));
-            //Users.Add(new User("Мария", OnlineStatus.Offline));
-            //Users.Add(new User("Ридаль", OnlineStatus.Offline));
+            _webSocketClient.GetContactsResponseСame += LoadUserList;
+            _webSocketClient.GetPrivateMessageListResponseCame += LoadPrivateMessageList;
+            _webSocketClient.PrivateMessageReceivedResponseCame += AddPrivateMessage;
+            _webSocketClient.UserStatusChangedBroadcastCame += OnUserStatusChangedBroadcastCame;           
+        }
+        public void AuthorizeUser(string login)
+        {
+            Login = login;
+        }
+        private void LoadUserList(GetContactsResponse getContactsResponse)
+        {
+            Contacts = new ObservableCollection<User>(getContactsResponse.UserList);
         }
 
-        public void AuthorizeUser(AuthorizationResponse authorizationResponse)
+        public void LoadPrivateMessageList(GetPrivateMessageListResponse getMessageListResponse)
         {
-            if (authorizationResponse.Result == "NewUserAdded")
+            foreach (User contact in Contacts)
             {
-                AddNewUser(authorizationResponse.Name);
-            }
-            for (int i = 0; i < Users.Count; i++)
-            {
-                if (Users[i].Name == authorizationResponse.Name)
+                foreach (Message message in getMessageListResponse.MessageList)
                 {
-                    Users[i].IsOnline = OnlineStatus.Online;
-                    AuthorizedUser = Users[i];
+                    if ((contact.Name == message.Sender || contact.Name == message.Receiver) && !message.IsGroopChatMessage)
+                    {
+                        contact.MessageList.Add(message);
+                    }
                 }
             }
-            _webSocketClient.GetUserList();
-        }
-        private void LoadUserList(GetUserListResponse getUserListResponse)
-        {
-            Users = new ObservableCollection<User>(getUserListResponse.UserList);
-        }
-        public void LoadMessageList(GetMessageListResponse getMessageListResponse)
-        {
-            AuthorizedUser.MessageList = new ObservableCollection<Message>(getMessageListResponse.MessageList);
+
         }
 
 
-        public ObservableCollection<User> GetContacts(User me)
+        public void OnUserStatusChangedBroadcastCame(UserStatusChangedBroadcast broadcast)
         {
-            ObservableCollection<User> contactList = new ObservableCollection<User>();
-            for (int i = 0; i < Users.Count; i++)
+            bool isUserExist = false;
+
+            foreach (User contact in Contacts)
             {
-                if (me != null && me.Name != Users[i].Name)
+                if (contact.Name == broadcast.Name)
                 {
-                    contactList.Add(Users[i]);
+                    contact.IsOnline = broadcast.Status;
+                    isUserExist = true;
                 }
             }
-            return contactList;
+            if (!isUserExist)
+            {
+                if (broadcast.Status == OnlineStatus.Online)
+                {
+                    Application.Current.Dispatcher.InvokeAsync(() =>
+                    {
+                        Contacts.Add(new User(broadcast.Name, broadcast.Status));
+                    });
+                    
+                }
+                else ////////////////////////////////////////////////////////////////////////////////////////////////////
+                {
+                    throw new Exception("Пользователя с именем '" + broadcast.Name + "' на клиенте не зарегистрировано");
+                }
+            }
         }
 
-        public ObservableCollection<Message> GetMessageList(User me, User contact)
+        public ObservableCollection<Message> GetPrivateMessageList(string name)
         {
             ObservableCollection<Message> messages = new ObservableCollection<Message>();
-
-            for (int i = 0; i < me.MessageList.Count; i++)
+            foreach (User contact in Contacts)
             {
-                bool isF = ((me.MessageList[i].Sender.Name == contact.Name && me.MessageList[i].Receiver.Name == me.Name) ||
-                            (me.MessageList[i].Sender.Name == me.Name && me.MessageList[i].Receiver.Name == contact.Name)) &&
-                            me.MessageList[i].IsGroopChatMessage == false;
-
-                if (isF)
+                if (contact.Name == name)
                 {
-                    messages.Add(me.MessageList[i]);
-                }
-            }
-
-            return messages;
-        }
-
-        public ObservableCollection<Message> GetGroupMessageList(User me)
-        {
-            ObservableCollection<Message> messages = new ObservableCollection<Message>();
-
-            for (int i = 0; i < me.MessageList.Count; i++)
-            {
-                if (me.MessageList[i].IsGroopChatMessage == true)
-                {
-                    messages.Add(me.MessageList[i]);
+                    messages = contact.MessageList;
                 }
             }
             return messages;
         }
 
-        public void SendMessage(User sender, User receiver, string text)
+
+
+        public void AddPrivateMessage(PrivateMessageReceivedResponse response)
         {
-            for (int i = 0; i < Users.Count; i++)
+            Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                if (receiver.Name == Users[i].Name || sender.Name == Users[i].Name)
+                foreach (User contact in Contacts)
                 {
-                    Users[i].MessageList.Add(new Message(sender, receiver, text));
+                    if (contact.Name == response.Sender || contact.Name == response.Receiver)
+                    {
+                        Message message = new Message(response.Sender, response.Receiver, response.Text, response.SendTime);
+                        contact.MessageList.Add(message);
+                        NewMessageAdded?.Invoke(message);
+                    }
                 }
-            }
+            });
         }
-        public void AuthorizeUser(string name)
-        {
-            for (int i = 0; i < Users.Count; i++)
-            {
-                if (Users[i].Name == name)
-                {
-                    Users[i].IsOnline = OnlineStatus.Online;
-                    AuthorizedUser = Users[i];
-                }
-            }       
-        }
-        
-        public void AddNewUser(string name)
-        {  
-            Users.Add(new User(name, OnlineStatus.Offline));
-        }
+
         public void SetUserOnline(string name)
         {
-            for (int i = 0; i < Users.Count; i++)
+            foreach (User contact in Contacts)
             {
-                if (Users[i].Name == name)
+                if (contact.Name == name)
                 {
-                    Users[i].IsOnline = OnlineStatus.Online;
+                    contact.IsOnline = OnlineStatus.Online;
                 }
             }
         }
 
-        //public void AuthorizeUser(User user)
-        //{
-        //    bool isUserAlreadyExists = false;
 
+
+        //public void SendGroupMessage(string sender, string text) переделать
+        //{
         //    for (int i = 0; i < Users.Count; i++)
         //    {
-        //        if (Users[i].Name == user.Name)
-        //        {
-        //            isUserAlreadyExists = true;
-        //            Users[i].IsOnline = OnlineStatus.Online;
-        //            user = Users[i];
-        //        }
+        //        Users[i].MessageList.Add(new Message(sender, Users[i].Name, text, true));
         //    }
-
-        //    if (isUserAlreadyExists == false)
-        //    {
-        //        Users.Add(user);
-        //    }
-
-        //    AuthorizedUser = user;
         //}
 
-        public void SendGroupMessage(User sender, string text)
+
+
+        public ObservableCollection<Message> GetPublicMessageList()
         {
-            for (int i = 0; i < Users.Count; i++)
-            {
-                Users[i].MessageList.Add(new Message(sender, Users[i], text, true));
-            }
+            return PublicMessageList;
         }
-    }
+}
 }

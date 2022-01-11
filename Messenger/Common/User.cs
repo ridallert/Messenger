@@ -14,7 +14,7 @@ namespace Messenger.Common
         private string _name;
         private OnlineStatus _isOnline;
         private ObservableCollection<Message> _messageList;
-
+        private int? _newMessageCounter;
         public string Name
         {
             get { return _name; }
@@ -23,6 +23,17 @@ namespace Messenger.Common
                 if (value != _name)
                 {
                     SetProperty(ref _name, value);
+                }
+            }
+        }
+        public int? NewMessageCounter
+        {
+            get { return _newMessageCounter; }
+            set
+            {
+                if (value != _newMessageCounter)
+                {
+                    SetProperty(ref _newMessageCounter, value);
                 }
             }
         }

@@ -33,20 +33,23 @@
                      SelectedItem="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged}" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Path=Name}" FontWeight="Bold" />
+                        <StackPanel Orientation="Vertical">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=Name}" FontWeight="Bold" />
+                                <TextBlock Margin="10,0,0,0" Text="{Binding Path=NewMessageCounter}" Foreground="CadetBlue"/>
+                            </StackPanel>
                             <TextBlock Text="{Binding Path=IsOnline}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <ToggleButton Name="groupChatButton"
+            <ToggleButton Name="publicChatButton"
                           Content="Public chat"
                           Grid.Row="2"
                           Margin="10,5,5,10"
-                          IsChecked="{Binding IsGropChatActive, UpdateSourceTrigger=PropertyChanged}"
-                          Command="{Binding StartGroopChatCommand}"/>
+                          IsChecked="{Binding IsPublicChatActive, UpdateSourceTrigger=PropertyChanged}"
+                          Command="{Binding StartPublicChatCommand}"/>
         </Grid>
 
         <DockPanel LastChildFill="True" Grid.Column="1">
@@ -72,7 +75,7 @@
                    VerticalAlignment="Center"
                    HorizontalAlignment="Left"
                    DockPanel.Dock="Top"
-                   Content="{Binding Path=Me.Name, UpdateSourceTrigger=PropertyChanged}"></Label>
+                   Content="{Binding Path=Login, UpdateSourceTrigger=PropertyChanged}"></Label>
 
 
             <Grid DockPanel.Dock="Bottom">
@@ -131,7 +134,7 @@
                                    Grid.Row="0"
                                    FontWeight="Bold"
                                    TextAlignment="Left"
-                                   Text="{Binding Sender.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                                   Text="{Binding Sender, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <TextBlock Grid.Column="1"
                                    Grid.Row="0"

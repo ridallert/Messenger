@@ -14,15 +14,15 @@ using Messenger.Network.Responses;
 using System.Windows;
 using System.Net;
 using Messenger.Models;
+using Messenger.Network.Broadcasts;
 
 namespace Messenger.Network
 {
     public class WebSocketClient
     {
-        //private ClientStateManager _clientState;
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
         private int _sending;
-        private string _login;
+        //private string _login;
 
         private WebSocket _socket;
         public bool IsConnected
@@ -34,14 +34,15 @@ namespace Messenger.Network
         }
 
         public event Action<AuthorizationResponse> AuthorizationResponseСame;
-        public event Action<GetUserListResponse> GetUserListResponseСame;
-        public event Action<GetMessageListResponse> GetMessageListResponseCame;
-
+        public event Action<GetContactsResponse> GetContactsResponseСame;
+        public event Action<GetPrivateMessageListResponse> GetPrivateMessageListResponseCame;
+        public event Action<PrivateMessageReceivedResponse> PrivateMessageReceivedResponseCame;
+        public event Action<UserStatusChangedBroadcast> UserStatusChangedBroadcastCame;
 
         public event Action Connected;
         public event Action Disconnected;
-        public event EventHandler MessageReceived;
 
+        //public event EventHandler MessageReceived;
         //public event EventHandler<ConnectionStateChangedEventArgs> Connected;
         //public event EventHandler<ConnectionStateChangedEventArgs> Disconnected;
 
@@ -49,7 +50,6 @@ namespace Messenger.Network
 
         public WebSocketClient()
         {
-            //_clientState = clientState;
             _socket = new WebSocket($"ws://127.0.0.1:7890");
             _sendQueue = new ConcurrentQueue<MessageContainer>();
             _sending = 0;
@@ -90,21 +90,31 @@ namespace Messenger.Network
                     AuthorizationResponse authorizationResponse = JsonConvert.DeserializeObject<AuthorizationResponse>(container.Payload.ToString());
                     AuthorizationResponseСame?.Invoke(authorizationResponse);
                     break;
-                case nameof(GetUserListResponse):
-                    GetUserListResponse getUserListResponse = JsonConvert.DeserializeObject<GetUserListResponse>(container.Payload.ToString());
-                    GetUserListResponseСame?.Invoke(getUserListResponse);
+
+                case nameof(GetContactsResponse):
+                    GetContactsResponse getUserListResponse = JsonConvert.DeserializeObject<GetContactsResponse>(container.Payload.ToString());
+                    GetContactsResponseСame?.Invoke(getUserListResponse);
                     break;
 
-                case nameof(GetMessageListResponse):
-                    GetMessageListResponse getMessageListResponse = JsonConvert.DeserializeObject<GetMessageListResponse>(container.Payload.ToString());
-                    GetMessageListResponseCame?.Invoke(getMessageListResponse);
+                case nameof(GetPrivateMessageListResponse):
+                    GetPrivateMessageListResponse getPrivateMessageListResponse = JsonConvert.DeserializeObject<GetPrivateMessageListResponse>(container.Payload.ToString());
+                    GetPrivateMessageListResponseCame?.Invoke(getPrivateMessageListResponse);
+                    break;
+
+                case nameof(PrivateMessageReceivedResponse):
+                    PrivateMessageReceivedResponse privateMessageDeliveredResponse = JsonConvert.DeserializeObject<PrivateMessageReceivedResponse>(container.Payload.ToString());
+                    PrivateMessageReceivedResponseCame?.Invoke(privateMessageDeliveredResponse);
+                    break;
+
+                case nameof(UserStatusChangedBroadcast):
+                    UserStatusChangedBroadcast userStatusChangedBroadcast = JsonConvert.DeserializeObject<UserStatusChangedBroadcast>(container.Payload.ToString());
+                    UserStatusChangedBroadcastCame?.Invoke(userStatusChangedBroadcast);
                     break;
             }
         }
         public void SetParams(string ipAddress, int port)
         {
             _socket = new WebSocket($"ws://{ipAddress}:{port}");
-
         }
         public void Connect()
         {
@@ -126,28 +136,34 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void SendPrivateMessage(User sender, User receiver, string message, DateTime sendTime)
+        public void SendPrivateMessage(string sender, string receiver, string message, DateTime sendTime)
         {
-            _sendQueue.Enqueue(new SendPrivateMessageRequest(sender.Name, receiver.Name, message, sendTime).GetContainer());
+            _sendQueue.Enqueue(new SendPrivateMessageRequest(sender, receiver, message, sendTime).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void GetUserList()
+        public void GetContacts(string name)
         {
-            _sendQueue.Enqueue(new GetUserListRequest().GetContainer());
+            _sendQueue.Enqueue(new GetContactsRequest(name).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void GetPrivateMessageList(string sender, string receiver)
+        public void GetPrivateMessageList(string name)
         { 
-            _sendQueue.Enqueue(new GetPrivateMessageListRequest(sender, receiver).GetContainer());
+            _sendQueue.Enqueue(new GetPrivateMessageListRequest(name).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
+        public void GetPublicMessageList(string name)
+        {
+            _sendQueue.Enqueue(new GetPublicMessageListRequest(name).GetContainer());
 
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                Send();
+        }
 
         private void OnOpen(object sender, System.EventArgs e)
         {

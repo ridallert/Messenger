@@ -4,18 +4,18 @@ using System.Collections.Generic;
 
 namespace Messenger.Network.Responses
 {
-    public class GetUserListResponse
+    public class GetContactsResponse
     {
         public string Result { get; set; }
         public List<User> UserList { get; set; }
 
-        public GetUserListResponse(string result, List<User> userList)
+        public GetContactsResponse(string result, List<User> userList)
         {
             Result = result;
             UserList = userList;
         }
 
-        //public GetUserListResponce(string result)
+        //public GetContactsResponse(string result)
         //{
         //    Result = result;
         //    UserList = new List<User>();
@@ -25,7 +25,7 @@ namespace Messenger.Network.Responses
         {
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(GetUserListResponse),
+                Identifier = nameof(GetContactsResponse),
                 Payload = this
             };
 

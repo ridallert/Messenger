@@ -61,13 +61,13 @@ namespace Messenger.ViewModels
 
         private void ShowAuthDialogExecute()
         {
-            if (_clientState.AuthorizedUser == null)
+            if (_clientState.Login == null)
             {
                 _dialogService.ShowDialog("AuthorizationDialog");
             }
             else
             {
-                _clientState.AuthorizedUser = null;
+                _clientState.Login = null;
             }
         }
     }

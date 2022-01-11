@@ -59,7 +59,7 @@
     <Compile Include="Common\LogEntry.cs" />
     <Compile Include="Network\Broadcasts\PublicMessageDeliveredBroadcast.cs" />
     <Compile Include="Network\Broadcasts\UserStatusChangedBroadcast.cs" />
-    <Compile Include="Network\EventArgs\ConnectionStateChangedEventArgs.cs" />
+    <Compile Include="Network\EventArgs\UserStatusChangedEventArgs.cs" />
     <Compile Include="Network\MessageContainer.cs" />
     <Compile Include="Network\OnlineStatus.cs" />
     <Compile Include="Network\Requests\AuthorizationRequest.cs" />
@@ -67,7 +67,7 @@
     <Compile Include="Network\Requests\GetMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetPrivateMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetPublicMessageListRequest.cs" />
-    <Compile Include="Network\Requests\GetUserListRequest.cs" />
+    <Compile Include="Network\Requests\GetContactsRequest.cs" />
     <Compile Include="Network\Requests\LogOutRequest.cs" />
     <Compile Include="Network\Requests\SendPrivateMessageRequest.cs" />
     <Compile Include="Network\Requests\SendPublicMessageRequest.cs" />
@@ -76,9 +76,9 @@
     <Compile Include="Network\Responses\GetMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetPrivateMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetPublicMessageListResponse.cs" />
-    <Compile Include="Network\Responses\GetUserListResponse.cs" />
+    <Compile Include="Network\Responses\GetContactsResponse.cs" />
     <Compile Include="Network\Responses\LogOutResponse.cs" />
-    <Compile Include="Network\Responses\PrivateMessageDeliveredResponse.cs" />
+    <Compile Include="Network\Responses\PrivateMessageReceivedResponse.cs" />
     <Compile Include="Network\Responses\SendMessageResponse.cs" />
     <Compile Include="Network\WebSocketClient.cs" />
     <Compile Include="Network\Protocol.cs" />
