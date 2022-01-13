@@ -74,12 +74,6 @@ namespace Messenger.ViewModels
         }
 
 
-
-
-
-
-
-
         //CLOSING WINDOW
 
         public event Action<IDialogResult> RequestClose;
@@ -102,12 +96,7 @@ namespace Messenger.ViewModels
             RequestClose?.Invoke(dialogResult);
         }
 
-
-
-
-
-
-
+        //IDialogAware
 
         private string _title = "ServerConfig";
         public string Title

@@ -47,12 +47,14 @@ namespace Messenger.ViewModels
         private void OnUserAuthorized()
         {
             LoginButtonContent = "Log out";
+            ShowLogWindowDialogCommand.RaiseCanExecuteChanged();
         }
 
         private void OnUserLoggedOut()
         {
             LoginButtonContent = "Log in";
             _webSocketClient.Disconnect();
+            ShowLogWindowDialogCommand.RaiseCanExecuteChanged();
         }
 
 
@@ -69,6 +71,18 @@ namespace Messenger.ViewModels
             {
                 _clientState.Login = null;
             }
+        }
+
+        private DelegateCommand _showLogWindowCommand;
+        public DelegateCommand ShowLogWindowDialogCommand => _showLogWindowCommand ?? (_showLogWindowCommand = new DelegateCommand(ShowLogWindowExecute, ShowLogWindowCanExecute));
+
+        private void ShowLogWindowExecute()
+        {
+            _dialogService.ShowDialog("LogWindow");
+        }
+        private bool ShowLogWindowCanExecute()
+        {
+            return _clientState.Login != null;
         }
     }
 }

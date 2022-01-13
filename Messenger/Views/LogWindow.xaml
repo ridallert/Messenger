@@ -1,0 +1,9 @@
+﻿<UserControl x:Class="Messenger.Views.LogWindow"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             MinHeight="400" MinWidth="700"
+             Style="{StaticResource DialogStyle}">
+    <DataGrid Name="logDataGrid" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Margin="5,5,5,5" ItemsSource="{Binding EventList}"></DataGrid>
+</UserControl>

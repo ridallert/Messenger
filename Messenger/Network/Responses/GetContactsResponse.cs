@@ -7,12 +7,12 @@ namespace Messenger.Network.Responses
     public class GetContactsResponse
     {
         public string Result { get; set; }
-        public List<User> UserList { get; set; }
+        public List<Contact> ContactList { get; set; }
 
-        public GetContactsResponse(string result, List<User> userList)
+        public GetContactsResponse(string result, List<Contact> contactList)
         {
             Result = result;
-            UserList = userList;
+            ContactList = contactList;
         }
 
         //public GetContactsResponse(string result)

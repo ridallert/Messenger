@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Messenger.Network.Responses
 {
-    class GetPublicMessageListResponse
+    public class GetPublicMessageListResponse
     {
         public string Result { get; set; }
         public List<Message> MessageList { get; set; }

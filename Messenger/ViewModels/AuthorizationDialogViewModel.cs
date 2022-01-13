@@ -129,7 +129,8 @@ namespace Messenger.ViewModels
                 _clientState.AuthorizeUser(response.Name);
                 _webSocketClient.GetContacts(Login);
                 _webSocketClient.GetPrivateMessageList(Login);
-                _webSocketClient.GetPublicMessageList(Login);
+                _webSocketClient.GetPublicMessageList();
+                _webSocketClient.GetEventLog();
             }
             Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response));
         }

@@ -17,44 +17,32 @@ namespace Messenger.ViewModels
         private WebSocketClient _webSocketClient;
         private ClientStateManager _clientState;
         private bool _isPublicChatActive;
-        private ObservableCollection<User> _contactList;
+        private ObservableCollection<Contact> _contactList;
         private ObservableCollection<Message> _messageList;
         private string _login;
-        private User _selectedUser;
+        private Contact _selectedContact;
         private string _newMessage;
         private int _caretPosition;
 
         public int CaretPosition
         {
             get { return _caretPosition; }
-            set
-            {
-                SetProperty(ref _caretPosition, value);
-            }
+            set { SetProperty(ref _caretPosition, value); }
         }
         public bool IsPublicChatActive
         {
             get { return _isPublicChatActive; }
-            set
-            {
-                SetProperty(ref _isPublicChatActive, value);
-            }
+            set { SetProperty(ref _isPublicChatActive, value); }
         }
-        public ObservableCollection<User> ContactList
+        public ObservableCollection<Contact> ContactList
         {
             get { return _contactList; }
-            set
-            {
-                SetProperty(ref _contactList, value);
-            }
+            set { SetProperty(ref _contactList, value); }
         }
         public ObservableCollection<Message> MessageList
         {
             get { return _messageList; }
-            set
-            {
-                SetProperty(ref _messageList, value);
-            }
+            set { SetProperty(ref _messageList, value); }
         }
         public string Login
         {
@@ -69,20 +57,23 @@ namespace Messenger.ViewModels
                 }
             }
         }
-        public User SelectedUser
+        public Contact SelectedContact
         {
-            get { return _selectedUser; }
+            get { return _selectedContact; }
             set
             {
-                if (value != _selectedUser)
+                if (value != _selectedContact)
                 {
-                    SetProperty(ref _selectedUser, value);
+                    SetProperty(ref _selectedContact, value);
                     NewMessage = null;
                     SendMessageCommand.RaiseCanExecuteChanged();
-                    SelectedUser.NewMessageCounter = null;
+                    if (SelectedContact != null)
+                    {
+                        SelectedContact.NewMessageCounter = null;
+                    }
                     if (_login != null && value != null)
                     {
-                        MessageList = _clientState.GetPrivateMessageList(value.Name);
+                        MessageList = _clientState.GetPrivateMessageList(value.Title);
                         IsPublicChatActive = false;
                     }
                 }
@@ -106,8 +97,8 @@ namespace Messenger.ViewModels
             _webSocketClient = webSocketClient;
             _clientState = state;
             _clientState.UserAuthorized += OnUserAuthorized;
-            _clientState.ContactListChanged += OnUserListChanged;
             _clientState.UserLoggedOut += OnUserLoggedOut;
+            _clientState.ContactListChanged += OnUserListChanged;
             _clientState.NewMessageAdded += OnNewMessageAdded;
         }
 
@@ -136,19 +127,16 @@ namespace Messenger.ViewModels
         {
             if (NewMessage != null)
             {
-                if (SelectedUser != null)
+                if (SelectedContact != null)
                 {
-                    //_clientState.SendMessage(Me, SelectedUser, NewMessage);
-                    //MessageList = _clientState.GetMessageList(Me, SelectedUser);
-                    _webSocketClient.SendPrivateMessage(Login, SelectedUser.Name, NewMessage, DateTime.Now);
-                    
+                    _webSocketClient.SendPrivateMessage(Login, SelectedContact.Title, NewMessage, DateTime.Now);
+
                 }
                 if (_isPublicChatActive == true)
                 {
-                    //_clientState.SendGroupMessage(Me, NewMessage);
-                    //MessageList = _clientState.GetGroupMessageList(Me);
+                    _webSocketClient.SendPublicMessage(Login, NewMessage, DateTime.Now);
                 }
-                
+
                 NewMessage = null;
             }
         }
@@ -157,16 +145,16 @@ namespace Messenger.ViewModels
 
             if (_isPublicChatActive == false)
             {
-                return  Login != null &&
-                        SelectedUser != null &&
+                return Login != null &&
+                        SelectedContact != null &&
                         ContactList != null &&
-                        ContactList.Count != 0 && 
+                        ContactList.Count != 0 &&
                         NewMessage != null &&
                         NewMessage != "";
             }
             else
             {
-                return  Login != null &&
+                return Login != null &&
                         ContactList != null &&
                         ContactList.Count != 0 &&
                         NewMessage != null &&
@@ -181,8 +169,8 @@ namespace Messenger.ViewModels
         public void StartPublicChatExecute()
         {
             IsPublicChatActive = true;
-            SelectedUser = null;
-            //MessageList = _clientState.GetPublicMessageList();
+            SelectedContact = null;
+            MessageList = _clientState.GetPublicMessageList();
         }
 
         public bool StartPublicChatCanExecute()
@@ -192,7 +180,7 @@ namespace Messenger.ViewModels
         private void OnUserAuthorized()
         {
             Login = _clientState.Login;
-            ContactList = _clientState.Contacts;
+            ContactList = _clientState.GetContactList();
         }
 
         private void OnUserLoggedOut()
@@ -200,27 +188,28 @@ namespace Messenger.ViewModels
             Login = null;
             ContactList = null;
             MessageList = null;
+            IsPublicChatActive = false;
         }
 
         private void OnUserListChanged()
         {
-            ContactList = _clientState.Contacts;
+            ContactList = _clientState.GetContactList();
         }
 
         private void OnNewMessageAdded(Message message)
         {
             if (IsPublicChatActive)
             {
-                //MessageList = _clientState.GetGroupMessageList(Login);
+                MessageList = _clientState.GetPublicMessageList();
             }
             else
             {
-                foreach (User contact in ContactList)
+                foreach (Contact contact in ContactList)
                 {
-                    if (contact.Name == message.Sender || contact.Name == message.Receiver)
+                    if (message.Receiver != "Public chat" && (contact.Title == message.Sender || contact.Title == message.Receiver))
                     {
-                        contact.MessageList = _clientState.GetPrivateMessageList(contact.Name);
-                        if (message.Sender == contact.Name && (SelectedUser == null || message.Sender != SelectedUser.Name))
+                        contact.MessageList = _clientState.GetPrivateMessageList(contact.Title);
+                        if (message.Sender == contact.Title && (SelectedContact == null || message.Sender != SelectedContact.Title))
                         {
                             contact.NewMessageCounter = contact.NewMessageCounter.HasValue ? contact.NewMessageCounter += 1 : contact.NewMessageCounter = 1;
                         }
@@ -228,6 +217,5 @@ namespace Messenger.ViewModels
                 }
             }
         }
-
     }
 }

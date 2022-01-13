@@ -8,12 +8,6 @@ namespace Messenger.Network.Requests
 {
     public class GetPublicMessageListRequest
     {
-        public string Name { get; set; }
-
-        public GetPublicMessageListRequest(string name)
-        {
-            Name = name;
-        }
         public MessageContainer GetContainer()
         {
             MessageContainer container = new MessageContainer

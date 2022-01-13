@@ -35,7 +35,8 @@
                 Grid.Column="2"
                 Grid.Row="0"
                 Panel.ZIndex="1"
-                Margin="5,10,10,5"/>
+                Margin="5,10,10,5"
+                Command="{Binding ShowLogWindowDialogCommand}"/>
 
         <uc:ChatWindow Grid.Column="0"
                        Grid.Row="0"

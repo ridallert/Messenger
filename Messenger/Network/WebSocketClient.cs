@@ -36,8 +36,11 @@ namespace Messenger.Network
         public event Action<AuthorizationResponse> AuthorizationResponseСame;
         public event Action<GetContactsResponse> GetContactsResponseСame;
         public event Action<GetPrivateMessageListResponse> GetPrivateMessageListResponseCame;
+        public event Action<GetPublicMessageListResponse> GetPublicMessageListResponseCame;
         public event Action<PrivateMessageReceivedResponse> PrivateMessageReceivedResponseCame;
+        public event Action<PublicMessageReceivedResponse> PublicMessageReceivedResponseCame;
         public event Action<UserStatusChangedBroadcast> UserStatusChangedBroadcastCame;
+        public event Action<GetEventListResponse> GetEventListResponseCame;
 
         public event Action Connected;
         public event Action Disconnected;
@@ -106,9 +109,23 @@ namespace Messenger.Network
                     PrivateMessageReceivedResponseCame?.Invoke(privateMessageDeliveredResponse);
                     break;
 
+                case nameof(PublicMessageReceivedResponse):
+                    PublicMessageReceivedResponse publicMessageDeliveredResponse = JsonConvert.DeserializeObject<PublicMessageReceivedResponse>(container.Payload.ToString());
+                    PublicMessageReceivedResponseCame?.Invoke(publicMessageDeliveredResponse);
+                    break;
+
+                case nameof(GetPublicMessageListResponse):
+                    GetPublicMessageListResponse getPublicMessageListResponse = JsonConvert.DeserializeObject<GetPublicMessageListResponse>(container.Payload.ToString());
+                    GetPublicMessageListResponseCame?.Invoke(getPublicMessageListResponse);
+                    break;
+
                 case nameof(UserStatusChangedBroadcast):
                     UserStatusChangedBroadcast userStatusChangedBroadcast = JsonConvert.DeserializeObject<UserStatusChangedBroadcast>(container.Payload.ToString());
                     UserStatusChangedBroadcastCame?.Invoke(userStatusChangedBroadcast);
+                    break;
+                case nameof(GetEventListResponse):
+                    GetEventListResponse getEventListResponse = JsonConvert.DeserializeObject<GetEventListResponse>(container.Payload.ToString());
+                    GetEventListResponseCame?.Invoke(getEventListResponse);
                     break;
             }
         }
@@ -143,6 +160,13 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
+        public void SendPublicMessage(string sender, string message, DateTime sendTime)
+        {
+            _sendQueue.Enqueue(new SendPublicMessageRequest(sender, message, sendTime).GetContainer());
+
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                Send();
+        }
         public void GetContacts(string name)
         {
             _sendQueue.Enqueue(new GetContactsRequest(name).GetContainer());
@@ -157,14 +181,20 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void GetPublicMessageList(string name)
+        public void GetPublicMessageList()
         {
-            _sendQueue.Enqueue(new GetPublicMessageListRequest(name).GetContainer());
+            _sendQueue.Enqueue(new GetPublicMessageListRequest().GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
+        public void GetEventLog()
+        {
+            _sendQueue.Enqueue(new GetEventListRequest().GetContainer());
 
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                Send();
+        }
         private void OnOpen(object sender, System.EventArgs e)
         {
             Connected?.Invoke();

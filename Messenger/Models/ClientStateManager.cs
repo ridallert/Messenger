@@ -17,8 +17,9 @@ namespace Messenger.Models
         private WebSocketClient _webSocketClient;
 
         private string _login;
-        private ObservableCollection<User> _contacts;
-        private ObservableCollection<Message> _publicMessageList;
+        private List<Contact> _contacts;
+        private List<Message> _publicMessageList;
+        private List<LogEntry> _eventList;
         public string Login
         {
             get { return _login; }
@@ -27,15 +28,15 @@ namespace Messenger.Models
                 _login = value;
                 if (value != null)
                 {
-                    UserAuthorized();
+                    UserAuthorized?.Invoke();
                 }
                 else
                 {
-                    UserLoggedOut();
+                    UserLoggedOut?.Invoke();
                 }
             }
         }
-        public ObservableCollection<User> Contacts
+        public List<Contact> Contacts
         {
             get { return _contacts; }
             set
@@ -44,7 +45,7 @@ namespace Messenger.Models
                 ContactListChanged?.Invoke();
             }
         }
-        public ObservableCollection<Message> PublicMessageList
+        public List<Message> PublicMessageList
         {
             get { return _publicMessageList; }
             set
@@ -53,40 +54,56 @@ namespace Messenger.Models
                 PublicMessageListChanged?.Invoke();
             }
         }
+        public List<LogEntry> EventList
+        {
+            get { return _eventList; }
+            set
+            {
+                _eventList = value;
+                EventListChanged?.Invoke();
+            }
+        }
 
         public event Action ContactListChanged;
         public event Action UserAuthorized;
         public event Action UserLoggedOut;
         public event Action<Message> NewMessageAdded;
         public event Action PublicMessageListChanged;
+        public event Action EventListChanged;
 
         public ClientStateManager(WebSocketClient webSocketClient)
         {
-            Contacts = new ObservableCollection<User>();
-            PublicMessageList = new ObservableCollection<Message>();
+            Contacts = new List<Contact>();
+            PublicMessageList = new List<Message>();
 
             _webSocketClient = webSocketClient;
-            _webSocketClient.GetContactsResponseСame += LoadUserList;
+            _webSocketClient.GetContactsResponseСame += LoadContactList;
             _webSocketClient.GetPrivateMessageListResponseCame += LoadPrivateMessageList;
+            _webSocketClient.GetPublicMessageListResponseCame += LoadPublicMessageList;
             _webSocketClient.PrivateMessageReceivedResponseCame += AddPrivateMessage;
-            _webSocketClient.UserStatusChangedBroadcastCame += OnUserStatusChangedBroadcastCame;           
+            _webSocketClient.PublicMessageReceivedResponseCame += AddPublicMessage;
+            _webSocketClient.UserStatusChangedBroadcastCame += OnUserStatusChangedBroadcastCame;
+            _webSocketClient.GetEventListResponseCame += LoadEventLog;
         }
         public void AuthorizeUser(string login)
         {
             Login = login;
         }
-        private void LoadUserList(GetContactsResponse getContactsResponse)
+        private void LoadContactList(GetContactsResponse getContactsResponse)
         {
-            Contacts = new ObservableCollection<User>(getContactsResponse.UserList);
+            Contacts = new List<Contact>(getContactsResponse.ContactList);
         }
-
-        public void LoadPrivateMessageList(GetPrivateMessageListResponse getMessageListResponse)
+        public ObservableCollection<Contact> GetContactList()
         {
-            foreach (User contact in Contacts)
+            return new ObservableCollection<Contact>(Contacts);
+        }
+        public void LoadPrivateMessageList(GetPrivateMessageListResponse response)
+        {
+            foreach (Contact contact in Contacts)
             {
-                foreach (Message message in getMessageListResponse.MessageList)
+                foreach (Message message in response.MessageList)
                 {
-                    if ((contact.Name == message.Sender || contact.Name == message.Receiver) && !message.IsGroopChatMessage)
+                    if ((contact.Title == message.Sender || contact.Title == message.Receiver) && contact.Users.Count == 1)
                     {
                         contact.MessageList.Add(message);
                     }
@@ -94,15 +111,18 @@ namespace Messenger.Models
             }
 
         }
-
+        public void LoadPublicMessageList(GetPublicMessageListResponse response)
+        {
+            PublicMessageList = new List<Message>(response.MessageList);
+        }
 
         public void OnUserStatusChangedBroadcastCame(UserStatusChangedBroadcast broadcast)
         {
             bool isUserExist = false;
 
-            foreach (User contact in Contacts)
+            foreach (Contact contact in Contacts)
             {
-                if (contact.Name == broadcast.Name)
+                if (contact.Title == broadcast.Name && contact.Users.Count == 1)
                 {
                     contact.IsOnline = broadcast.Status;
                     isUserExist = true;
@@ -114,13 +134,15 @@ namespace Messenger.Models
                 {
                     Application.Current.Dispatcher.InvokeAsync(() =>
                     {
-                        Contacts.Add(new User(broadcast.Name, broadcast.Status));
+                        Contact newChat = new Contact(broadcast.Name);
+                        newChat.IsOnline = broadcast.Status;
+                        Contacts.Add(newChat);
                     });
-                    
+
                 }
-                else ////////////////////////////////////////////////////////////////////////////////////////////////////
+                else /////////////////////////////////////////////////////////////////////////////////////////////////////////////
                 {
-                    throw new Exception("Пользователя с именем '" + broadcast.Name + "' на клиенте не зарегистрировано");
+                    throw new Exception("Пользователя или чата с именем '" + broadcast.Name + "' на клиенте не зарегистрировано");
                 }
             }
         }
@@ -128,25 +150,27 @@ namespace Messenger.Models
         public ObservableCollection<Message> GetPrivateMessageList(string name)
         {
             ObservableCollection<Message> messages = new ObservableCollection<Message>();
-            foreach (User contact in Contacts)
+            foreach (Contact contact in Contacts)
             {
-                if (contact.Name == name)
+                if (contact.Title == name)
                 {
                     messages = contact.MessageList;
                 }
             }
             return messages;
         }
-
-
+        public ObservableCollection<Message> GetPublicMessageList()
+        {
+            return new ObservableCollection<Message>(PublicMessageList);
+        }
 
         public void AddPrivateMessage(PrivateMessageReceivedResponse response)
         {
             Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                foreach (User contact in Contacts)
+                foreach (Contact contact in Contacts)
                 {
-                    if (contact.Name == response.Sender || contact.Name == response.Receiver)
+                    if ((contact.Title == response.Sender || contact.Title == response.Receiver) && contact.Users.Count == 1)
                     {
                         Message message = new Message(response.Sender, response.Receiver, response.Text, response.SendTime);
                         contact.MessageList.Add(message);
@@ -155,19 +179,34 @@ namespace Messenger.Models
                 }
             });
         }
+        public void AddPublicMessage(PublicMessageReceivedResponse response)
+        {
+            Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Message message = new Message(response.Sender, "Public chat", response.Text, response.SendTime);
+                PublicMessageList.Add(message);
+                NewMessageAdded?.Invoke(message);
+            });
+        }
 
         public void SetUserOnline(string name)
         {
-            foreach (User contact in Contacts)
+            foreach (Contact contact in Contacts)
             {
-                if (contact.Name == name)
+                if (contact.Title == name && contact.Users.Count == 1)
                 {
                     contact.IsOnline = OnlineStatus.Online;
                 }
             }
         }
-
-
+        private void LoadEventLog(GetEventListResponse response)
+        {
+            EventList = response.EventList;
+        }
+        public ObservableCollection<LogEntry> GetEventLog()
+        {
+            return new ObservableCollection<LogEntry>(EventList);
+        }
 
         //public void SendGroupMessage(string sender, string text) переделать
         //{
@@ -179,9 +218,9 @@ namespace Messenger.Models
 
 
 
-        public ObservableCollection<Message> GetPublicMessageList()
-        {
-            return PublicMessageList;
-        }
-}
+        //public ObservableCollection<Message> GetPublicMessageList()
+        //{
+        //    return PublicMessageList;
+        //}
+    }
 }

@@ -30,12 +30,12 @@
                      Margin="10,5,5,5"
                      ItemsSource="{Binding ContactList}"
                      HorizontalContentAlignment="Stretch"
-                     SelectedItem="{Binding SelectedUser, UpdateSourceTrigger=PropertyChanged}" >
+                     SelectedItem="{Binding SelectedContact, UpdateSourceTrigger=PropertyChanged}" >
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Path=Name}" FontWeight="Bold" />
+                                <TextBlock Text="{Binding Path=Title}" FontWeight="Bold" />
                                 <TextBlock Margin="10,0,0,0" Text="{Binding Path=NewMessageCounter}" Foreground="CadetBlue"/>
                             </StackPanel>
                             <TextBlock Text="{Binding Path=IsOnline}"/>

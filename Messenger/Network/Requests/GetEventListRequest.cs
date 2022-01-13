@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Requests
 {
-    class GetEventListRequest
+    public class GetEventListRequest
     {
-        public DateTime From { get; set; }
-        public DateTime To { get; set; }
+        //public DateTime From { get; set; }
+        //public DateTime To { get; set; }
 
-        public GetEventListRequest(DateTime from, DateTime to)
-        {
-            From = from;
-            To = to;
-        }
+        //public GetEventListRequest(DateTime from, DateTime to)
+        //{
+        //    From = from;
+        //    To = to;
+        //}
 
         public MessageContainer GetContainer()
         {

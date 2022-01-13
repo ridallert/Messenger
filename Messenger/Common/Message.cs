@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,6 @@ namespace Messenger.Common
         private string _receiver;
         private string _text;
         private DateTime _sendTime;
-        private bool _isGroopChatMessage;
 
         public string Sender
         {
@@ -34,19 +34,13 @@ namespace Messenger.Common
             get { return _sendTime; }
             set { _sendTime = value; }
         }
-        public bool IsGroopChatMessage
-        {
-            get { return _isGroopChatMessage; }
-            set { _isGroopChatMessage = value; }
-        }
 
-        public Message(string sender, string receiver, string text, DateTime sendTime, bool isGroopChatMessage = false)
+        public Message(string sender, string receiver, string text, DateTime sendTime)
         {
             Sender = sender;
             Receiver = receiver;
             Text = text;
             SendTime = sendTime;
-            IsGroopChatMessage = isGroopChatMessage;
         }
     }
 }

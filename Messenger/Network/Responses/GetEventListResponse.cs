@@ -7,7 +7,7 @@ using Messenger.Common;
 
 namespace Messenger.Network.Responses
 {
-    class GetEventListResponse
+    public class GetEventListResponse
     {
         public string Result { get; set; }
         public List<LogEntry> EventList {get;set;}

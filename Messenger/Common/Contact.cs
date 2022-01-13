@@ -1,4 +1,5 @@
 ﻿using Messenger.Network;
+using Newtonsoft.Json;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -9,31 +10,33 @@ using System.Threading.Tasks;
 
 namespace Messenger.Common
 {
-    public class User : BindableBase
+    public class Contact : BindableBase
     {
-        private string _name;
+        private string _title;
+        private List<string> _users;
         private OnlineStatus _isOnline;
         private ObservableCollection<Message> _messageList;
         private int? _newMessageCounter;
-        public string Name
+
+        public string Title
         {
-            get { return _name; }
+            get { return _title; }
             set
             {
-                if (value != _name)
+                if (value != _title)
                 {
-                    SetProperty(ref _name, value);
+                    SetProperty(ref _title, value);
                 }
             }
         }
-        public int? NewMessageCounter
+        public List<string> Users
         {
-            get { return _newMessageCounter; }
+            get { return _users; }
             set
             {
-                if (value != _newMessageCounter)
+                if (value != _users)
                 {
-                    SetProperty(ref _newMessageCounter, value);
+                    SetProperty(ref _users, value);
                 }
             }
         }
@@ -56,11 +59,31 @@ namespace Messenger.Common
                 SetProperty(ref _messageList, value);
             }
         }
-
-        public User(string name, OnlineStatus isOnline)
+        public int? NewMessageCounter
         {
-            Name = name;
-            IsOnline = isOnline;
+            get { return _newMessageCounter; }
+            set
+            {
+                if (value != _newMessageCounter)
+                {
+                    SetProperty(ref _newMessageCounter, value);
+                }
+            }
+        }
+       
+        public Contact(string user)
+        {
+            Title = user;
+            Users = new List<string>();
+            Users.Add(user);
+            MessageList = new ObservableCollection<Message>();
+        }
+
+        [JsonConstructor]
+        public Contact(string chatName, List<string> users)
+        {
+            Title = chatName;
+            Users = users;
             MessageList = new ObservableCollection<Message>();
         }
     }

@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Messenger.Views
 {
     /// <summary>
-    /// Логика взаимодействия для Log.xaml
+    /// Логика взаимодействия для LogWindow.xaml
     /// </summary>
-    public partial class Log : Window
+    public partial class LogWindow : UserControl
     {
-        public Log()
+        public LogWindow()
         {
             InitializeComponent();
         }

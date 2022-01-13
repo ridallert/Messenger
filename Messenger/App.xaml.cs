@@ -20,8 +20,8 @@ namespace Messenger
 
         protected override void RegisterTypes(IContainerRegistry container)
         {
-
             container.RegisterDialog<AuthorizationDialog, AuthorizationDialogViewModel>("AuthorizationDialog");
+            container.RegisterDialog<LogWindow, LogWindowViewModel>("LogWindow");
             container.RegisterDialog<ServerConfig, ServerConfigViewModel>("ServerConfigDialog");
             container.RegisterDialog<NotificationWindow>();
 
