@@ -6,7 +6,31 @@
         <!--<ResourceDictionary Source="Brushes.xaml" />-->
     </ResourceDictionary.MergedDictionaries>
 
+    <!--DATA GRID-->
+    <Style TargetType="DataGrid">
+        <Setter Property="Background" Value="WhiteSmoke" />
+        <!--<Setter Property="CanUserResizeColumns" Value="False"/>-->
+        <Setter Property="ColumnWidth" Value="*"/>
+    </Style>
+    
+    <Style TargetType="DataGridColumnHeader">
+        <!--<Setter Property="Margin" Value="10,0,0,0"/>-->
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
 
+    <!--<Style TargetType="DataGridCellsPresenter">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>-->
+    <Style TargetType="DataGridCell">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <ContentPresenter HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!--ГЛАВНОЕ ОКНО-->
     <Style x:Key="WindowStyle" TargetType="Window">
         <Setter Property="Background" Value="WhiteSmoke" />
