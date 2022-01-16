@@ -8,11 +8,9 @@
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
             <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterOwner" />
-            <Setter Pro
             <Setter Property="ResizeMode" Value="CanResize"/>
             <Setter Property="ShowInTaskbar" Value="False"/>
             <Setter Property="SizeToContent" Value="Height"/>
-            <Setter Property="IsHitTestVisible" Value="False"/>
             <Setter Property="WindowStyle" Value="SingleBorderWindow"/>
         </Style>
     </prism:Dialog.WindowStyle>
@@ -61,7 +59,8 @@
                     Background="White"
                     BorderThickness="1"
                     FontFamily="Candara"
-                    FontSize="14"/>
+                    FontSize="14"
+                    SelectedDate="{Binding Path=From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             
         <TextBlock Text="To:"
                     Grid.Column="2"
@@ -76,8 +75,9 @@
                     HorizontalContentAlignment="Center"
                     Background="White"
                     BorderThickness="1"
-                    FontFamily="Candara" FontSize="14"/>
-
+                    FontFamily="Candara" FontSize="14"
+                    SelectedDate="{Binding Path=To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        
         <Button Content="Load"
                 Grid.Column="5"
                 Grid.Row="1"

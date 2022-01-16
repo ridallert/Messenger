@@ -18,6 +18,20 @@ namespace Messenger.ViewModels
         private WebSocketClient _webSocketClient;
         private ObservableCollection<LogEntry> _eventList;
 
+        private DateTime _from;
+        private DateTime _to;
+
+        public DateTime From
+        {
+            get { return _from; }
+            set { SetProperty(ref _from, value); }
+        }
+        public DateTime To
+        {
+            get { return _to; }
+            set { SetProperty(ref _to, value); }
+        }
+
         public ObservableCollection<LogEntry> EventList
         {
             get { return _eventList; }
@@ -29,6 +43,9 @@ namespace Messenger.ViewModels
             _webSocketClient = webSocketClient;
             EventList = _clientState.GetEventLog();
             _clientState.EventListChanged += OnEventListChanged;
+
+            From = DateTime.Today.AddDays(-1);
+            To = DateTime.Today;
         }
         private void OnEventListChanged()
         {
@@ -37,7 +54,7 @@ namespace Messenger.ViewModels
 
         //IDialogAware
 
-        private string _title = "LogWindow";
+        private string _title = "Log Window";
         public string Title
         {
             get { return _title; }

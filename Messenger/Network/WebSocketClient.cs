@@ -188,9 +188,9 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void GetEventLog()
+        public void GetEventLog(DateTime from, DateTime to)
         {
-            _sendQueue.Enqueue(new GetEventListRequest().GetContainer());
+            _sendQueue.Enqueue(new GetEventListRequest(from, to).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
