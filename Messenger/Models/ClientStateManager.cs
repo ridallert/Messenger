@@ -20,48 +20,26 @@ namespace Messenger.Models
         private List<Contact> _contacts;
         private List<Message> _publicMessageList;
         private List<LogEntry> _eventList;
+
         public string Login
         {
             get { return _login; }
-            set
-            {
-                _login = value;
-                if (value != null)
-                {
-                    UserAuthorized?.Invoke();
-                }
-                else
-                {
-                    UserLoggedOut?.Invoke();
-                }
-            }
+            set { _login = value; }
         }
         public List<Contact> Contacts
         {
             get { return _contacts; }
-            set
-            {
-                _contacts = value;
-                ContactListChanged?.Invoke();
-            }
+            set { _contacts = value; }
         }
         public List<Message> PublicMessageList
         {
             get { return _publicMessageList; }
-            set
-            {
-                _publicMessageList = value;
-                PublicMessageListChanged?.Invoke();
-            }
+            set { _publicMessageList = value; }
         }
         public List<LogEntry> EventList
         {
             get { return _eventList; }
-            set
-            {
-                _eventList = value;
-                EventListChanged?.Invoke();
-            }
+            set { _eventList = value; }
         }
 
         public event Action ContactListChanged;
@@ -88,10 +66,17 @@ namespace Messenger.Models
         public void AuthorizeUser(string login)
         {
             Login = login;
+            UserAuthorized?.Invoke();
+        }
+        public void LogOut()
+        {
+            Login = null;
+            UserLoggedOut?.Invoke();
         }
         private void LoadContactList(GetContactsResponse getContactsResponse)
         {
             Contacts = new List<Contact>(getContactsResponse.ContactList);
+            ContactListChanged?.Invoke();
         }
         public ObservableCollection<Contact> GetContactList()
         {
@@ -109,11 +94,11 @@ namespace Messenger.Models
                     }
                 }
             }
-
         }
         public void LoadPublicMessageList(GetPublicMessageListResponse response)
         {
             PublicMessageList = new List<Message>(response.MessageList);
+            PublicMessageListChanged?.Invoke();
         }
 
         public void OnUserStatusChangedBroadcastCame(UserStatusChangedBroadcast broadcast)
@@ -137,12 +122,8 @@ namespace Messenger.Models
                         Contact newChat = new Contact(broadcast.Name);
                         newChat.IsOnline = broadcast.Status;
                         Contacts.Add(newChat);
+                        ContactListChanged?.Invoke();
                     });
-
-                }
-                else /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                {
-                    throw new Exception("Пользователя или чата с именем '" + broadcast.Name + "' на клиенте не зарегистрировано");
                 }
             }
         }
@@ -186,6 +167,7 @@ namespace Messenger.Models
                 Message message = new Message(response.Sender, "Public chat", response.Text, response.SendTime);
                 PublicMessageList.Add(message);
                 NewMessageAdded?.Invoke(message);
+                PublicMessageListChanged?.Invoke();
             });
         }
 
@@ -202,6 +184,7 @@ namespace Messenger.Models
         private void LoadEventLog(GetEventListResponse response)
         {
             EventList = response.EventList;
+            EventListChanged?.Invoke();
         }
         public ObservableCollection<LogEntry> GetEventLog(EventType type)
         {
@@ -210,22 +193,9 @@ namespace Messenger.Models
                 return new ObservableCollection<LogEntry>(EventList);
             }
             else
+            {
                 return new ObservableCollection<LogEntry>(EventList.FindAll(entry => entry.Type == type));
+            }
         }
-
-        //public void SendGroupMessage(string sender, string text) переделать
-        //{
-        //    for (int i = 0; i < Users.Count; i++)
-        //    {
-        //        Users[i].MessageList.Add(new Message(sender, Users[i].Name, text, true));
-        //    }
-        //}
-
-
-
-        //public ObservableCollection<Message> GetPublicMessageList()
-        //{
-        //    return PublicMessageList;
-        //}
     }
 }

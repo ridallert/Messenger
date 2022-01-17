@@ -45,7 +45,7 @@
             </ListBox>
 
             <ToggleButton Name="publicChatButton"
-                          Content="Public chat"
+                          Content="{Binding PublicChatButtonName}"
                           Grid.Row="2"
                           Margin="10,5,5,10"
                           IsChecked="{Binding IsPublicChatActive, UpdateSourceTrigger=PropertyChanged}"

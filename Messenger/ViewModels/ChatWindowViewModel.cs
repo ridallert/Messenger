@@ -16,14 +16,24 @@ namespace Messenger.ViewModels
     {
         private WebSocketClient _webSocketClient;
         private ClientStateManager _clientState;
-        private bool _isPublicChatActive;
-        private ObservableCollection<Contact> _contactList;
+
         private ObservableCollection<Message> _messageList;
-        private string _login;
+        private ObservableCollection<Contact> _contactList;
         private Contact _selectedContact;
+
+        private string _login;
         private string _newMessage;
+        private bool _isPublicChatActive;
         private int _caretPosition;
 
+        private string _publicChatButtonName;
+        private int _publicNewMessageCounter;
+
+        public string PublicChatButtonName
+        {
+            get { return _publicChatButtonName; }
+            set { SetProperty(ref _publicChatButtonName, value); }
+        }
         public int CaretPosition
         {
             get { return _caretPosition; }
@@ -32,7 +42,16 @@ namespace Messenger.ViewModels
         public bool IsPublicChatActive
         {
             get { return _isPublicChatActive; }
-            set { SetProperty(ref _isPublicChatActive, value); }
+            set
+            {
+                SetProperty(ref _isPublicChatActive, value);
+
+                if (value == true)
+                {
+                    _publicNewMessageCounter = 0;
+                    PublicChatButtonName = "Public chat";
+                }
+            }
         }
         public ObservableCollection<Contact> ContactList
         {
@@ -67,12 +86,11 @@ namespace Messenger.ViewModels
                     SetProperty(ref _selectedContact, value);
                     NewMessage = null;
                     SendMessageCommand.RaiseCanExecuteChanged();
-                    if (SelectedContact != null)
-                    {
-                        SelectedContact.NewMessageCounter = null;
-                    }
+
                     if (_login != null && value != null)
                     {
+                        SelectedContact.NewMessageCounter = null;
+
                         MessageList = _clientState.GetPrivateMessageList(value.Title);
                         IsPublicChatActive = false;
                     }
@@ -100,6 +118,8 @@ namespace Messenger.ViewModels
             _clientState.UserLoggedOut += OnUserLoggedOut;
             _clientState.ContactListChanged += OnUserListChanged;
             _clientState.NewMessageAdded += OnNewMessageAdded;
+
+            PublicChatButtonName = "Public chat";
         }
 
         private DelegateCommand _newLineCommand;
@@ -142,23 +162,22 @@ namespace Messenger.ViewModels
         }
         private bool SendMessageCanExecute()
         {
-
             if (_isPublicChatActive == false)
             {
                 return Login != null &&
-                        SelectedContact != null &&
-                        ContactList != null &&
-                        ContactList.Count != 0 &&
-                        NewMessage != null &&
-                        NewMessage != "";
+                       ContactList != null &&
+                       ContactList.Count != 0 &&
+                       NewMessage != null &&
+                       NewMessage != "" &&
+                       SelectedContact != null;
             }
             else
             {
                 return Login != null &&
-                        ContactList != null &&
-                        ContactList.Count != 0 &&
-                        NewMessage != null &&
-                        NewMessage != "";
+                       ContactList != null &&
+                       ContactList.Count != 0 &&
+                       NewMessage != null &&
+                       NewMessage != "";
             }
         }
 
@@ -198,15 +217,23 @@ namespace Messenger.ViewModels
 
         private void OnNewMessageAdded(Message message)
         {
-            if (IsPublicChatActive)
+            if (message.Receiver == "Public chat")
             {
-                MessageList = _clientState.GetPublicMessageList();
+                if (IsPublicChatActive)
+                {
+                    MessageList = _clientState.GetPublicMessageList();
+                }
+                else
+                {
+                    _publicNewMessageCounter++;
+                    PublicChatButtonName = "Public chat +" + _publicNewMessageCounter;
+                }
             }
             else
             {
                 foreach (Contact contact in ContactList)
                 {
-                    if (message.Receiver != "Public chat" && (contact.Title == message.Sender || contact.Title == message.Receiver))
+                    if (contact.Title == message.Sender || contact.Title == message.Receiver)
                     {
                         contact.MessageList = _clientState.GetPrivateMessageList(contact.Title);
                         if (message.Sender == contact.Title && (SelectedContact == null || message.Sender != SelectedContact.Title))

@@ -22,7 +22,6 @@ namespace Messenger.Network
     {
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
         private int _sending;
-        //private string _login;
 
         private WebSocket _socket;
         public bool IsConnected

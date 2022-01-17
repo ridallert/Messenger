@@ -53,10 +53,8 @@ namespace Messenger.ViewModels
         private void OnUserLoggedOut()
         {
             LoginButtonContent = "Log in";
-            _webSocketClient.Disconnect();
             ShowLogWindowDialogCommand.RaiseCanExecuteChanged();
         }
-
 
         private DelegateCommand _showAuthDialCommand;
         public DelegateCommand ShowAuthorizationDialogCommand => _showAuthDialCommand ?? (_showAuthDialCommand = new DelegateCommand(ShowAuthDialogExecute));
@@ -69,7 +67,8 @@ namespace Messenger.ViewModels
             }
             else
             {
-                _clientState.Login = null;
+                _clientState.LogOut();
+                _webSocketClient.Disconnect();
             }
         }
 
