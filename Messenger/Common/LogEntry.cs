@@ -8,11 +8,11 @@ namespace Messenger.Common
 {
     public class LogEntry
     {
-        public string Type { get; set; }
+        public EventType Type { get; set; }
         public string Message { get; set; }
         public DateTime DateTime { get; set; }
 
-        public LogEntry(string type, string message, DateTime dateTime)
+        public LogEntry(EventType type, string message, DateTime dateTime)
         {
             Type = type;
             Message = message;

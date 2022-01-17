@@ -31,7 +31,7 @@
                 Command="{Binding ShowAuthorizationDialogCommand}"/>
 
         <Button Name="showLogDataButton"
-                Content="Show log data"
+                Content="Event log"
                 Grid.Column="2"
                 Grid.Row="0"
                 Panel.ZIndex="1"

@@ -57,6 +57,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\Contact.cs" />
+    <Compile Include="Common\EventType.cs" />
     <Compile Include="Common\LogEntry.cs" />
     <Compile Include="Network\Broadcasts\PublicMessageDeliveredBroadcast.cs" />
     <Compile Include="Network\Broadcasts\UserStatusChangedBroadcast.cs" />

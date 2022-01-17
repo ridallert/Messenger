@@ -2,51 +2,45 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Messenger.Resources">
 
-    <ResourceDictionary.MergedDictionaries>
-        <!--<ResourceDictionary Source="Brushes.xaml" />-->
-    </ResourceDictionary.MergedDictionaries>
-
     <!--DATA GRID-->
     <Style TargetType="DataGrid">
-        <Setter Property="Background" Value="WhiteSmoke" />
-        <!--<Setter Property="CanUserResizeColumns" Value="False"/>-->
+        <Setter Property="Background" Value="WhiteSmoke"/>
         <Setter Property="ColumnWidth" Value="*"/>
-    </Style>
-    
-    <Style TargetType="DataGridColumnHeader">
-        <!--<Setter Property="Margin" Value="10,0,0,0"/>-->
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="GridLinesVisibility" Value="Vertical"/>
+        <Setter Property="VerticalGridLinesBrush" Value="#FFDEDFE1"/>
+        <Setter Property="RowBackground" Value="White"/>
+        <Setter Property="AlternatingRowBackground" Value="#FFE8F0F4"/>
     </Style>
 
-    <!--<Style TargetType="DataGridCellsPresenter">
+    <Style TargetType="DataGridColumnHeader">
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
-    </Style>-->
+    </Style>
+
     <Style TargetType="DataGridCell">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
-                    <ContentPresenter HorizontalAlignment="Left" Margin="10,0,0,0"/>
+                    <ContentPresenter HorizontalAlignment="Center"/>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!--ГЛАВНОЕ ОКНО-->
     <Style x:Key="WindowStyle" TargetType="Window">
-        <Setter Property="Background" Value="WhiteSmoke" />
+        <Setter Property="Background" Value="WhiteSmoke"/>
     </Style>
 
     <!--ОКНО АВТОРИЗАЦИИ И НАСТРОЕК СЕРВЕРА-->
-    <Style x:Key="DialogStyle" TargetType="UserControl" >
+    <Style x:Key="DialogStyle" TargetType="UserControl">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="UserControl">
                     <Border Background="WhiteSmoke"
                             BorderThickness="1.5"
                             BorderBrush="White">
-
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                 </ControlTemplate>
             </Setter.Value>
@@ -58,7 +52,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="UserControl">
-                    <Border Background="WhiteSmoke" >
+                    <Border Background="WhiteSmoke">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
@@ -71,12 +65,12 @@
     <!--КНОПКИ-->
     <Style TargetType="Button">
         <Setter Property="Background" Value="#506482"/>
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="Candara" />
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontFamily" Value="Candara"/>
         <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="2" />
+        <Setter Property="Padding" Value="2"/>
         <!--<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
@@ -115,13 +109,11 @@
     </Style>
 
 
-
-
     <Style TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="Candara" />
     </Style>
-    
+
     <Style TargetType="TextBox">
         <Setter Property="FontSize" Value="14" />
         <Setter Property="FontFamily" Value="Candara" />
@@ -135,103 +127,5 @@
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
-
-    <!--<ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
-        <Border BorderBrush="White"
-                BorderThickness="1.5"
-                CornerRadius="15,15,15,15"
-                TextBlock.Foreground="White"
-                Background="Black">
-            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                              RecognizesAccessKey="True"/>
-        </Border>
-        
-    </ControlTemplate>-->
-
-    <!--<ControlTemplate x:Key="ContactsListBoxTemplate" TargetType="ListBox">
-        <Border BorderBrush="White"
-                BorderThickness="1.5"
-                CornerRadius="15,15,15,15"
-                TextBlock.Foreground="White"
-                Background="Gray">
-            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-        </Border>
-    </ControlTemplate>-->
-
-    <!--<Style TargetType="ListBoxItem">
-        <Setter Property="Background" Value="{StaticResource TransparentBrush}" />
-        <Setter Property="Foreground" Value="{StaticResource ForegroundBrush}" />
-        <Setter Property="FontSize" Value="14.667" />
-        <Setter Property="FontFamily" Value="Segoe UI" />
-        <Setter Property="MinHeight" Value="30" />
-        <Setter Property="Padding" Value="6,2" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="BorderThickness" Value="1" />
-        
-    </Style>-->
-
-
-
-
-    <!--<Style x:Key="ButtonStyle" TargetType="Button">
-        <Setter Property="FontSize" Value="15"/>
-        <Setter Property="FontFamily" Value="Candara"/>
-     
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <Border BorderThickness="1.5" BorderBrush="White" 
-                            Background="#18303a" >
-                        CornerRadius="15,15,15,15"
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Background" Value="#18303a" />
-        <Setter Property="Foreground" Value="WhiteSmoke" />
-    </Style>-->
-
-    <!--КНОПКА ГРУППОВОГО ЧАТА-->
-    <!--<Style x:Key="ToggleButtonStyle" TargetType="ToggleButton">
-        <Setter Property="FontSize" Value="15"/>
-        <Setter Property="FontFamily" Value="Candara"/>
-
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ToggleButton">
-                    <Border BorderThickness="1.5" BorderBrush="White" 
-                            Background="{TemplateBinding Background}" >
-                        -->
-    <!--CornerRadius="15,15,15,15"-->
-    <!--
-                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-
-        <Setter Property="Background" Value="#202225" />
-        <Setter Property="Foreground" Value="WhiteSmoke" />
-    </Style>-->
-
-    <!--<prism:Dialog.WindowStyle>
-        <Style TargetType="Window">
-            <Setter Property="prism:Dialog.WindowStartupLocation" Value="CenterOwner" />
-            <Setter Property="ResizeMode" Value="NoResize"/>
-            <Setter Property="ShowInTaskbar" Value="False"/>
-            <Setter Property="SizeToContent" Value="WidthAndHeight"/>
-            <Setter Property="WindowStyle" Value="None" />
-        </Style>
-    </prism:Dialog.WindowStyle>-->
-
-
 
 </ResourceDictionary>

@@ -1,6 +1,7 @@
 ﻿using Messenger.Common;
 using Messenger.Models;
 using Messenger.Network;
+using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using System;
@@ -18,18 +19,38 @@ namespace Messenger.ViewModels
         private WebSocketClient _webSocketClient;
         private ObservableCollection<LogEntry> _eventList;
 
+        private ObservableCollection<EventType> _eventTypes;
+        private EventType _selectedEventType;
         private DateTime _from;
         private DateTime _to;
 
+        public ObservableCollection<EventType> EventTypes
+        {
+            get { return _eventTypes; }
+            set { SetProperty(ref _eventTypes, value); }
+        }
+        public EventType SelectedEventType
+        {
+            get { return _selectedEventType; }
+            set { SetProperty(ref _selectedEventType, value); }
+        }
         public DateTime From
         {
             get { return _from; }
-            set { SetProperty(ref _from, value); }
+            set
+            {
+                SetProperty(ref _from, value);
+                LoadCommand.RaiseCanExecuteChanged();
+            }
         }
         public DateTime To
         {
             get { return _to; }
-            set { SetProperty(ref _to, value); }
+            set
+            {
+                SetProperty(ref _to, value);
+                LoadCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public ObservableCollection<LogEntry> EventList
@@ -41,20 +62,40 @@ namespace Messenger.ViewModels
         {
             _clientState = state;
             _webSocketClient = webSocketClient;
-            EventList = _clientState.GetEventLog();
             _clientState.EventListChanged += OnEventListChanged;
-
             From = DateTime.Today.AddDays(-1);
             To = DateTime.Today;
+            _webSocketClient.GetEventLog(From, To);
+
+            EventTypes = new ObservableCollection<EventType>();
+            EventTypes.Add(EventType.All);
+            EventTypes.Add(EventType.Event);
+            EventTypes.Add(EventType.Message);
+            EventTypes.Add(EventType.Error);
+
+            SelectedEventType = EventType.All;
         }
         private void OnEventListChanged()
         {
-            _clientState.GetEventLog();
+            EventList = _clientState.GetEventLog(SelectedEventType);
+        }
+
+        private DelegateCommand _loadCommand;
+        public DelegateCommand LoadCommand => _loadCommand ?? (_loadCommand = new DelegateCommand(LoadExecute, LoadCanExecute));
+
+        private void LoadExecute()
+        {
+            _webSocketClient.GetEventLog(From, To);
+        }
+
+        private bool LoadCanExecute()
+        {
+            return From <= To && To <= DateTime.Today;
         }
 
         //IDialogAware
 
-        private string _title = "Log Window";
+        private string _title = "Event log";
         public string Title
         {
             get { return _title; }

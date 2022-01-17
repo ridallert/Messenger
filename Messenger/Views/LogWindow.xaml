@@ -12,12 +12,18 @@
             <Setter Property="ShowInTaskbar" Value="False"/>
             <Setter Property="SizeToContent" Value="Height"/>
             <Setter Property="WindowStyle" Value="SingleBorderWindow"/>
+            <Setter Property="MinHeight" Value="200"/>
+            <Setter Property="MaxHeight" Value="400"/>
+            <Setter Property="MinWidth" Value="580"/>
+            <Setter Property="Width" Value="800"/>
         </Style>
     </prism:Dialog.WindowStyle>
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="55"/>
+            <ColumnDefinition Width="45"/>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="45"/>
             <ColumnDefinition/>
             <ColumnDefinition Width="30"/>
             <ColumnDefinition/>
@@ -32,7 +38,7 @@
                   Name="logDataGrid"
                   Grid.Column="0"
                   Grid.Row="0"
-                  Grid.ColumnSpan="5"
+                  Grid.ColumnSpan="7"
                   Margin="10,10,10,5"
                   ItemsSource="{Binding EventList}"
                   FontFamily="Candara" FontSize="14"
@@ -44,18 +50,33 @@
                 <DataGridTextColumn Header="Date/Time" Binding="{Binding Path=DateTime}" MinWidth="150"/>
             </DataGrid.Columns>
         </DataGrid>
-
-        <TextBlock Text="From:"
+        
+        <TextBlock Text="Type:"
                    Grid.Column="0"
                    Grid.Row="1"
                    Margin="10,5,5,10"
                    VerticalAlignment="Center"/>
+        
+        <ComboBox Grid.Column="1"
+                  Grid.Row="1"
+                  Margin="5,5,5,10"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  ItemsSource="{Binding EventTypes, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding SelectedEventType, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <TextBlock Text="From:"
+                   Grid.Column="2"
+                   Grid.Row="1"
+                   Margin="5,5,5,10"
+                   VerticalAlignment="Center"/>
           
-        <DatePicker Grid.Column="1"
+        <DatePicker Grid.Column="3"
                     Grid.Row="1"
                     Margin="5,5,5,10"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
                     Background="White"
                     BorderThickness="1"
                     FontFamily="Candara"
@@ -63,25 +84,27 @@
                     SelectedDate="{Binding Path=From, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             
         <TextBlock Text="To:"
-                    Grid.Column="2"
+                    Grid.Column="4"
                     Grid.Row="1"
                     Margin="5,5,5,10"
                     VerticalAlignment="Center"/>
 
-        <DatePicker Grid.Column="3"
+        <DatePicker Grid.Column="5"
                     Grid.Row="1"                    
                     Margin="5,5,5,10"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
                     Background="White"
                     BorderThickness="1"
                     FontFamily="Candara" FontSize="14"
                     SelectedDate="{Binding Path=To, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
         
         <Button Content="Load"
-                Grid.Column="5"
+                Grid.Column="7"
                 Grid.Row="1"
-                Margin="5,5,10,10"/>
+                Margin="5,5,10,10"
+                Command="{Binding LoadCommand}"/>
 
         <!--<Button Content="Close"
                 Grid.Column="4"

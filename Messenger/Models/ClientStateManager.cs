@@ -203,9 +203,14 @@ namespace Messenger.Models
         {
             EventList = response.EventList;
         }
-        public ObservableCollection<LogEntry> GetEventLog()
+        public ObservableCollection<LogEntry> GetEventLog(EventType type)
         {
-            return new ObservableCollection<LogEntry>(EventList);
+            if (type == EventType.All)
+            {
+                return new ObservableCollection<LogEntry>(EventList);
+            }
+            else
+                return new ObservableCollection<LogEntry>(EventList.FindAll(entry => entry.Type == type));
         }
 
         //public void SendGroupMessage(string sender, string text) переделать
