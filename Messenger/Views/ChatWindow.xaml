@@ -35,8 +35,11 @@
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding Path=Title}" FontWeight="Bold" />
-                                <TextBlock Margin="10,0,0,0" Text="{Binding Path=NewMessageCounter}" Foreground="CadetBlue"/>
+                                <TextBlock Text="{Binding Path=Title}"
+                                           FontWeight="Bold" />
+                                <TextBlock Margin="10,0,0,0"
+                                           Foreground="CadetBlue"
+                                           Text="{Binding Path=NewMessageCounter, StringFormat=+{0}, TargetNullValue=''}"/>
                             </StackPanel>
                             <TextBlock Text="{Binding Path=IsOnline}"/>
                         </StackPanel>
@@ -54,20 +57,14 @@
 
         <DockPanel LastChildFill="True" Grid.Column="1">
 
-            <!--<TextBlock Name="meLabel"
-                   Height="30"
-                   Margin="5,10,5,5"
-                  
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Left"
-                   DockPanel.Dock="Top">
-                
-                <Run Text="{Binding StringFormat = You are logged in as {0}, Path=Me.Name}" Foreground="Aqua"></Run>
-                <Run Text="{Binding Path=Me.Name}"></Run>
-                --><!--<Bold></Bold>--><!--
+            <!--<TextBlock Height="30"
+                       DockPanel.Dock="Top"
+                       Margin="5,10,10,5"
+                       VerticalAlignment="Stretch">
+                <Run Text="{Binding Path=Login, StringFormat=You are logged in as {0}, TargetNullValue=''}"/>
                 
             </TextBlock>-->
-
+            
             <Label Name="meLabel"
                    Height="30"
                    Margin="5,10,5,5"
@@ -76,7 +73,6 @@
                    HorizontalAlignment="Left"
                    DockPanel.Dock="Top"
                    Content="{Binding Path=Login, UpdateSourceTrigger=PropertyChanged}"></Label>
-
 
             <Grid DockPanel.Dock="Bottom">
                 <Grid.ColumnDefinitions>
