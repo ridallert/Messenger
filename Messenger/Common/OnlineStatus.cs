@@ -1,4 +1,4 @@
-﻿namespace Messenger.Network
+﻿namespace Messenger.Common
 {
     public enum OnlineStatus
     {

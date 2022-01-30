@@ -126,10 +126,11 @@ namespace Messenger.ViewModels
             if (response.Result == "AlreadyExists" || response.Result == "NewUserAdded")
             {
                 Application.Current.Dispatcher.InvokeAsync(CloseDialog);
-                _clientState.AuthorizeUser(response.Name);
+                //_clientState.AuthorizeUser(response.Name, response.UserId);
                 _webSocketClient.GetContacts(Login);
-                _webSocketClient.GetPrivateMessageList(Login);
-                _webSocketClient.GetPublicMessageList();
+                _webSocketClient.GetChatList(Login);
+                //_webSocketClient.GetPrivateMessageList(Login);
+                //_webSocketClient.GetPublicMessageList();
                 _webSocketClient.GetEventLog(DateTime.Today.AddDays(-1), DateTime.Today);
             }
             Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response));

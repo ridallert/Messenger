@@ -34,6 +34,8 @@ namespace Messenger.Network
 
         public event Action<AuthorizationResponse> AuthorizationResponseСame;
         public event Action<GetContactsResponse> GetContactsResponseСame;
+        public event Action<GetChatListResponse> GetChatListResponseСame;
+
         public event Action<GetPrivateMessageListResponse> GetPrivateMessageListResponseCame;
         public event Action<GetPublicMessageListResponse> GetPublicMessageListResponseCame;
         public event Action<PrivateMessageReceivedResponse> PrivateMessageReceivedResponseCame;
@@ -84,6 +86,8 @@ namespace Messenger.Network
             if (e.IsText == false)
                 return;
 
+           
+
             MessageContainer container = JsonConvert.DeserializeObject<MessageContainer>(e.Data);
 
             switch (container.Identifier)
@@ -96,6 +100,10 @@ namespace Messenger.Network
                 case nameof(GetContactsResponse):
                     GetContactsResponse getUserListResponse = JsonConvert.DeserializeObject<GetContactsResponse>(container.Payload.ToString());
                     GetContactsResponseСame?.Invoke(getUserListResponse);
+                    break;
+                case nameof(GetChatListResponse):
+                    GetChatListResponse getChatListResponse = JsonConvert.DeserializeObject<GetChatListResponse>(container.Payload.ToString());
+                    GetChatListResponseСame?.Invoke(getChatListResponse);
                     break;
 
                 case nameof(GetPrivateMessageListResponse):
@@ -152,6 +160,13 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
+        public void SendCreateNewChatRequest(string title, List<int> userIdList)
+        {
+            _sendQueue.Enqueue(new CreateNewChatRequest(title, userIdList).GetContainer());
+
+            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+                Send();
+        }
         public void SendPrivateMessage(string sender, string receiver, string message, DateTime sendTime)
         {
             _sendQueue.Enqueue(new SendPrivateMessageRequest(sender, receiver, message, sendTime).GetContainer());
@@ -159,16 +174,23 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void SendPublicMessage(string sender, string message, DateTime sendTime)
+        //public void SendPublicMessage(string sender, string message, DateTime sendTime)
+        //{
+        //    _sendQueue.Enqueue(new SendPublicMessageRequest(sender, message, sendTime).GetContainer());
+
+        //    if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
+        //        Send();
+        //}
+        public void GetContacts(string name)
         {
-            _sendQueue.Enqueue(new SendPublicMessageRequest(sender, message, sendTime).GetContainer());
+            _sendQueue.Enqueue(new GetContactsRequest(name).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void GetContacts(string name)
+        public void GetChatList(string name)
         {
-            _sendQueue.Enqueue(new GetContactsRequest(name).GetContainer());
+            _sendQueue.Enqueue(new GetChatListRequest(name).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();

@@ -17,7 +17,10 @@ namespace Messenger.Models
         private WebSocketClient _webSocketClient;
 
         private string _login;
-        private List<Contact> _contacts;
+        private int? _userId;
+
+        private List<User> _contacts;
+        private List<Chat> _chats;
         private List<Message> _publicMessageList;
         private List<LogEntry> _eventList;
 
@@ -26,10 +29,20 @@ namespace Messenger.Models
             get { return _login; }
             set { _login = value; }
         }
-        public List<Contact> Contacts
+        public int? UserId
+        {
+            get { return _userId; }
+            set { _userId = value; }
+        }
+        public List<User> Contacts
         {
             get { return _contacts; }
             set { _contacts = value; }
+        }
+        public List<Chat> Chats
+        {
+            get { return _chats; }
+            set { _chats = value; }
         }
         public List<Message> PublicMessageList
         {
@@ -43,6 +56,7 @@ namespace Messenger.Models
         }
 
         public event Action ContactListChanged;
+        public event Action ChatListChanged;
         public event Action UserAuthorized;
         public event Action UserLoggedOut;
         public event Action<Message> NewMessageAdded;
@@ -51,22 +65,29 @@ namespace Messenger.Models
 
         public ClientStateManager(WebSocketClient webSocketClient)
         {
-            Contacts = new List<Contact>();
+            Contacts = new List<User>();
+            Chats = new List<Chat>();
             PublicMessageList = new List<Message>();
 
             _webSocketClient = webSocketClient;
+            _webSocketClient.AuthorizationResponseСame += AuthorizeUser;
             _webSocketClient.GetContactsResponseСame += LoadContactList;
-            _webSocketClient.GetPrivateMessageListResponseCame += LoadPrivateMessageList;
+            _webSocketClient.GetChatListResponseСame += LoadChatList;
+            //_webSocketClient.GetPrivateMessageListResponseCame += LoadPrivateMessageList;
             _webSocketClient.GetPublicMessageListResponseCame += LoadPublicMessageList;
-            _webSocketClient.PrivateMessageReceivedResponseCame += AddPrivateMessage;
+            //_webSocketClient.PrivateMessageReceivedResponseCame += AddPrivateMessage;
             _webSocketClient.PublicMessageReceivedResponseCame += AddPublicMessage;
-            _webSocketClient.UserStatusChangedBroadcastCame += OnUserStatusChangedBroadcastCame;
+            //_webSocketClient.UserStatusChangedBroadcastCame += OnUserStatusChangedBroadcastCame;
             _webSocketClient.GetEventListResponseCame += LoadEventLog;
         }
-        public void AuthorizeUser(string login)
+        public void AuthorizeUser(AuthorizationResponse response)
         {
-            Login = login;
-            UserAuthorized?.Invoke();
+            if (response.Result == "AlreadyExists" || response.Result == "NewUserAdded")
+            {
+                Login = response.Name;
+                UserId = response.UserId;
+                UserAuthorized?.Invoke();
+            }
         }
         public void LogOut()
         {
@@ -75,112 +96,133 @@ namespace Messenger.Models
         }
         private void LoadContactList(GetContactsResponse getContactsResponse)
         {
-            Contacts = new List<Contact>(getContactsResponse.ContactList);
+            Contacts = new List<User>(getContactsResponse.ContactList);
             ContactListChanged?.Invoke();
         }
-        public ObservableCollection<Contact> GetContactList()
+        private void LoadChatList(GetChatListResponse getChatListResponse)
         {
-            return new ObservableCollection<Contact>(Contacts);
+            //foreach (IChat chat in getChatListResponse.ChatList)
+            //{
+            //    if (chat is GroupChat)
+            //    {
+            //        ((GroupChat)chat).Title = chat.Users.Find(user => user.Name != Login).Name;
+            //    }
+            //    Chats.Add(chat);
+            //}
+            Chats = new List<Chat>(getChatListResponse.ChatList);
+            ChatListChanged?.Invoke();
         }
-        public void LoadPrivateMessageList(GetPrivateMessageListResponse response)
+        public ObservableCollection<User> GetContactList()
         {
-            foreach (Contact contact in Contacts)
+            return new ObservableCollection<User>(Contacts);
+        }
+        public ObservableCollection<ChatPresenter> GetChatList()
+        {
+            ObservableCollection<ChatPresenter> result = new ObservableCollection<ChatPresenter>();
+  
+            foreach (Chat chat in Chats)
             {
-                foreach (Message message in response.MessageList)
-                {
-                    if ((contact.Title == message.Sender || contact.Title == message.Receiver) && contact.Users.Count == 1)
-                    {
-                        contact.MessageList.Add(message);
-                    }
-                }
+                result.Add(chat.ToChatPresenter(chat, Login));
             }
+
+            return result;
         }
+        //public void LoadPrivateMessageList(GetPrivateMessageListResponse response)
+        //{
+        //    foreach (Contact contact in Contacts)
+        //    {
+        //        foreach (Message message in response.MessageList)
+        //        {
+        //            if ((contact.Title == message.Sender || contact.Title == message.Receiver) && contact.Users.Count == 1)
+        //            {
+        //                contact.MessageList.Add(message);
+        //            }
+        //        }
+        //    }
+        //}
         public void LoadPublicMessageList(GetPublicMessageListResponse response)
         {
             PublicMessageList = new List<Message>(response.MessageList);
             PublicMessageListChanged?.Invoke();
         }
 
-        public void OnUserStatusChangedBroadcastCame(UserStatusChangedBroadcast broadcast)
-        {
-            bool isUserExist = false;
+        //public void OnUserStatusChangedBroadcastCame(UserStatusChangedBroadcast broadcast)
+        //{
+        //    bool isUserExist = false;
 
-            foreach (Contact contact in Contacts)
-            {
-                if (contact.Title == broadcast.Name && contact.Users.Count == 1)
-                {
-                    contact.IsOnline = broadcast.Status;
-                    isUserExist = true;
-                }
-            }
-            if (!isUserExist)
-            {
-                if (broadcast.Status == OnlineStatus.Online)
-                {
-                    Application.Current.Dispatcher.InvokeAsync(() =>
-                    {
-                        Contact newChat = new Contact(broadcast.Name);
-                        newChat.IsOnline = broadcast.Status;
-                        Contacts.Add(newChat);
-                        ContactListChanged?.Invoke();
-                    });
-                }
-            }
-        }
+        //    foreach (Contact contact in Contacts)
+        //    {
+        //        if (contact.Title == broadcast.Name && contact.Users.Count == 1)
+        //        {
+        //            contact.IsOnline = broadcast.Status;
+        //            isUserExist = true;
+        //        }
+        //    }
+        //    if (!isUserExist)
+        //    {
+        //        if (broadcast.Status == OnlineStatus.Online)
+        //        {
+        //            Application.Current.Dispatcher.InvokeAsync(() =>
+        //            {
+        //                Contact newChat = new Contact(broadcast.Name);
+        //                newChat.IsOnline = broadcast.Status;
+        //                Contacts.Add(newChat);
+        //                ContactListChanged?.Invoke();
+        //            });
+        //        }
+        //    }
+        //}
 
-        public ObservableCollection<Message> GetPrivateMessageList(string name)
+        public ObservableCollection<Message> GetMessageList(int chatId)
         {
-            ObservableCollection<Message> messages = new ObservableCollection<Message>();
-            foreach (Contact contact in Contacts)
-            {
-                if (contact.Title == name)
-                {
-                    messages = contact.MessageList;
-                }
-            }
-            return messages;
-        }
-        public ObservableCollection<Message> GetPublicMessageList()
-        {
-            return new ObservableCollection<Message>(PublicMessageList);
-        }
+            List<Message> messages = new List<Message>();
 
-        public void AddPrivateMessage(PrivateMessageReceivedResponse response)
-        {
-            Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                foreach (Contact contact in Contacts)
-                {
-                    if ((contact.Title == response.Sender || contact.Title == response.Receiver) && contact.Users.Count == 1)
-                    {
-                        Message message = new Message(response.Sender, response.Receiver, response.Text, response.SendTime);
-                        contact.MessageList.Add(message);
-                        NewMessageAdded?.Invoke(message);
-                    }
-                }
-            });
+            messages = Chats.Find(chat => chat.ChatId == chatId).Messages;
+            
+
+            return new ObservableCollection<Message>(messages);
         }
+        //public ObservableCollection<Message> GetPublicMessageList()
+        //{
+        //    return new ObservableCollection<Message>(PublicMessageList);
+        //}
+
+        //public void AddPrivateMessage(PrivateMessageReceivedResponse response)
+        //{
+        //    Application.Current.Dispatcher.InvokeAsync(() =>
+        //    {
+        //        foreach (Contact contact in Contacts)
+        //        {
+        //            if ((contact.Title == response.Sender || contact.Title == response.Receiver) && contact.Users.Count == 1)
+        //            {
+        //                Message message = new Message(response.Sender, response.Receiver, response.Text, response.SendTime);
+        //                contact.MessageList.Add(message);
+        //                NewMessageAdded?.Invoke(message);
+        //            }
+        //        }
+        //    });
+        //}
         public void AddPublicMessage(PublicMessageReceivedResponse response)
         {
-            Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                Message message = new Message(response.Sender, "Public chat", response.Text, response.SendTime);
-                PublicMessageList.Add(message);
-                NewMessageAdded?.Invoke(message);
-                PublicMessageListChanged?.Invoke();
-            });
+            //Application.Current.Dispatcher.InvokeAsync(() =>
+            //{
+            //    Message message = new Message(response.Sender, "Public chat", response.Text, response.SendTime);
+            //    PublicMessageList.Add(message);
+            //    NewMessageAdded?.Invoke(message);
+            //    PublicMessageListChanged?.Invoke();
+            //});
         }
 
-        public void SetUserOnline(string name)
-        {
-            foreach (Contact contact in Contacts)
-            {
-                if (contact.Title == name && contact.Users.Count == 1)
-                {
-                    contact.IsOnline = OnlineStatus.Online;
-                }
-            }
-        }
+        //public void SetUserOnline(string name)
+        //{
+        //    foreach (Contact contact in Contacts)
+        //    {
+        //        if (contact.Title == name && contact.Users.Count == 1)
+        //        {
+        //            contact.IsOnline = OnlineStatus.Online;
+        //        }
+        //    }
+        //}
         private void LoadEventLog(GetEventListResponse response)
         {
             EventList = response.EventList;

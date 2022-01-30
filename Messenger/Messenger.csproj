@@ -56,15 +56,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\ChatPresenter.cs" />
+    <Compile Include="Common\Chat.cs" />
     <Compile Include="Common\Contact.cs" />
     <Compile Include="Common\EventType.cs" />
     <Compile Include="Common\LogEntry.cs" />
+    <Compile Include="Common\User.cs" />
     <Compile Include="Network\Broadcasts\PublicMessageDeliveredBroadcast.cs" />
     <Compile Include="Network\Broadcasts\UserStatusChangedBroadcast.cs" />
     <Compile Include="Network\EventArgs\UserStatusChangedEventArgs.cs" />
     <Compile Include="Network\MessageContainer.cs" />
-    <Compile Include="Network\OnlineStatus.cs" />
+    <Compile Include="Common\OnlineStatus.cs" />
     <Compile Include="Network\Requests\AuthorizationRequest.cs" />
+    <Compile Include="Network\Requests\CreateNewChatRequest.cs" />
+    <Compile Include="Network\Requests\GetChatListRequest.cs" />
     <Compile Include="Network\Requests\GetEventListRequest.cs" />
     <Compile Include="Network\Requests\GetMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetPrivateMessageListRequest.cs" />
@@ -74,12 +79,15 @@
     <Compile Include="Network\Requests\SendPrivateMessageRequest.cs" />
     <Compile Include="Network\Requests\SendPublicMessageRequest.cs" />
     <Compile Include="Network\Responses\AuthorizationResponse.cs" />
+    <Compile Include="Network\Responses\CreateNewChatResponse.cs" />
+    <Compile Include="Network\Responses\GetChatListResponse.cs" />
     <Compile Include="Network\Responses\GetEventListResponse.cs" />
     <Compile Include="Network\Responses\GetMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetPrivateMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetPublicMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetContactsResponse.cs" />
     <Compile Include="Network\Responses\LogOutResponse.cs" />
+    <Compile Include="Network\Responses\NewChatCreatedResponse.cs" />
     <Compile Include="Network\Responses\PrivateMessageReceivedResponse.cs" />
     <Compile Include="Network\Responses\PublicMessageReceivedResponse.cs" />
     <Compile Include="Network\Responses\SendMessageResponse.cs" />
@@ -88,6 +96,7 @@
     <Compile Include="Resources\CustomTextBox.cs" />
     <Compile Include="ViewModels\ChatWindowViewModel.cs" />
     <Compile Include="ViewModels\LogWindowViewModel.cs" />
+    <Compile Include="ViewModels\NewChatDialogViewModel.cs" />
     <Compile Include="ViewModels\NotificationWindowViewModel.cs" />
     <Compile Include="ViewModels\ServerConfigViewModel.cs" />
     <Compile Include="Views\AuthorizationDialog.xaml.cs">
@@ -96,6 +105,9 @@
     <Compile Include="ViewModels\AuthorizationDialogViewModel.cs" />
     <Compile Include="Views\LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewChatDialog.xaml.cs">
+      <DependentUpon>NewChatDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NotificationWindow.xaml.cs">
       <DependentUpon>NotificationWindow.xaml</DependentUpon>
@@ -115,6 +127,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\LogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NewChatDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

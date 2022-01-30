@@ -1,46 +1,32 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Common
+﻿namespace Messenger.Common
 {
+    using Newtonsoft.Json;
+    using System;
     public class Message
     {
-        private string _sender;
-        private string _receiver;
-        private string _text;
-        private DateTime _sendTime;
+        private static int _idCounter;
 
-        public string Sender
-        {
-            get { return _sender; }
-            set { _sender = value; }
-        }
-        public string Receiver
-        {
-            get { return _receiver; }
-            set { _receiver = value; }
-        }
-        public string Text
-        {
-            get { return _text; }
-            set { _text = value; }
-        }
-        public DateTime SendTime
-        {
-            get { return _sendTime; }
-            set { _sendTime = value; }
-        }
+        public int MessageId { get; set; }
+        public User Sender { get; set; }
+        public int ChatId { get; set; }
+        public string Text { get; set; }
+        public DateTime SendTime { get; set; }
 
-        public Message(string sender, string receiver, string text, DateTime sendTime)
+        [JsonConstructor]
+        public Message(int messageId, User sender, int chatId, string text, DateTime sendTime) : this(sender, chatId, text, sendTime)
+        {
+            MessageId = messageId;
+        }
+        public Message(User sender, int chatId, string text, DateTime sendTime) : this()
         {
             Sender = sender;
-            Receiver = receiver;
+            ChatId = chatId;
             Text = text;
             SendTime = sendTime;
+        }
+        public Message()
+        {
+            MessageId = _idCounter++;
         }
     }
 }

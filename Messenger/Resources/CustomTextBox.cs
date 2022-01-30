@@ -14,7 +14,6 @@ namespace Messenger.Resources
              DependencyProperty.Register("CaretPosition", typeof(int), typeof(CustomTextBox),
                  new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnCaretPositionChanged));
 
-
         public int CaretPosition
         {
             get { return (int)GetValue(CaretPositionProperty); }
