@@ -76,21 +76,8 @@ namespace Messenger.ViewModels
 
 
         private DelegateCommand _closeDialogCommand;
-        public DelegateCommand CloseDialogCommand
-        {
-            get
-            {
-                if (_closeDialogCommand != null)
-                {
-                    return _closeDialogCommand;
-                }
-                else
-                {
-                    return _closeDialogCommand = new DelegateCommand(CloseDialog);
-                }
-            }
-        }
-
+        public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
+        
         public event Action<IDialogResult> RequestClose;
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
@@ -100,7 +87,6 @@ namespace Messenger.ViewModels
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-
             _webSocketClient.Connected += AuthorizeUserCommand.RaiseCanExecuteChanged;
             _webSocketClient.AuthorizationResponseСame += ShowAuthorizationResult;
         }

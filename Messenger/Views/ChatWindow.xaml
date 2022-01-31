@@ -47,13 +47,17 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-
-            <ToggleButton Name="startNewChatButton"
+            
+            <Button Name="startNewChatButton"
+                          Content="New chat"
+                          Grid.Row="2"
+                          Margin="10,5,5,10"
+                          Command="{Binding StartNewChatCommand}"/>
+            <!--<ToggleButton Name="startNewChatButton"
                           Content="{Binding StartNewChatButtonName}"
                           Grid.Row="2"
                           Margin="10,5,5,10"
-                          IsChecked="{Binding IsPublicChatActive, UpdateSourceTrigger=PropertyChanged}"
-                          Command="{Binding StartNewChatCommand}"/>
+                          Command="{Binding StartNewChatCommand}"/>-->
             <!--CommandParameter="{Binding SelectedItems, Mode=OneWay, ElementName=startNewChatListBox}"-->
             <!--<Popup AllowsTransparency="True"
                    PlacementTarget="{Binding ElementName=startNewChatButton}"

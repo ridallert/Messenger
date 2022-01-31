@@ -35,6 +35,8 @@ namespace Messenger.Network
         public event Action<AuthorizationResponse> AuthorizationResponseСame;
         public event Action<GetContactsResponse> GetContactsResponseСame;
         public event Action<GetChatListResponse> GetChatListResponseСame;
+        public event Action<CreateNewChatResponse> CreateNewChatResponseСame;
+        public event Action<NewChatCreatedResponse> NewChatCreatedResponseСame;
 
         public event Action<GetPrivateMessageListResponse> GetPrivateMessageListResponseCame;
         public event Action<GetPublicMessageListResponse> GetPublicMessageListResponseCame;
@@ -104,6 +106,14 @@ namespace Messenger.Network
                 case nameof(GetChatListResponse):
                     GetChatListResponse getChatListResponse = JsonConvert.DeserializeObject<GetChatListResponse>(container.Payload.ToString());
                     GetChatListResponseСame?.Invoke(getChatListResponse);
+                    break;
+                case nameof(CreateNewChatResponse):
+                    CreateNewChatResponse createNewChatResponse = JsonConvert.DeserializeObject<CreateNewChatResponse>(container.Payload.ToString());
+                    CreateNewChatResponseСame?.Invoke(createNewChatResponse);
+                    break;
+                case nameof(NewChatCreatedResponse):
+                    NewChatCreatedResponse newChatCreatedResponse = JsonConvert.DeserializeObject<NewChatCreatedResponse>(container.Payload.ToString());
+                    NewChatCreatedResponseСame?.Invoke(newChatCreatedResponse);
                     break;
 
                 case nameof(GetPrivateMessageListResponse):

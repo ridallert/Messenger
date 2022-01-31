@@ -38,6 +38,8 @@ namespace Messenger.ViewModels
                 string name = parameters.GetValue<string>("name");
                 string response = parameters.GetValue<string>("result");
 
+                Message = response;//
+
                 if (response == "NameIsTaken")
                     Message = "Name '" + name + "' is taken";
                 if (response == "AlreadyExists")

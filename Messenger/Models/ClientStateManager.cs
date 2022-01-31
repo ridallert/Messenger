@@ -73,6 +73,10 @@ namespace Messenger.Models
             _webSocketClient.AuthorizationResponseСame += AuthorizeUser;
             _webSocketClient.GetContactsResponseСame += LoadContactList;
             _webSocketClient.GetChatListResponseСame += LoadChatList;
+            _webSocketClient.NewChatCreatedResponseСame += AddNewChat;
+
+
+
             //_webSocketClient.GetPrivateMessageListResponseCame += LoadPrivateMessageList;
             _webSocketClient.GetPublicMessageListResponseCame += LoadPublicMessageList;
             //_webSocketClient.PrivateMessageReceivedResponseCame += AddPrivateMessage;
@@ -119,13 +123,48 @@ namespace Messenger.Models
         public ObservableCollection<ChatPresenter> GetChatList()
         {
             ObservableCollection<ChatPresenter> result = new ObservableCollection<ChatPresenter>();
-  
+
             foreach (Chat chat in Chats)
             {
                 result.Add(chat.ToChatPresenter(chat, Login));
             }
 
             return result;
+        }
+        private void AddNewChat(NewChatCreatedResponse response)
+        {
+            Chats.Add(response.Chat);
+            ChatListChanged?.Invoke();
+        }
+        public bool IsChatAlreadyExists(List<int> idList)
+        {
+            foreach (Chat chat in Chats)
+            {
+                int userCounter = 0;
+                foreach (User user in chat.Users)
+                {
+                    if (idList.Contains(user.UserId))
+                    {
+                        userCounter++;
+                    }
+                }
+                if (userCounter == idList.Count && userCounter == chat.Users.Count)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool IsChatNameTaken(string title)
+        {
+            foreach (Chat chat in Chats)
+            {
+                if (chat.Title == title)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         //public void LoadPrivateMessageList(GetPrivateMessageListResponse response)
         //{
@@ -178,7 +217,7 @@ namespace Messenger.Models
             List<Message> messages = new List<Message>();
 
             messages = Chats.Find(chat => chat.ChatId == chatId).Messages;
-            
+
 
             return new ObservableCollection<Message>(messages);
         }
