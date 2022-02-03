@@ -39,7 +39,7 @@
                   Grid.Row="1"
                   Margin="10,5,5,5"
                   ItemsSource="{Binding Path=AvailableUsers}"
-                  SelectedItem="{Binding Path=AvailableUsersSelected, UpdateSourceTrigger=PropertyChanged}">
+                  SelectedItem="{Binding Path=AvailableUsersSelectedItem, UpdateSourceTrigger=PropertyChanged}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -63,7 +63,7 @@
                   Grid.Row="1"
                   Margin="5,5,10,5"
                   ItemsSource="{Binding Path=SelectedUsers, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
-                  SelectedItem="{Binding Path=SelectedUsersSelected, UpdateSourceTrigger=PropertyChanged}">
+                  SelectedItem="{Binding Path=SelectedUsersSelectedItem, UpdateSourceTrigger=PropertyChanged}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -102,7 +102,7 @@
         </Grid>
         <TextBlock Grid.Column="0"
                    Grid.Row="2"
-                   Text="Chat already exists"
+                   Text="{Binding NotificationText}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"
                    Foreground="Red"

@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Responses
 {
-    public class PublicMessageReceivedResponse
+    public class MessageReceivedResponse
     {
-        public string Sender { get; set; }
+        public int MessageId { get; set; }
+        public int SenderId { get; set; }
+        public int ChatId { get; set; }
+        public string SenderName { get; set; }
         public string Text { get; set; }
         public DateTime SendTime { get; set; }
 
-        public PublicMessageReceivedResponse(string sender, string text, DateTime sendTime)
+        public MessageReceivedResponse(int messageId, int senderId, int chatId, string senderName, string text, DateTime sendTime)
         {
-            Sender = sender;
+            MessageId = messageId;
+            SenderId = senderId;
+            ChatId = chatId;
+            SenderName = senderName;
             Text = text;
             SendTime = sendTime;
         }
@@ -23,7 +29,7 @@ namespace Messenger.Network.Responses
         {
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(PublicMessageReceivedResponse),
+                Identifier = nameof(MessageReceivedResponse),
                 Payload = this
             };
 

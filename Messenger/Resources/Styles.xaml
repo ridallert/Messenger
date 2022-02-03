@@ -93,7 +93,7 @@
         <!--</Style.Triggers>-->
     </Style>
 
-    <Style TargetType="ToggleButton">
+    <!--<Style TargetType="ToggleButton">
         <Setter Property="Background" Value="#506482"/>
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="14" />
@@ -106,8 +106,8 @@
                 <Setter Property="FontWeight" Value="Bold"/>
             </Trigger>
         </Style.Triggers>
-    </Style>
-
+    </Style>-->
+    
 
     <Style TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />

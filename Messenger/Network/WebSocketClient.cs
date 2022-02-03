@@ -33,15 +33,12 @@ namespace Messenger.Network
         }
 
         public event Action<AuthorizationResponse> AuthorizationResponseСame;
-        public event Action<GetContactsResponse> GetContactsResponseСame;
+        public event Action<GetUserListResponse> GetUserListResponseСame;
         public event Action<GetChatListResponse> GetChatListResponseСame;
         public event Action<CreateNewChatResponse> CreateNewChatResponseСame;
         public event Action<NewChatCreatedResponse> NewChatCreatedResponseСame;
 
-        public event Action<GetPrivateMessageListResponse> GetPrivateMessageListResponseCame;
-        public event Action<GetPublicMessageListResponse> GetPublicMessageListResponseCame;
-        public event Action<PrivateMessageReceivedResponse> PrivateMessageReceivedResponseCame;
-        public event Action<PublicMessageReceivedResponse> PublicMessageReceivedResponseCame;
+        public event Action<MessageReceivedResponse> MessageReceivedResponseCame;
         public event Action<UserStatusChangedBroadcast> UserStatusChangedBroadcastCame;
         public event Action<GetEventListResponse> GetEventListResponseCame;
 
@@ -99,47 +96,36 @@ namespace Messenger.Network
                     AuthorizationResponseСame?.Invoke(authorizationResponse);
                     break;
 
-                case nameof(GetContactsResponse):
-                    GetContactsResponse getUserListResponse = JsonConvert.DeserializeObject<GetContactsResponse>(container.Payload.ToString());
-                    GetContactsResponseСame?.Invoke(getUserListResponse);
+                case nameof(UserStatusChangedBroadcast):
+                    UserStatusChangedBroadcast userStatusChangedBroadcast = JsonConvert.DeserializeObject<UserStatusChangedBroadcast>(container.Payload.ToString());
+                    UserStatusChangedBroadcastCame?.Invoke(userStatusChangedBroadcast);
                     break;
+
+                case nameof(GetUserListResponse):
+                    GetUserListResponse getUserListResponse = JsonConvert.DeserializeObject<GetUserListResponse>(container.Payload.ToString());
+                    GetUserListResponseСame?.Invoke(getUserListResponse);
+                    break;
+
                 case nameof(GetChatListResponse):
                     GetChatListResponse getChatListResponse = JsonConvert.DeserializeObject<GetChatListResponse>(container.Payload.ToString());
                     GetChatListResponseСame?.Invoke(getChatListResponse);
                     break;
+
                 case nameof(CreateNewChatResponse):
                     CreateNewChatResponse createNewChatResponse = JsonConvert.DeserializeObject<CreateNewChatResponse>(container.Payload.ToString());
                     CreateNewChatResponseСame?.Invoke(createNewChatResponse);
                     break;
+
                 case nameof(NewChatCreatedResponse):
                     NewChatCreatedResponse newChatCreatedResponse = JsonConvert.DeserializeObject<NewChatCreatedResponse>(container.Payload.ToString());
                     NewChatCreatedResponseСame?.Invoke(newChatCreatedResponse);
                     break;
 
-                case nameof(GetPrivateMessageListResponse):
-                    GetPrivateMessageListResponse getPrivateMessageListResponse = JsonConvert.DeserializeObject<GetPrivateMessageListResponse>(container.Payload.ToString());
-                    GetPrivateMessageListResponseCame?.Invoke(getPrivateMessageListResponse);
+                case nameof(MessageReceivedResponse):
+                    MessageReceivedResponse messageReceivedResponse = JsonConvert.DeserializeObject<MessageReceivedResponse>(container.Payload.ToString());
+                    MessageReceivedResponseCame?.Invoke(messageReceivedResponse);
                     break;
 
-                case nameof(PrivateMessageReceivedResponse):
-                    PrivateMessageReceivedResponse privateMessageDeliveredResponse = JsonConvert.DeserializeObject<PrivateMessageReceivedResponse>(container.Payload.ToString());
-                    PrivateMessageReceivedResponseCame?.Invoke(privateMessageDeliveredResponse);
-                    break;
-
-                case nameof(PublicMessageReceivedResponse):
-                    PublicMessageReceivedResponse publicMessageDeliveredResponse = JsonConvert.DeserializeObject<PublicMessageReceivedResponse>(container.Payload.ToString());
-                    PublicMessageReceivedResponseCame?.Invoke(publicMessageDeliveredResponse);
-                    break;
-
-                case nameof(GetPublicMessageListResponse):
-                    GetPublicMessageListResponse getPublicMessageListResponse = JsonConvert.DeserializeObject<GetPublicMessageListResponse>(container.Payload.ToString());
-                    GetPublicMessageListResponseCame?.Invoke(getPublicMessageListResponse);
-                    break;
-
-                case nameof(UserStatusChangedBroadcast):
-                    UserStatusChangedBroadcast userStatusChangedBroadcast = JsonConvert.DeserializeObject<UserStatusChangedBroadcast>(container.Payload.ToString());
-                    UserStatusChangedBroadcastCame?.Invoke(userStatusChangedBroadcast);
-                    break;
                 case nameof(GetEventListResponse):
                     GetEventListResponse getEventListResponse = JsonConvert.DeserializeObject<GetEventListResponse>(container.Payload.ToString());
                     GetEventListResponseCame?.Invoke(getEventListResponse);
@@ -177,9 +163,9 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void SendPrivateMessage(string sender, string receiver, string message, DateTime sendTime)
+        public void SendMessage(int senderId, int chatId, string message, DateTime sendTime)
         {
-            _sendQueue.Enqueue(new SendPrivateMessageRequest(sender, receiver, message, sendTime).GetContainer());
+            _sendQueue.Enqueue(new SendMessageRequest(senderId, chatId, message, sendTime).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
@@ -193,7 +179,7 @@ namespace Messenger.Network
         //}
         public void GetContacts(string name)
         {
-            _sendQueue.Enqueue(new GetContactsRequest(name).GetContainer());
+            _sendQueue.Enqueue(new GetUserListRequest(name).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();

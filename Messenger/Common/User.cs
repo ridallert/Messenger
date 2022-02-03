@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,12 +8,17 @@ using System.Threading.Tasks;
 
 namespace Messenger.Common
 {
-    public class User
+    public class User: BindableBase
     {
-        private static int _idCounter;
+        //private static int _idCounter;
+        private OnlineStatus _isOnline;
         public int UserId { get; set; }
         public string Name { get; set; }
-        public OnlineStatus IsOnline { get; set; }
+        public OnlineStatus IsOnline
+        {
+            get { return _isOnline; }
+            set { SetProperty(ref _isOnline, value); }
+        }
 
         [JsonConstructor]
         public User(int userId, string name, OnlineStatus isOnline) : this(name, isOnline)
@@ -26,7 +32,7 @@ namespace Messenger.Common
         }
         public User()
         {
-            UserId = _idCounter++;
+            //UserId = _idCounter++;
         }
     }
 }

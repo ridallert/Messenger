@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-
-namespace Messenger.Resources
+﻿namespace Messenger.Resources
 {
+    using System.Windows;
+    using System.Windows.Controls;
     class CustomTextBox : TextBox
     {
         public static readonly DependencyProperty CaretPositionProperty =
-             DependencyProperty.Register("CaretPosition", typeof(int), typeof(CustomTextBox),
-                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnCaretPositionChanged));
+             DependencyProperty.Register("CaretPosition",
+                                         typeof(int),
+                                         typeof(CustomTextBox),
+                                         new FrameworkPropertyMetadata(0,
+                                                                       FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
+                                                                       OnCaretPositionChanged));
 
         public int CaretPosition
         {
@@ -22,12 +20,12 @@ namespace Messenger.Resources
 
         public CustomTextBox()
         {
-            SelectionChanged += (s, e) => CaretPosition = CaretIndex;
+            SelectionChanged += (obj, e) => CaretPosition = CaretIndex;
         }
 
-        private static void OnCaretPositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void OnCaretPositionChanged(DependencyObject depObj, DependencyPropertyChangedEventArgs e)
         {
-            (d as CustomTextBox).CaretIndex = (int)e.NewValue;
+            (depObj as CustomTextBox).CaretIndex = (int)e.NewValue;
         }
     }
 }

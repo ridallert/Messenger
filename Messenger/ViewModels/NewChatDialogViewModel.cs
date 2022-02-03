@@ -24,12 +24,13 @@ namespace Messenger.ViewModels
 
         private string _chatTitle;
         private Visibility _isTitleVisible;
+        private string _notificationText;
         private Visibility _isNotificationVisible;
         private ObservableCollection<User> _availableUsers;
         private ObservableCollection<User> _selectedUsers;
         private User _availableUsersSelected;
         private User _selectedUsersSelected;
-        
+
         public string ChatTitle
         {
             get { return _chatTitle; }
@@ -44,6 +45,11 @@ namespace Messenger.ViewModels
             get { return _isTitleVisible; }
             set { SetProperty(ref _isTitleVisible, value); }
         }
+        public string NotificationText
+        {
+            get { return _notificationText; }
+            set { SetProperty(ref _notificationText, value); }
+        }
         public Visibility IsNotificationVisible
         {
             get { return _isNotificationVisible; }
@@ -57,13 +63,9 @@ namespace Messenger.ViewModels
         public ObservableCollection<User> SelectedUsers
         {
             get { return _selectedUsers; }
-            set
-            {
-                SetProperty(ref _selectedUsers, value);
-                CreateCommand.RaiseCanExecuteChanged();
-            }
+            set { SetProperty(ref _selectedUsers, value); }
         }
-        public User AvailableUsersSelected
+        public User AvailableUsersSelectedItem
         {
             get { return _availableUsersSelected; }
             set
@@ -72,7 +74,7 @@ namespace Messenger.ViewModels
                 SelectUserCommand.RaiseCanExecuteChanged();
             }
         }
-        public User SelectedUsersSelected
+        public User SelectedUsersSelectedItem
         {
             get { return _selectedUsersSelected; }
             set
@@ -94,27 +96,35 @@ namespace Messenger.ViewModels
             SelectedUsers = new ObservableCollection<User>();
         }
 
+        private void OnUserStatusChanged(User newUser)
+        {
+            bool isUserExist=false;
+            foreach (User user in AvailableUsers)
+            {
+                if (user.UserId == newUser.UserId)
+                {
+                    user.IsOnline = newUser.IsOnline;
+                    isUserExist = true;
+                }
+            }
+            if (!isUserExist)
+            {
+                AvailableUsers.Add(newUser);
+            }
+        }
+
         private DelegateCommand _selectUserCommand;
         public DelegateCommand SelectUserCommand => _selectUserCommand ?? (_selectUserCommand = new DelegateCommand(SelectUserExecute, SelectUserCanExecute));
 
         private void SelectUserExecute()
         {
-            //ObservableCollection<User> tempList = SelectedUsers;
-            //tempList.Add(AvailableUsersSelected);
-            //SelectedUsers = tempList;
-
-
-            SelectedUsers.Add(AvailableUsersSelected);
-            AvailableUsers.Remove(AvailableUsersSelected);
+            SelectedUsers.Add(AvailableUsersSelectedItem);
+            AvailableUsers.Remove(AvailableUsersSelectedItem);
             CreateCommand.RaiseCanExecuteChanged();
-            if (SelectedUsers != null && SelectedUsers.Count > 1)
-            {
-                IsTitleVisible = Visibility.Visible;
-            }
         }
         private bool SelectUserCanExecute()
         {
-            return AvailableUsersSelected != null;
+            return AvailableUsersSelectedItem != null;
         }
 
         private DelegateCommand _removeUserCommand;
@@ -122,17 +132,18 @@ namespace Messenger.ViewModels
 
         private void RemoveUserExecute()
         {
-            AvailableUsers.Add(SelectedUsersSelected);
-            SelectedUsers.Remove(SelectedUsersSelected);
+            AvailableUsers.Add(SelectedUsersSelectedItem);
+            SelectedUsers.Remove(SelectedUsersSelectedItem);
             CreateCommand.RaiseCanExecuteChanged();
             if (SelectedUsers == null || SelectedUsers.Count <= 1)
             {
+                ChatTitle = null;
                 IsTitleVisible = Visibility.Hidden;
             }
         }
         private bool RemoveUserCanExecute()
         {
-            return SelectedUsersSelected != null;
+            return SelectedUsersSelectedItem != null;
         }
 
 
@@ -149,27 +160,26 @@ namespace Messenger.ViewModels
             idList.Add(_clientState.UserId.Value);
 
             _webSocketClient.SendCreateNewChatRequest(ChatTitle, idList);
-            
+
         }
         private bool CreateCanExecute()
         {
             if (SelectedUsers != null && SelectedUsers.Count != 0)
             {
-                List<int> idList = new List<int>();
-                foreach (User user in SelectedUsers)
+                if (SelectedUsers.Count > 1)
                 {
-                    idList.Add(user.UserId);
+                    IsTitleVisible = Visibility.Visible;
+                    if (ChatTitle == null || ChatTitle == "")
+                        return false;
                 }
-                idList.Add(_clientState.UserId.Value);
-
-                if (idList.Count > 2 && (ChatTitle == null || ChatTitle == ""))
+                else
                 {
-                    return false;
+                    IsTitleVisible = Visibility.Hidden;
                 }
-                if (_clientState.IsChatAlreadyExists(idList) || _clientState.IsChatNameTaken(ChatTitle))
+                if (_clientState.IsChatAlreadyExists(SelectedUsers))
                 {
-                    //IsNotificationVisible = Visibility.Visible;
-                    //IsTitleVisible = Visibility.Hidden;
+                    NotificationText = "Chat already exists";
+                    IsNotificationVisible = Visibility.Visible;
                     return false;
                 }
                 else
@@ -180,25 +190,14 @@ namespace Messenger.ViewModels
             }
             else
             {
+                IsNotificationVisible = Visibility.Hidden;
                 return false;
             }
         }
 
         private DelegateCommand _closeDialogCommand;
         public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-            _webSocketClient.CreateNewChatResponseСame -= ShowResult;
-        }
-
-        protected virtual void CloseDialog()
-        {
-            
-            ButtonResult result = ButtonResult.None;
-            RaiseRequestClose(new DialogResult(result));
-           
-        }
+        
 
         //IDataErrorInfo
         public string Error => throw new Exception("Chat title validation error");
@@ -217,18 +216,6 @@ namespace Messenger.ViewModels
                     if (_clientState.IsChatNameTaken(ChatTitle))
                     {
                         validationResult = "Chat name is taken";
-                    }
-                }
-                if (propertyName == "SelectedUsers")
-                {
-                    List<int> idList = new List<int>();
-                    foreach (User user in SelectedUsers)
-                    {
-                        idList.Add(user.UserId);
-                    }
-                    if (_clientState.IsChatAlreadyExists(idList))
-                    {
-                        validationResult = "Chat already exists";
                     }
                 }
                 return validationResult;
@@ -254,10 +241,21 @@ namespace Messenger.ViewModels
         {
 
         }
-
         public void OnDialogOpened(IDialogParameters parameters)
         {
             _webSocketClient.CreateNewChatResponseСame += ShowResult;
+            _clientState.UserStatusChanged += OnUserStatusChanged;
+        }
+        protected virtual void CloseDialog()
+        {
+            ButtonResult result = ButtonResult.None;
+            RaiseRequestClose(new DialogResult(result));
+        }
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+            _webSocketClient.CreateNewChatResponseСame -= ShowResult;
+            _clientState.UserStatusChanged -= OnUserStatusChanged;
         }
         private void ShowResult(CreateNewChatResponse response)
         {

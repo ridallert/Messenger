@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Requests
 {
-    class SendPrivateMessageRequest
+    class SendMessageRequest
     {
-        public string Sender { get; set; }
-        public string Receiver { get; set; }
+        public int SenderId { get; set; }
+        public int ChatId { get; set; }
         public string Text { get; set; }
         public DateTime SendTime { get; set; }
 
-        public SendPrivateMessageRequest(string sender, string receiver, string text, DateTime sendTime)
+        public SendMessageRequest(int senderId, int chatId, string text, DateTime sendTime)
         {
-            Sender = sender;
-            Receiver = receiver;
+            SenderId = senderId;
+            ChatId = chatId;
             Text = text;
             SendTime = sendTime;
         }
@@ -25,7 +25,7 @@ namespace Messenger.Network.Requests
         {
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(SendPrivateMessageRequest),
+                Identifier = nameof(SendMessageRequest),
                 Payload = this
             };
 

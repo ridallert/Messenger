@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Messenger.Network.Requests
 {
-    class GetContactsRequest
+    class GetUserListRequest
     {
         public string Name { get; set; }
 
-        public GetContactsRequest(string name)
+        public GetUserListRequest(string name)
         {
             Name = name;
         }
@@ -19,7 +19,7 @@ namespace Messenger.Network.Requests
 
             MessageContainer container = new MessageContainer
             {
-                Identifier = nameof(GetContactsRequest),
+                Identifier = nameof(GetUserListRequest),
                 Payload = this
             };
 

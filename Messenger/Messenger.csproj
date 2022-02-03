@@ -58,7 +58,6 @@
     </ApplicationDefinition>
     <Compile Include="Common\ChatPresenter.cs" />
     <Compile Include="Common\Chat.cs" />
-    <Compile Include="Common\Contact.cs" />
     <Compile Include="Common\EventType.cs" />
     <Compile Include="Common\LogEntry.cs" />
     <Compile Include="Common\User.cs" />
@@ -74,9 +73,9 @@
     <Compile Include="Network\Requests\GetMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetPrivateMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetPublicMessageListRequest.cs" />
-    <Compile Include="Network\Requests\GetContactsRequest.cs" />
+    <Compile Include="Network\Requests\GetUserListRequest.cs" />
     <Compile Include="Network\Requests\LogOutRequest.cs" />
-    <Compile Include="Network\Requests\SendPrivateMessageRequest.cs" />
+    <Compile Include="Network\Requests\SendMessageRequest.cs" />
     <Compile Include="Network\Requests\SendPublicMessageRequest.cs" />
     <Compile Include="Network\Responses\AuthorizationResponse.cs" />
     <Compile Include="Network\Responses\CreateNewChatResponse.cs" />
@@ -85,15 +84,16 @@
     <Compile Include="Network\Responses\GetMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetPrivateMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetPublicMessageListResponse.cs" />
-    <Compile Include="Network\Responses\GetContactsResponse.cs" />
+    <Compile Include="Network\Responses\GetUserListResponse.cs" />
     <Compile Include="Network\Responses\LogOutResponse.cs" />
     <Compile Include="Network\Responses\NewChatCreatedResponse.cs" />
     <Compile Include="Network\Responses\PrivateMessageReceivedResponse.cs" />
-    <Compile Include="Network\Responses\PublicMessageReceivedResponse.cs" />
+    <Compile Include="Network\Responses\MessageReceivedResponse.cs" />
     <Compile Include="Network\Responses\SendMessageResponse.cs" />
     <Compile Include="Network\WebSocketClient.cs" />
     <Compile Include="Network\Protocol.cs" />
     <Compile Include="Resources\CustomTextBox.cs" />
+    <Compile Include="Resources\CustomListBox.cs" />
     <Compile Include="ViewModels\ChatWindowViewModel.cs" />
     <Compile Include="ViewModels\LogWindowViewModel.cs" />
     <Compile Include="ViewModels\NewChatDialogViewModel.cs" />
