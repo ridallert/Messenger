@@ -6,6 +6,7 @@ using Prism.Services.Dialogs;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows;
 
 namespace Messenger.ViewModels
 {
@@ -48,8 +49,21 @@ namespace Messenger.ViewModels
         private void OnDisconnected()
         {
             _clientState.LogOut();
+            Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow("Server is not available"));
         }
+        private void ShowNotificationWindow(string message)
+        {
+            var par = new DialogParameters
+            {
+                { "result", message }
+            };
 
+            _dialogService.ShowDialog("NotificationWindow", par, Callback);
+        }
+        void Callback(IDialogResult result)
+        {
+            //tcs.SetResult(result.Parameters.GetValue<bool>("confirmed"));
+        }
         private void OnUserAuthorized()
         {
             LoginButtonContent = "Log out";
