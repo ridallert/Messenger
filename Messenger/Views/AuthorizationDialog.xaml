@@ -63,7 +63,7 @@
                 Margin="5"/>
 
         <Button Name="serverConfigButton"
-                Content="Server config"
+                Content="{Binding ServerConfigButtonName}"
                 Command="{Binding ShowServerConfigCommand}"
                 Grid.Column="0"
                 Grid.Row="2"

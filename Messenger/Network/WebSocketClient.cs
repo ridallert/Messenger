@@ -53,7 +53,7 @@ namespace Messenger.Network
 
         public WebSocketClient()
         {
-            _socket = new WebSocket($"ws://127.0.0.1:7890");
+            
             _sendQueue = new ConcurrentQueue<MessageContainer>();
             _sending = 0;
         }
@@ -84,8 +84,6 @@ namespace Messenger.Network
         {
             if (e.IsText == false)
                 return;
-
-           
 
             MessageContainer container = JsonConvert.DeserializeObject<MessageContainer>(e.Data);
 
@@ -132,18 +130,29 @@ namespace Messenger.Network
                     break;
             }
         }
-        public void SetParams(string ipAddress, int port)
+        //public void SetParams(string ipAddress, int port)
+        //{
+        //    _socket = new WebSocket($"ws://{ipAddress}:{port}");
+        //}
+        public void Connect(string address, int port)
         {
-            _socket = new WebSocket($"ws://{ipAddress}:{port}");
-        }
-        public void Connect()
-        {
+            if (IsConnected)
+            {
+                Disconnect();
+            }
+            _socket = new WebSocket($"ws://{address}:{port}");
             _socket.OnOpen += OnOpen;
+            _socket.OnClose += OnClose;
             _socket.OnMessage += OnMessage;
+            
             _socket?.ConnectAsync();
         }
+
+
+
         public void Disconnect()
         {
+            _socket.OnOpen -= OnOpen;
             _socket.OnClose -= OnClose;
             _socket.OnMessage -= OnMessage;
             _socket?.CloseAsync();
@@ -170,13 +179,7 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        //public void SendPublicMessage(string sender, string message, DateTime sendTime)
-        //{
-        //    _sendQueue.Enqueue(new SendPublicMessageRequest(sender, message, sendTime).GetContainer());
 
-        //    if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
-        //        Send();
-        //}
         public void GetContacts(string name)
         {
             _sendQueue.Enqueue(new GetUserListRequest(name).GetContainer());
@@ -191,20 +194,7 @@ namespace Messenger.Network
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void GetPrivateMessageList(string name)
-        { 
-            _sendQueue.Enqueue(new GetPrivateMessageListRequest(name).GetContainer());
-
-            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
-                Send();
-        }
-        public void GetPublicMessageList()
-        {
-            _sendQueue.Enqueue(new GetPublicMessageListRequest().GetContainer());
-
-            if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
-                Send();
-        }
+       
         public void GetEventLog(DateTime from, DateTime to)
         {
             _sendQueue.Enqueue(new GetEventListRequest(from, to).GetContainer());
@@ -219,6 +209,7 @@ namespace Messenger.Network
         }
         private void OnClose(object sender, CloseEventArgs e)
         {
+            Disconnect();
             Disconnected?.Invoke();
             //Disconnected?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false));
         }

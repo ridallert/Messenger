@@ -30,6 +30,13 @@ namespace Messenger.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
+        private string _serverConfigButtonName;
+        public string ServerConfigButtonName
+        {
+            get { return _serverConfigButtonName; }
+            set { SetProperty(ref _serverConfigButtonName, value); }
+        }
+        
         private string _login;
         public string Login
         {
@@ -44,14 +51,23 @@ namespace Messenger.ViewModels
         public AuthorizationDialogViewModel(IDialogService dialogService, ClientStateManager state, WebSocketClient webSocketClient)
         {
             _title = "Authorization";
+            ServerConfigButtonName = "Server config (Disconnected)";
             _clientState = state;
             _dialogService = dialogService;
             _webSocketClient = webSocketClient;
 
-            if (_webSocketClient.IsConnected == false)
-            {
-                _webSocketClient.Connect();
-            }
+            
+        }
+
+        private void OnWebSocketConnected()
+        {
+            ServerConfigButtonName = "Server config (Connected)";
+            AuthorizeUserCommand.RaiseCanExecuteChanged();
+        }
+        private void OnWebSocketDisconnected()
+        {
+            ServerConfigButtonName = "Server config (Disconnected)";
+            AuthorizeUserCommand.RaiseCanExecuteChanged();
         }
 
         private DelegateCommand _authorizeUserCommand;
@@ -77,24 +93,31 @@ namespace Messenger.ViewModels
 
         private DelegateCommand _closeDialogCommand;
         public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
-        
+
         public event Action<IDialogResult> RequestClose;
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
+            _webSocketClient.Connected -= OnWebSocketConnected;
+            _webSocketClient.Disconnected -= OnWebSocketDisconnected;
+            _webSocketClient.AuthorizationResponseСame -= ShowAuthorizationResult;
+
             RequestClose?.Invoke(dialogResult);
         }
 
         public virtual void OnDialogOpened(IDialogParameters parameters)
         {
-            _webSocketClient.Connected += AuthorizeUserCommand.RaiseCanExecuteChanged;
+            _webSocketClient.Connected += OnWebSocketConnected;
+            _webSocketClient.Disconnected += OnWebSocketDisconnected;
             _webSocketClient.AuthorizationResponseСame += ShowAuthorizationResult;
+
+            if (_webSocketClient.IsConnected == false)
+            {
+                _webSocketClient.Connect("127.0.0.1", 7890);
+            }
         }
         protected virtual void CloseDialog()
         {
-            _webSocketClient.Connected -= AuthorizeUserCommand.RaiseCanExecuteChanged;
-            _webSocketClient.AuthorizationResponseСame -= ShowAuthorizationResult;
-
             ButtonResult result = ButtonResult.None;
             RaiseRequestClose(new DialogResult(result));
         }

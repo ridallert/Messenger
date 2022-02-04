@@ -34,6 +34,7 @@ namespace Messenger.ViewModels
         public MainWindowViewModel(IDialogService dialogService, ClientStateManager state, WebSocketClient webSocketClient)
         {
             _webSocketClient = webSocketClient;
+            _webSocketClient.Disconnected += OnDisconnected;
             _clientState = state;
             _dialogService = dialogService;
 
@@ -42,6 +43,11 @@ namespace Messenger.ViewModels
 
             _clientState.UserAuthorized += OnUserAuthorized;
             _clientState.UserLoggedOut += OnUserLoggedOut;
+        }
+
+        private void OnDisconnected()
+        {
+            _clientState.LogOut();
         }
 
         private void OnUserAuthorized()

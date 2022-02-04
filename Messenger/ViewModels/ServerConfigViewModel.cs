@@ -64,8 +64,7 @@ namespace Messenger.ViewModels
 
         private void ConnectExecute()
         {
-            _webSocketClient.SetParams(Address, Port);
-            _webSocketClient.Connect();
+            _webSocketClient.Connect(Address, Port);
             CloseDialogCommand.Execute();
         }
         private bool ConnectCanExecute()
