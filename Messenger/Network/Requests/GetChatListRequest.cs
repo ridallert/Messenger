@@ -8,11 +8,11 @@ namespace Messenger.Network.Requests
 {
     public class GetChatListRequest
     {
-        public string Name { get; set; }
+        public int UserId { get; set; }
 
-        public GetChatListRequest(string name)
+        public GetChatListRequest(int userId)
         {
-            Name = name;
+            UserId = userId;
         }
         public MessageContainer GetContainer()
         {

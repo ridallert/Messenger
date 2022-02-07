@@ -1,21 +1,13 @@
-﻿using Messenger.Network;
-using Messenger.Network.Responses;
-using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.ViewModels
+﻿namespace Messenger.ViewModels
 {
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Prism.Services.Dialogs;
+    using System;
+
     public class NotificationWindowViewModel : BindableBase, IDialogAware
     {
         private string _message;
-
-        //private WebSocketClient _webSocketClient;
         public string Message
         {
             get { return _message; }
@@ -29,8 +21,6 @@ namespace Messenger.ViewModels
             set { SetProperty(ref _title, value); }
         }
 
-        //public NotificationWindowViewModel() { }
-
         public void OnDialogOpened(IDialogParameters parameters)
         {
             if (parameters.ContainsKey("result"))
@@ -38,22 +28,20 @@ namespace Messenger.ViewModels
                 string name = parameters.GetValue<string>("name");
                 string response = parameters.GetValue<string>("result");
 
-                Message = response;//
+                Message = response;
 
-                if (response == "NameIsTaken")
+                if (response == "Name is taken")
                     Message = "Name '" + name + "' is taken";
-                if (response == "AlreadyExists")
+                if (response == "Already exists")
                     Message = "You logged in as '" + name + "'";
-                if (response == "NewUserAdded")
-                    Message = "User '" + name + "' is added";
+                if (response == "New user added")
+                    Message = "User '" + name + "' added";
             }
         }
         public void OnDialogClosed()
         {
 
         }
-
-
 
         public event Action<IDialogResult> RequestClose;
 

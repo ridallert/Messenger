@@ -215,7 +215,7 @@ namespace Messenger.ViewModels
             {
                 if (chat.ChatId == message.ChatId)
                 {
-                    chat.Messages.Add(message);
+                    //chat.Messages.Add(message);
                     if (SelectedChat == null || message.ChatId != SelectedChat.ChatId)
                     {
                         chat.NewMessageCounter = chat.NewMessageCounter.HasValue ? chat.NewMessageCounter += 1 : chat.NewMessageCounter = 1;

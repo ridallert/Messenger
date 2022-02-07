@@ -1,23 +1,15 @@
-﻿using Messenger.Common;
-using Messenger.Network.EventArgs;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using WebSocketSharp;
-using Messenger.Network.Requests;
-using Messenger.Network.Responses;
-using System.Windows;
-using System.Net;
-using Messenger.Models;
-using Messenger.Network.Broadcasts;
-
-namespace Messenger.Network
+﻿namespace Messenger.Network
 {
+    using Newtonsoft.Json;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Threading;
+    using WebSocketSharp;
+    using Messenger.Network.Requests;
+    using Messenger.Network.Responses;
+    using Messenger.Network.Broadcasts;
+
     public class WebSocketClient
     {
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
@@ -48,8 +40,6 @@ namespace Messenger.Network
         //public event EventHandler MessageReceived;
         //public event EventHandler<ConnectionStateChangedEventArgs> Connected;
         //public event EventHandler<ConnectionStateChangedEventArgs> Disconnected;
-
-
 
         public WebSocketClient()
         {
@@ -180,16 +170,16 @@ namespace Messenger.Network
                 Send();
         }
 
-        public void GetContacts(string name)
+        public void GetContacts(int userId)
         {
-            _sendQueue.Enqueue(new GetUserListRequest(name).GetContainer());
+            _sendQueue.Enqueue(new GetUserListRequest(userId).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
-        public void GetChatList(string name)
+        public void GetChatList(int userId)
         {
-            _sendQueue.Enqueue(new GetChatListRequest(name).GetContainer());
+            _sendQueue.Enqueue(new GetChatListRequest(userId).GetContainer());
 
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();

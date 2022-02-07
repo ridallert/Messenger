@@ -1,15 +1,12 @@
-﻿using Messenger.Models;
-using Messenger.Network;
-using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Services.Dialogs;
-using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-
-namespace Messenger.ViewModels
+﻿namespace Messenger.ViewModels
 {
+    using Messenger.Models;
+    using Messenger.Network;
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Prism.Services.Dialogs;
+    using System.Windows;
+
     public class MainWindowViewModel : BindableBase
     {
         private WebSocketClient _webSocketClient;
@@ -39,7 +36,7 @@ namespace Messenger.ViewModels
             _clientState = state;
             _dialogService = dialogService;
 
-            Title = "PrismMessenger";
+            Title = "KeepTalk";
             LoginButtonContent = "Log in";
 
             _clientState.UserAuthorized += OnUserAuthorized;

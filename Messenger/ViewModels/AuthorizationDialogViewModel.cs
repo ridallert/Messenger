@@ -90,7 +90,6 @@ namespace Messenger.ViewModels
             }
         }
 
-
         private DelegateCommand _closeDialogCommand;
         public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
 
@@ -132,14 +131,12 @@ namespace Messenger.ViewModels
 
         private void ShowAuthorizationResult(AuthorizationResponse response)
         {
-            if (response.Result == "AlreadyExists" || response.Result == "NewUserAdded")
+            if (response.Result == "Already exists" || response.Result == "New user added")
             {
                 Application.Current.Dispatcher.InvokeAsync(CloseDialog);
                 //_clientState.AuthorizeUser(response.Name, response.UserId);
-                _webSocketClient.GetContacts(Login);
-                _webSocketClient.GetChatList(Login);
-                //_webSocketClient.GetPrivateMessageList(Login);
-                //_webSocketClient.GetPublicMessageList();
+                _webSocketClient.GetContacts(response.UserId);
+                _webSocketClient.GetChatList(response.UserId);
                 _webSocketClient.GetEventLog(DateTime.Today.AddDays(-1), DateTime.Today);
             }
             Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response));

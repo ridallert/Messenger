@@ -1,18 +1,14 @@
-﻿using Messenger.Common;
-using Messenger.Models;
-using Messenger.Network;
-using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.ViewModels
+﻿namespace Messenger.ViewModels
 {
+    using Messenger.Common;
+    using Messenger.Models;
+    using Messenger.Network;
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Prism.Services.Dialogs;
+    using System;
+    using System.Collections.ObjectModel;
+
     class LogWindowViewModel : BindableBase, IDialogAware
     {
         private ClientStateManager _clientState;
@@ -85,7 +81,7 @@ namespace Messenger.ViewModels
 
         private void LoadExecute()
         {
-            _webSocketClient.GetEventLog(From, To);
+            _webSocketClient.GetEventLog(From, To.AddDays(1));
         }
 
         private bool LoadCanExecute()
@@ -109,14 +105,8 @@ namespace Messenger.ViewModels
             return true;
         }
 
-        public void OnDialogClosed()
-        {
+        public void OnDialogClosed(){}
 
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-
-        }
+        public void OnDialogOpened(IDialogParameters parameters) {}
     }
 }
