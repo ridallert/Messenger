@@ -166,8 +166,6 @@ namespace Messenger.ViewModels
             return Login != null;
         }
 
-
-
         private void OnUserStatusChanged(User arg)
         {
             foreach (ChatPresenter chat in ChatList)

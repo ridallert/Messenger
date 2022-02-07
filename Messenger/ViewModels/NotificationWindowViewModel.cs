@@ -4,10 +4,14 @@
     using Prism.Mvvm;
     using Prism.Services.Dialogs;
     using System;
+    using System.Timers;
+    using System.Windows;
 
     public class NotificationWindowViewModel : BindableBase, IDialogAware
     {
+        private Timer _timer; 
         private string _message;
+        
         public string Message
         {
             get { return _message; }
@@ -23,6 +27,10 @@
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            _timer = new Timer { AutoReset = false, Interval = 1000 };
+            _timer.Elapsed += OnTimerElapsed;
+            _timer.Start();
+
             if (parameters.ContainsKey("result"))
             {
                 string name = parameters.GetValue<string>("name");
@@ -38,6 +46,11 @@
                     Message = "User '" + name + "' added";
             }
         }
+        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            Application.Current.Dispatcher.InvokeAsync(CloseDialog);
+        }
+
         public void OnDialogClosed()
         {
 
@@ -50,8 +63,8 @@
             return true;
         }
 
-        private DelegateCommand _closeDialogCommand;
-        public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
+        //private DelegateCommand _closeDialogCommand;
+        //public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
 
         protected virtual void CloseDialog()
         {

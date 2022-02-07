@@ -4,7 +4,7 @@
              xmlns:prism="http://prismlibrary.com/"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Style="{StaticResource DialogStyle}"
-             MinWidth="230" MinHeight="85">
+             MinWidth="230" MinHeight="45">
 
     <prism:Dialog.WindowStyle>
         <Style TargetType="Window">
@@ -15,9 +15,9 @@
             <Setter Property="WindowStyle" Value="None" />
         </Style>
     </prism:Dialog.WindowStyle>
-
-    <DockPanel>
+    <TextBlock Text="{Binding Message}" Margin="10,10,10,10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <!--<DockPanel>
         <Button Content="Close" Command="{Binding CloseDialogCommand}" Margin="30,5,30,10" Width="100" Height="30" DockPanel.Dock="Bottom"/>
         <TextBlock Text="{Binding Message}" Margin="10,10,10,5" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-    </DockPanel>
+    </DockPanel>-->
 </UserControl>
