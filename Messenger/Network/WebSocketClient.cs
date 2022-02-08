@@ -14,33 +14,22 @@
     {
         private readonly ConcurrentQueue<MessageContainer> _sendQueue;
         private int _sending;
-
         private WebSocket _socket;
-        public bool IsConnected
-        {
-            get
-            {
-                return _socket?.ReadyState == WebSocketState.Open;
-            }
-        }
 
+        public bool IsConnected => _socket?.ReadyState == WebSocketState.Open;
+
+        public event Action Connected;
+        public event Action Disconnected;
         public event Action<AuthorizationResponse> AuthorizationResponseСame;
         public event Action<GetUserListResponse> GetUserListResponseСame;
         public event Action<GetChatListResponse> GetChatListResponseСame;
         public event Action<CreateNewChatResponse> CreateNewChatResponseСame;
         public event Action<NewChatCreatedResponse> NewChatCreatedResponseСame;
-
+        public event Action<SendMessageResponse> SendMessageResponseCame;
         public event Action<MessageReceivedResponse> MessageReceivedResponseCame;
         public event Action<UserStatusChangedBroadcast> UserStatusChangedBroadcastCame;
         public event Action<GetEventListResponse> GetEventListResponseCame;
-
-        public event Action Connected;
-        public event Action Disconnected;
-
-        //public event EventHandler MessageReceived;
-        //public event EventHandler<ConnectionStateChangedEventArgs> Connected;
-        //public event EventHandler<ConnectionStateChangedEventArgs> Disconnected;
-
+        
         public WebSocketClient()
         {
             
@@ -58,13 +47,13 @@
             string serializedMessages = JsonConvert.SerializeObject(message, settings);
             _socket.SendAsync(serializedMessages, SendCompleted);
         }
+
         private void SendCompleted(bool completed)
         {
             if (!completed)
             {
                 Disconnect();
                 Disconnected?.Invoke();
-                //Disconnected?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false));
                 return;
             }
             Send();
@@ -109,6 +98,11 @@
                     NewChatCreatedResponseСame?.Invoke(newChatCreatedResponse);
                     break;
 
+                case nameof(SendMessageResponse):
+                    SendMessageResponse sendMessageResponse = JsonConvert.DeserializeObject<SendMessageResponse>(container.Payload.ToString());
+                    SendMessageResponseCame?.Invoke(sendMessageResponse);
+                    break;
+
                 case nameof(MessageReceivedResponse):
                     MessageReceivedResponse messageReceivedResponse = JsonConvert.DeserializeObject<MessageReceivedResponse>(container.Payload.ToString());
                     MessageReceivedResponseCame?.Invoke(messageReceivedResponse);
@@ -120,10 +114,7 @@
                     break;
             }
         }
-        //public void SetParams(string ipAddress, int port)
-        //{
-        //    _socket = new WebSocket($"ws://{ipAddress}:{port}");
-        //}
+
         public void Connect(string address, int port)
         {
             if (IsConnected)
@@ -137,8 +128,6 @@
             
             _socket?.ConnectAsync();
         }
-
-
 
         public void Disconnect()
         {
@@ -177,6 +166,7 @@
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
+
         public void GetChatList(int userId)
         {
             _sendQueue.Enqueue(new GetChatListRequest(userId).GetContainer());
@@ -192,16 +182,16 @@
             if (Interlocked.CompareExchange(ref _sending, 1, 0) == 0)
                 Send();
         }
+
         private void OnOpen(object sender, System.EventArgs e)
         {
             Connected?.Invoke();
-            //Connected?.Invoke(this, new ConnectionStateChangedEventArgs(_login, true));
         }
+
         private void OnClose(object sender, CloseEventArgs e)
         {
             Disconnect();
             Disconnected?.Invoke();
-            //Disconnected?.Invoke(this, new ConnectionStateChangedEventArgs(_login, false));
         }
     }
 }

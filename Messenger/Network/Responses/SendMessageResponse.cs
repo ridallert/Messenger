@@ -1,6 +1,6 @@
 ﻿namespace Messenger.Network.Responses
 {
-    class SendMessageResponse
+    public class SendMessageResponse
     {
         public string Result { get; set; }
 

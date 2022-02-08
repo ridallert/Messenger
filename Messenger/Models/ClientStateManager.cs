@@ -98,10 +98,10 @@
 
         public bool IsChatAlreadyExists(ObservableCollection<User> userList)
         {
-            foreach (Chat chat in Chats)
+            foreach (Chat existingChat in Chats)
             {
                 int userCounter = 0;
-                foreach (User existingChatUser in chat.Users)
+                foreach (User existingChatUser in existingChat.Users)
                 {
                     foreach (User newChatUser in userList)
                     {
@@ -112,8 +112,12 @@
                         }
                     }
                 }
-                if (userCounter == userList.Count + 1 && userCounter == chat.Users.Count && userList.Count!=1 && chat.Title!="Public chat")
+                if (userCounter == userList.Count + 1 && userCounter == existingChat.Users.Count) //userList.Count != 1 &&
                 {
+                    if (existingChat.Title == "Public chat" && existingChat.Users.Count == 1)
+                    {
+                        return false;
+                    }
                     return true;
                 }
             }

@@ -61,7 +61,6 @@
             _clientState.EventListChanged += OnEventListChanged;
             From = DateTime.Today.AddDays(-1);
             To = DateTime.Today;
-            _webSocketClient.GetEventLog(From, To);
 
             EventTypes = new ObservableCollection<EventType>();
             EventTypes.Add(EventType.All);
@@ -105,8 +104,11 @@
             return true;
         }
 
-        public void OnDialogClosed(){}
+        public void OnDialogClosed() {}
 
-        public void OnDialogOpened(IDialogParameters parameters) {}
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+            EventList = new ObservableCollection<LogEntry>(_clientState.EventList);
+        }
     }
 }

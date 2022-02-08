@@ -1,6 +1,7 @@
 ﻿using Messenger.Common;
 using Messenger.Models;
 using Messenger.Network;
+using Messenger.Network.Responses;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Services.Dialogs;
@@ -109,7 +110,23 @@ namespace Messenger.ViewModels
             _clientState.ChatListLoaded += OnChatListLoaded;
             _clientState.NewChatAdded += OnNewChatAdded;
             _clientState.MessageReceived += OnMessageReceived;
+            _webSocketClient.SendMessageResponseCame += OnSendMessageResponseCame;
         }
+
+        private void OnSendMessageResponseCame(SendMessageResponse response)
+        {
+            Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response.Result));
+        }
+        private void ShowNotificationWindow(string message)
+        {
+            var par = new DialogParameters
+            {
+                { "result", message }
+            };
+
+            _dialogService.Show("NotificationWindow", par, Callback);
+        }
+        void Callback(IDialogResult result) { }
 
         private DelegateCommand _newLineCommand;
         public DelegateCommand NewLineCommand => _newLineCommand ?? (_newLineCommand = new DelegateCommand(NewLineExecute, NewLineCanExecute));
@@ -140,6 +157,7 @@ namespace Messenger.ViewModels
                 {
                     _webSocketClient.SendMessage(_userId.Value, SelectedChat.ChatId, NewMessage, DateTime.Now);
                 }
+
                 NewMessage = null;
             }
         }
@@ -207,20 +225,17 @@ namespace Messenger.ViewModels
                 ChatList.Add(newChat);
             });
         }
+
         private void OnMessageReceived(Message message)
         {
             foreach (ChatPresenter chat in ChatList)
             {
-                if (chat.ChatId == message.ChatId)
+                if (chat.ChatId == message.ChatId && (SelectedChat == null || message.ChatId != SelectedChat.ChatId))
                 {
-                    //chat.Messages.Add(message);
-                    if (SelectedChat == null || message.ChatId != SelectedChat.ChatId)
-                    {
-                        chat.NewMessageCounter = chat.NewMessageCounter.HasValue ? chat.NewMessageCounter += 1 : chat.NewMessageCounter = 1;
-                    }
+                    chat.NewMessageCounter = chat.NewMessageCounter.HasValue ? chat.NewMessageCounter += 1 : chat.NewMessageCounter = 1;
                 }
             }
-            if (SelectedChat !=null && message.ChatId == SelectedChat.ChatId)
+            if (SelectedChat != null && message.ChatId == SelectedChat.ChatId)
             {
                 Application.Current.Dispatcher.InvokeAsync(() =>
                 {

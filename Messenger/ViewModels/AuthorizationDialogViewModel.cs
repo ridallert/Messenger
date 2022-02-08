@@ -22,7 +22,6 @@ namespace Messenger.ViewModels
         private WebSocketClient _webSocketClient;
         private IDialogService _dialogService;
 
-
         private string _title;
         public string Title
         {
@@ -64,6 +63,7 @@ namespace Messenger.ViewModels
             ServerConfigButtonName = "Server config (Connected)";
             AuthorizeUserCommand.RaiseCanExecuteChanged();
         }
+
         private void OnWebSocketDisconnected()
         {
             ServerConfigButtonName = "Server config (Disconnected)";
@@ -115,34 +115,32 @@ namespace Messenger.ViewModels
                 _webSocketClient.Connect("127.0.0.1", 7890);
             }
         }
+
         protected virtual void CloseDialog()
         {
             ButtonResult result = ButtonResult.None;
             RaiseRequestClose(new DialogResult(result));
         }
+
         public virtual bool CanCloseDialog()
         {
             return true;
         }
-        public virtual void OnDialogClosed()
-        {
 
-        }
+        public virtual void OnDialogClosed() {}
 
         private void ShowAuthorizationResult(AuthorizationResponse response)
         {
             if (response.Result == "Already exists" || response.Result == "New user added")
             {
                 Application.Current.Dispatcher.InvokeAsync(CloseDialog);
-                //_clientState.AuthorizeUser(response.Name, response.UserId);
                 _webSocketClient.GetContacts(response.UserId);
                 _webSocketClient.GetChatList(response.UserId);
-                _webSocketClient.GetEventLog(DateTime.Today.AddDays(-1), DateTime.Today);
+                _webSocketClient.GetEventLog(DateTime.Today.AddDays(-1), DateTime.Today.AddDays(1));
             }
             Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response));
         }
 
-        // Action callBack;
         private void ShowNotificationWindow(AuthorizationResponse response)
         {
             var par = new DialogParameters
@@ -153,10 +151,7 @@ namespace Messenger.ViewModels
 
             _dialogService.ShowDialog("NotificationWindow", par, Callback);
         }
-        void Callback(IDialogResult result)
-        {
-            //tcs.SetResult(result.Parameters.GetValue<bool>("confirmed"));
-        }
+        void Callback(IDialogResult result) {}
 
         private DelegateCommand _showServerConfigCommand;
         public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));
@@ -165,6 +160,5 @@ namespace Messenger.ViewModels
         {
             _dialogService.ShowDialog("ServerConfigDialog");
         }
-
     }
 }

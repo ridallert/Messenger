@@ -57,10 +57,7 @@
 
             _dialogService.ShowDialog("NotificationWindow", par, Callback);
         }
-        void Callback(IDialogResult result)
-        {
-            //tcs.SetResult(result.Parameters.GetValue<bool>("confirmed"));
-        }
+        void Callback(IDialogResult result) {}
         private void OnUserAuthorized()
         {
             LoginButtonContent = "Log out";

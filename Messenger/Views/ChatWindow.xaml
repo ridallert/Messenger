@@ -31,13 +31,16 @@
                      Margin="10,5,5,5"
                      ItemsSource="{Binding ChatList}"
                      HorizontalContentAlignment="Stretch"
-                     SelectedItem="{Binding SelectedChat, UpdateSourceTrigger=PropertyChanged}" >
+                     SelectedItem="{Binding SelectedChat, UpdateSourceTrigger=PropertyChanged}"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Title}"
-                                           FontWeight="Bold" />
+                                           MaxWidth="185"
+                                           FontWeight="Bold"
+                                           TextTrimming="WordEllipsis"/>
                                 <TextBlock Margin="10,0,0,0"
                                            Foreground="CadetBlue"
                                            Text="{Binding NewMessageCounter, StringFormat=+\{0\}, TargetNullValue=''}"/>

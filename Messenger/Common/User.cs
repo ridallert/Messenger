@@ -1,16 +1,10 @@
-﻿using Newtonsoft.Json;
-using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Common
+﻿namespace Messenger.Common
 {
+    using Newtonsoft.Json;
+    using Prism.Mvvm;
+
     public class User: BindableBase
     {
-        //private static int _idCounter;
         private OnlineStatus _isOnline;
         public int UserId { get; set; }
         public string Name { get; set; }
