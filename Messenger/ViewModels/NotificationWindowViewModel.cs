@@ -1,6 +1,5 @@
 ﻿namespace Messenger.ViewModels
 {
-    using Prism.Commands;
     using Prism.Mvvm;
     using Prism.Services.Dialogs;
     using System;
@@ -19,6 +18,7 @@
         }
 
         private string _title = "NotificationWindow";
+
         public string Title
         {
             get { return _title; }
@@ -33,17 +33,7 @@
 
             if (parameters.ContainsKey("result"))
             {
-                string name = parameters.GetValue<string>("name");
-                string response = parameters.GetValue<string>("result");
-
-                Message = response;
-
-                if (response == "Name is taken")
-                    Message = "Name '" + name + "' is taken";
-                if (response == "Already exists")
-                    Message = "You logged in as '" + name + "'";
-                if (response == "New user added")
-                    Message = "User '" + name + "' added";
+                Message = parameters.GetValue<string>("result");
             }
         }
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
@@ -62,9 +52,6 @@
         {
             return true;
         }
-
-        //private DelegateCommand _closeDialogCommand;
-        //public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
 
         protected virtual void CloseDialog()
         {

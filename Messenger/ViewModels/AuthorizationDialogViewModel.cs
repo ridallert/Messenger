@@ -1,24 +1,15 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Messenger.Models;
-using Messenger.Network;
-using Messenger.Common;
-using Messenger.Network.Responses;
-using System.Windows.Threading;
-using System.Threading;
-using System.Windows;
-
-namespace Messenger.ViewModels
+﻿namespace Messenger.ViewModels
 {
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Prism.Services.Dialogs;
+    using System;
+    using Messenger.Network;
+    using Messenger.Network.Responses;
+    using System.Windows;
+
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
-        private ClientStateManager _clientState;
         private WebSocketClient _webSocketClient;
         private IDialogService _dialogService;
 
@@ -47,15 +38,12 @@ namespace Messenger.ViewModels
             }
         }
 
-        public AuthorizationDialogViewModel(IDialogService dialogService, ClientStateManager state, WebSocketClient webSocketClient)
+        public AuthorizationDialogViewModel(IDialogService dialogService, WebSocketClient webSocketClient)
         {
             _title = "Authorization";
             ServerConfigButtonName = "Server config (Disconnected)";
-            _clientState = state;
             _dialogService = dialogService;
             _webSocketClient = webSocketClient;
-
-            
         }
 
         private void OnWebSocketConnected()
@@ -131,7 +119,7 @@ namespace Messenger.ViewModels
 
         private void ShowAuthorizationResult(AuthorizationResponse response)
         {
-            if (response.Result == "Already exists" || response.Result == "New user added")
+            if (response.Result == "Success")
             {
                 Application.Current.Dispatcher.InvokeAsync(CloseDialog);
                 _webSocketClient.GetContacts(response.UserId);
@@ -145,11 +133,10 @@ namespace Messenger.ViewModels
         {
             var par = new DialogParameters
             {
-                { "name", response.Name },
                 { "result", response.Result }
             };
 
-            _dialogService.ShowDialog("NotificationWindow", par, Callback);
+            _dialogService.Show("NotificationWindow", par, Callback);
         }
         void Callback(IDialogResult result) {}
 

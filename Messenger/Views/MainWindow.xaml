@@ -43,6 +43,5 @@
                        Grid.ColumnSpan="3"
                        Grid.RowSpan="3"
                        Panel.ZIndex="0"/>
-
     </Grid>
 </Window>

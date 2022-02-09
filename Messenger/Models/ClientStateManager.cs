@@ -47,7 +47,7 @@
 
         public void AuthorizeUser(AuthorizationResponse response)
         {
-            if (response.Result == "Already exists" || response.Result == "New user added")
+            if (response.Result == "Success")
             {
                 Login = response.Name;
                 UserId = response.UserId;
@@ -114,7 +114,7 @@
                 }
                 if (userCounter == userList.Count + 1 && userCounter == existingChat.Users.Count) //userList.Count != 1 &&
                 {
-                    if (existingChat.Title == "Public chat" && existingChat.Users.Count == 1)
+                    if (existingChat.Title == "Public chat" && existingChat.Users.Count == 2)
                     {
                         return false;
                     }
@@ -149,6 +149,7 @@
                     UserStatusChanged?.Invoke(user);
                 }
             }
+
             if (!isUserExist)
             {
                 if (broadcast.Status == OnlineStatus.Online)
@@ -157,6 +158,7 @@
                     {
                         User newUser = new User(broadcast.UserId, broadcast.Name, broadcast.Status);
                         Users.Add(newUser);
+                        Chats.Find(chat => chat.Title == "Public chat")?.Users.Add(newUser);
                         UserStatusChanged?.Invoke(newUser);
                     });
                 }

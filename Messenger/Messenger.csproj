@@ -63,7 +63,6 @@
     <Compile Include="Common\User.cs" />
     <Compile Include="Network\Broadcasts\PublicMessageDeliveredBroadcast.cs" />
     <Compile Include="Network\Broadcasts\UserStatusChangedBroadcast.cs" />
-    <Compile Include="Network\EventArgs\UserStatusChangedEventArgs.cs" />
     <Compile Include="Network\MessageContainer.cs" />
     <Compile Include="Common\OnlineStatus.cs" />
     <Compile Include="Network\Requests\AuthorizationRequest.cs" />
@@ -85,7 +84,6 @@
     <Compile Include="Network\Responses\MessageReceivedResponse.cs" />
     <Compile Include="Network\Responses\SendMessageResponse.cs" />
     <Compile Include="Network\WebSocketClient.cs" />
-    <Compile Include="Network\Protocol.cs" />
     <Compile Include="Resources\CustomTextBox.cs" />
     <Compile Include="Resources\CustomListBox.cs" />
     <Compile Include="ViewModels\ChatWindowViewModel.cs" />

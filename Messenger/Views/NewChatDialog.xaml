@@ -2,7 +2,6 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Style="{StaticResource DialogStyle}"
              Height="230" Width="430">
@@ -40,6 +39,7 @@
                   Margin="10,5,5,5"
                   ItemsSource="{Binding Path=AvailableUsers}"
                   SelectedItem="{Binding Path=AvailableUsersSelectedItem, UpdateSourceTrigger=PropertyChanged}">
+            
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -64,6 +64,7 @@
                   Margin="5,5,10,5"
                   ItemsSource="{Binding Path=SelectedUsers, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, Mode=TwoWay}"
                   SelectedItem="{Binding Path=SelectedUsersSelectedItem, UpdateSourceTrigger=PropertyChanged}">
+            
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -100,6 +101,7 @@
                     Grid.Row="3"
                     Command="{Binding RemoveUserCommand}"/>
         </Grid>
+        
         <TextBlock Grid.Column="0"
                    Grid.Row="2"
                    Text="{Binding NotificationText}"
@@ -111,10 +113,12 @@
 
         <Grid Grid.Column="2"
               Grid.Row="2">
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+
             <Button Grid.Column="0"
                     Content="Create"
                     DockPanel.Dock="Right"
@@ -125,7 +129,5 @@
                     Margin="5,5,10,10"
                     Command="{Binding CloseDialogCommand}"/>
         </Grid>
-
-
     </Grid>
 </UserControl>

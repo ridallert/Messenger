@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     public class Chat: BindableBase
     {
-        //private static int _idCounter;
         private string _title;
         private List<User> _users;
         private List<Message> _messages;
@@ -24,23 +23,12 @@
             get { return _messages; }
             set { SetProperty(ref _messages, value); }
         }
-
-        public Chat(string title, List<User> users) : this(title)
-        {
-            Users.AddRange(users);
-        }
         public Chat(string title) : this()
         {
             Title = title;
         }
-        public Chat(User userA, User userB) : this()
-        {
-            Users.Add(userA);
-            Users.Add(userB);
-        }
         public Chat()
         {
-            //ChatId = _idCounter++;
             Users = new List<User>();
             Messages = new List<Message>();
         }

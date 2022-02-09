@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Common
+﻿namespace Messenger.Common
 {
+    using System;
     public class LogEntry
     {
         public EventType Type { get; set; }

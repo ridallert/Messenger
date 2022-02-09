@@ -10,17 +10,13 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.ComponentModel;
     using System.Windows;
 
-    class NewChatDialogViewModel : BindableBase, IDialogAware //, IDataErrorInfo
+    class NewChatDialogViewModel : BindableBase, IDialogAware
     {
         private ClientStateManager _clientState;
         private WebSocketClient _webSocketClient;
         private IDialogService _dialogService;
-
-        //private string _chatTitle;
-        //private Visibility _isTitleVisible;
         private string _notificationText;
         private Visibility _isNotificationVisible;
         private ObservableCollection<User> _availableUsers;
@@ -28,20 +24,6 @@
         private User _availableUsersSelected;
         private User _selectedUsersSelected;
 
-        //public string ChatTitle
-        //{
-        //    get { return _chatTitle; }
-        //    set
-        //    {
-        //        SetProperty(ref _chatTitle, value);
-        //        CreateCommand.RaiseCanExecuteChanged();
-        //    }
-        //}
-        //public Visibility IsTitleVisible
-        //{
-        //    get { return _isTitleVisible; }
-        //    set { SetProperty(ref _isTitleVisible, value); }
-        //}
         public string NotificationText
         {
             get { return _notificationText; }
@@ -87,7 +69,6 @@
             _webSocketClient = webSocketClient;
             _clientState = clientState;
             Title = "Event log";
-            //IsTitleVisible = Visibility.Hidden;
             IsNotificationVisible = Visibility.Hidden;
             AvailableUsers = _clientState.GetContactList();
             SelectedUsers = new ObservableCollection<User>();
@@ -132,18 +113,11 @@
             AvailableUsers.Add(SelectedUsersSelectedItem);
             SelectedUsers.Remove(SelectedUsersSelectedItem);
             CreateCommand.RaiseCanExecuteChanged();
-
-            //if (SelectedUsers == null || SelectedUsers.Count <= 1)
-            //{
-                //ChatTitle = null;
-                //IsTitleVisible = Visibility.Hidden;
-            //}
         }
         private bool RemoveUserCanExecute()
         {
             return SelectedUsersSelectedItem != null;
         }
-
 
         private DelegateCommand _createCommand;
         public DelegateCommand CreateCommand => _createCommand ?? (_createCommand = new DelegateCommand(CreateExecute, CreateCanExecute));
@@ -170,7 +144,6 @@
             }
 
             _webSocketClient.SendCreateNewChatRequest(newChatTitle, idList);
-
         }
         private bool CreateCanExecute()
         {
@@ -198,31 +171,7 @@
         private DelegateCommand _closeDialogCommand;
         public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
         
-
-        //IDataErrorInfo
-        public string Error => throw new Exception("Chat title validation error");
-
-        //public string this[string propertyName]
-        //{
-        //    get
-        //    {
-        //        string validationResult = String.Empty;
-        //        if (propertyName == "ChatTitle")
-        //        {
-        //            if (String.IsNullOrEmpty(ChatTitle))
-        //            {
-        //                validationResult = "Chat title cannot be empty";
-        //            }
-        //            if (_clientState.IsChatNameTaken(ChatTitle))
-        //            {
-        //                validationResult = "Chat name is taken";
-        //            }
-        //        }
-        //        return validationResult;
-        //    }
-        //}
-
-        //IDialogAware
+       
         private string _title;
         public string Title
         {
@@ -237,10 +186,7 @@
             return true;
         }
 
-        public void OnDialogClosed()
-        {
-
-        }
+        public void OnDialogClosed() {}
         public void OnDialogOpened(IDialogParameters parameters)
         {
             _webSocketClient.CreateNewChatResponseСame += ShowResult;
@@ -269,12 +215,9 @@
                 { "result", response.Result }
             };
 
-            _dialogService.ShowDialog("NotificationWindow", par, Callback);
+            _dialogService.Show("NotificationWindow", par, Callback);
             CloseDialog();
         }
-        void Callback(IDialogResult result)
-        {
-            //tcs.SetResult(result.Parameters.GetValue<bool>("confirmed"));
-        }
+        private void Callback(IDialogResult result) {}
     }
 }

@@ -88,8 +88,6 @@
             return From <= To && To <= DateTime.Today;
         }
 
-        //IDialogAware
-
         private string _title = "Event log";
         public string Title
         {

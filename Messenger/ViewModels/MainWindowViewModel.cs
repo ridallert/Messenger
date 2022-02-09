@@ -55,7 +55,7 @@
                 { "result", message }
             };
 
-            _dialogService.ShowDialog("NotificationWindow", par, Callback);
+            _dialogService.Show("NotificationWindow", par, Callback);
         }
         void Callback(IDialogResult result) {}
         private void OnUserAuthorized()

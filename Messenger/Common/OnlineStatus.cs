@@ -3,6 +3,6 @@
     public enum OnlineStatus
     {
         Online,
-        Offline
+        Offline,
     }
 }

@@ -24,9 +24,6 @@
             Name = name;
             IsOnline = isOnline;
         }
-        public User()
-        {
-            //UserId = _idCounter++;
-        }
+        public User() {}
     }
 }

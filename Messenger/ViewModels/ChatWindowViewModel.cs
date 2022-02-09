@@ -1,20 +1,18 @@
-﻿using Messenger.Common;
-using Messenger.Models;
-using Messenger.Network;
-using Messenger.Network.Responses;
-using Prism.Commands;
-using Prism.Mvvm;
-using Prism.Services.Dialogs;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-
-namespace Messenger.ViewModels
+﻿namespace Messenger.ViewModels
 {
+    using Messenger.Common;
+    using Messenger.Models;
+    using Messenger.Network;
+    using Messenger.Network.Responses;
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Prism.Services.Dialogs;
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Windows;
+
     public class ChatWindowViewModel : BindableBase
     {
         private IDialogService _dialogService;
@@ -174,29 +172,33 @@ namespace Messenger.ViewModels
         private DelegateCommand<IList<object>> _startNewChatCommand;
         public DelegateCommand<IList<object>> StartNewChatCommand => _startNewChatCommand ?? (_startNewChatCommand = new DelegateCommand<IList<object>>(StartNewChatExecute, StartNewChatCanExecute));
 
-        public void StartNewChatExecute(IList<object> selectedItems)
+        private void StartNewChatExecute(IList<object> selectedItems)
         {
             _dialogService.ShowDialog("NewChatDialog");
         }
 
-        public bool StartNewChatCanExecute(IList<object> selectedItems)
+        private bool StartNewChatCanExecute(IList<object> selectedItems)
         {
             return Login != null;
         }
 
         private void OnUserStatusChanged(User arg)
         {
-            foreach (ChatPresenter chat in ChatList)
+            foreach (ChatPresenter presenter in ChatList)
             {
-                User tempUser = chat.Users.Find(user => user.UserId == arg.UserId);
+                User tempUser = presenter.Users.Find(user => user.UserId == arg.UserId);
 
                 if (tempUser != null)
                 {
                     tempUser.IsOnline = arg.IsOnline;
-                    if (chat.Users.Count == 2)
+                    if (presenter.Users.Count == 2 && presenter.Title != "Public chat")
                     {
-                        chat.IsOnline = arg.IsOnline;
+                        presenter.IsOnline = arg.IsOnline;
                     }
+                }
+                else
+                {
+                    ChatList.FirstOrDefault(chat => chat.Title == "Pubclic chat")?.Users.Add(arg);
                 }
             }
         }

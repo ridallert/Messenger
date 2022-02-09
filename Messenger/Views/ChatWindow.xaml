@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:prism="http://prismlibrary.com/"
              xmlns:res="clr-namespace:Messenger.Resources"
-             xmlns:local="clr-namespace:Messenger.Views"
              prism:ViewModelLocator.AutoWireViewModel="True"
              Style="{StaticResource ChatWindowStyle}">
 
@@ -17,7 +16,6 @@
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-
 
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
@@ -50,51 +48,15 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            
+
             <Button Name="startNewChatButton"
                           Content="New chat"
                           Grid.Row="2"
                           Margin="10,5,5,10"
                           Command="{Binding StartNewChatCommand}"/>
-            <!--<ToggleButton Name="startNewChatButton"
-                          Content="{Binding StartNewChatButtonName}"
-                          Grid.Row="2"
-                          Margin="10,5,5,10"
-                          Command="{Binding StartNewChatCommand}"/>-->
-            <!--CommandParameter="{Binding SelectedItems, Mode=OneWay, ElementName=startNewChatListBox}"-->
-            <!--<Popup AllowsTransparency="True"
-                   PlacementTarget="{Binding ElementName=startNewChatButton}"
-                   Placement="Top"
-                   PopupAnimation="Slide"
-                   IsOpen="{Binding Path=IsPopupOpen, Mode=OneWay}">
-                
-                <ListBox x:Name="startNewChatListBox"
-                         Height="150"
-                         Width="185"
-                         SelectionMode="Multiple"
-                         ItemsSource="{Binding ContactList, UpdateSourceTrigger=PropertyChanged}">
-
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock FontWeight="Bold"
-                                       TextAlignment="Left"
-                                       Text="{Binding Name}"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Popup>-->
-            <!--Command="{Binding CreateNewChatCommand}"/>-->
         </Grid>
 
         <DockPanel LastChildFill="True" Grid.Column="1">
-
-            <!--<TextBlock Height="30"
-                       DockPanel.Dock="Top"
-                       Margin="5,10,10,5"
-                       VerticalAlignment="Stretch">
-                <Run Text="{Binding Path=Login, StringFormat=You are logged in as {0}, TargetNullValue=''}"/>
-                
-            </TextBlock>-->
 
             <Label x:Name="meLabel"
                    Height="30"
@@ -112,32 +74,32 @@
                 </Grid.ColumnDefinitions>
 
                 <res:CustomTextBox x:Name="messageTextBox"
-                                        MinHeight="30"
-                                        MaxHeight="100"
-                                        Margin="5,5,5,10"
-                                        TextWrapping="Wrap"
-                                        Grid.Column="0"
-                                        IsEnabled="{Binding IsNewMessageEnabled}"
-                                        Text="{Binding NewMessage, UpdateSourceTrigger=PropertyChanged}"
-                                        CaretPosition="{Binding CaretPosition}"
-                                        SpellCheck.IsEnabled="True" Language="ru-ru"/>
+                                   MinHeight="30"
+                                   MaxHeight="100"
+                                   Margin="5,5,5,10"
+                                   TextWrapping="Wrap"
+                                   Grid.Column="0"
+                                   IsEnabled="{Binding IsNewMessageEnabled}"
+                                   Text="{Binding NewMessage, UpdateSourceTrigger=PropertyChanged}"
+                                   CaretPosition="{Binding CaretPosition}"
+                                   SpellCheck.IsEnabled="True" Language="ru-ru"/>
 
                 <DockPanel Grid.Column="1" LastChildFill="False">
                     <Button x:Name="sendButton"
-                        Height="30"
-                        Content="Send"
-                        Margin="5,5,10,10"
-                        Grid.Column="1"
-                        DockPanel.Dock="Bottom"
-                        Command="{Binding SendMessageCommand}"/>
+                            Height="30"
+                            Content="Send"
+                            Margin="5,5,10,10"
+                            Grid.Column="1"
+                            DockPanel.Dock="Bottom"
+                            Command="{Binding SendMessageCommand}"/>
                 </DockPanel>
             </Grid>
 
             <res:CustomListBox x:Name="mainTextBox"
-                                    Margin="5,5,10,5"
-                                    HorizontalContentAlignment="Stretch"
-                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                    ItemsSource="{Binding MessageList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                               Margin="5,5,10,5"
+                               HorizontalContentAlignment="Stretch"
+                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                               ItemsSource="{Binding MessageList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">

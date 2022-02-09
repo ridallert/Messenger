@@ -2,7 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:Messenger.Resources">
 
-    <!--DATA GRID-->
     <Style TargetType="DataGrid">
         <Setter Property="Background" Value="WhiteSmoke"/>
         <Setter Property="ColumnWidth" Value="*"/>
@@ -26,12 +25,10 @@
         </Setter>
     </Style>
 
-    <!--ГЛАВНОЕ ОКНО-->
     <Style x:Key="WindowStyle" TargetType="Window">
         <Setter Property="Background" Value="WhiteSmoke"/>
     </Style>
 
-    <!--ОКНО АВТОРИЗАЦИИ И НАСТРОЕК СЕРВЕРА-->
     <Style x:Key="DialogStyle" TargetType="UserControl">
         <Setter Property="Template">
             <Setter.Value>
@@ -47,7 +44,6 @@
         </Setter>
     </Style>
 
-    <!--ОКНО ЧАТА-->
     <Style x:Key="ChatWindowStyle" TargetType="UserControl">
         <Setter Property="Template">
             <Setter.Value>
@@ -61,8 +57,6 @@
         </Setter>
     </Style>
 
-
-    <!--КНОПКИ-->
     <Style TargetType="Button">
         <Setter Property="Background" Value="#506482"/>
         <Setter Property="Foreground" Value="White"/>
@@ -71,43 +65,7 @@
         <Setter Property="BorderBrush" Value="White"/>
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="2"/>
-        <!--<Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border Background="{TemplateBinding Background}" BorderBrush="White" BorderThickness="1">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>-->
-        <!--<Style.Triggers>
-            <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Background" Value="#64646e" />
-            </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#6482aa" />
-            </Trigger>
-            <Trigger Property="IsPressed" Value="True">
-                <Setter Property="Background" Value="#326482"/>
-            </Trigger>-->
-        <!--</Style.Triggers>-->
     </Style>
-
-    <!--<Style TargetType="ToggleButton">
-        <Setter Property="Background" Value="#506482"/>
-        <Setter Property="Foreground" Value="White" />
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="FontFamily" Value="Candara" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Padding" Value="2"/>
-        <Style.Triggers>
-            <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Foreground" Value="#FF143342"/>
-                <Setter Property="FontWeight" Value="Bold"/>
-            </Trigger>
-        </Style.Triggers>
-    </Style>-->
-    
 
     <Style TargetType="TextBlock">
         <Setter Property="FontSize" Value="14" />
