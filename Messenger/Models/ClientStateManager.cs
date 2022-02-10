@@ -89,13 +89,6 @@
             return result;
         }
 
-        public ObservableCollection<Message> GetMessageList(int chatId)
-        {
-            List<Message> messages = Chats.Find(chat => chat.ChatId == chatId).Messages;
-
-            return new ObservableCollection<Message>(messages);
-        }
-
         public ObservableCollection<LogEntry> GetEventLog(EventType type)
         {
             if (type == EventType.All)
