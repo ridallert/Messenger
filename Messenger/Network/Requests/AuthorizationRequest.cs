@@ -1,19 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Requests
+﻿namespace Messenger.Network.Requests
 {
-    class AuthorizationRequest
+    public class AuthorizationRequest
     {
+        #region Properties
+
         public string Name { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public AuthorizationRequest(string name)
         {
             Name = name;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -25,5 +29,7 @@ namespace Messenger.Network.Requests
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

@@ -1,33 +1,45 @@
 ﻿namespace Messenger.ViewModels
 {
+    using System;
+    using System.Windows;
+
     using Prism.Commands;
     using Prism.Mvvm;
     using Prism.Services.Dialogs;
-    using System;
+    
     using Messenger.Network;
     using Messenger.Network.Responses;
-    using System.Windows;
+    
 
     class AuthorizationDialogViewModel : BindableBase, IDialogAware
     {
-        private WebSocketClient _webSocketClient;
-        private IDialogService _dialogService;
+        #region Fields
 
+        private readonly WebSocketClient _webSocketClient;
+        private readonly IDialogService _dialogService;
         private string _title;
+        private string _serverConfigButtonName;
+        private string _login;
+        private DelegateCommand _authorizeUserCommand;
+        private DelegateCommand _closeDialogCommand;
+        private DelegateCommand _showServerConfigCommand;
+
+        #endregion //Fields
+
+        #region Properties
+
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
 
-        private string _serverConfigButtonName;
         public string ServerConfigButtonName
         {
             get { return _serverConfigButtonName; }
             set { SetProperty(ref _serverConfigButtonName, value); }
         }
         
-        private string _login;
         public string Login
         {
             get { return _login; }
@@ -38,50 +50,37 @@
             }
         }
 
-        public AuthorizationDialogViewModel(IDialogService dialogService, WebSocketClient webSocketClient)
-        {
-            _title = "Authorization";
-            ServerConfigButtonName = "Server config (Disconnected)";
-            _dialogService = dialogService;
-            _webSocketClient = webSocketClient;
-        }
+        public DelegateCommand AuthorizeUserCommand => _authorizeUserCommand ??
+            (_authorizeUserCommand = new DelegateCommand(AuthorizeUserExecute, AuthorizeUserCanExecute));
+        
+        public DelegateCommand CloseDialogCommand => _closeDialogCommand ??
+            (_closeDialogCommand = new DelegateCommand(CloseDialog));
 
-        private void OnWebSocketConnected()
-        {
-            ServerConfigButtonName = "Server config (Connected)";
-            AuthorizeUserCommand.RaiseCanExecuteChanged();
-        }
+        public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ??
+            (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));
 
-        private void OnWebSocketDisconnected()
-        {
-            ServerConfigButtonName = "Server config (Disconnected)";
-            AuthorizeUserCommand.RaiseCanExecuteChanged();
-        }
+        #endregion //Properties
 
-        private DelegateCommand _authorizeUserCommand;
-        public DelegateCommand AuthorizeUserCommand => _authorizeUserCommand ?? (_authorizeUserCommand = new DelegateCommand(AuthorizeUserExecute, AuthorizeUserCanExecute));
-
-        private void AuthorizeUserExecute()
-        {
-            _webSocketClient.Authorize(Login);
-        }
-
-        private bool AuthorizeUserCanExecute()
-        {
-            if (Login != null && Login != "" && _webSocketClient.IsConnected == true)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        private DelegateCommand _closeDialogCommand;
-        public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
+        #region Events
 
         public event Action<IDialogResult> RequestClose;
+
+        #endregion //Events
+
+        #region Constructors
+
+        public AuthorizationDialogViewModel(IDialogService dialogService, WebSocketClient webSocketClient)
+        {
+            _dialogService = dialogService;
+            _webSocketClient = webSocketClient;
+
+            _title = "Authorization";
+            ServerConfigButtonName = "Server config (Disconnected)";
+        }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public virtual void RaiseRequestClose(IDialogResult dialogResult)
         {
@@ -102,6 +101,16 @@
             {
                 _webSocketClient.Connect("127.0.0.1", 7890);
             }
+        } 
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void OnDialogClosed()
+        {
+            //Необходим для реализации IDialogAware
         }
 
         protected virtual void CloseDialog()
@@ -109,13 +118,6 @@
             ButtonResult result = ButtonResult.None;
             RaiseRequestClose(new DialogResult(result));
         }
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        public virtual void OnDialogClosed() {}
 
         private void ShowAuthorizationResult(AuthorizationResponse response)
         {
@@ -126,6 +128,7 @@
                 _webSocketClient.GetChatList(response.UserId);
                 _webSocketClient.GetEventLog(DateTime.Today.AddDays(-1), DateTime.Today.AddDays(1));
             }
+
             Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response));
         }
 
@@ -138,14 +141,46 @@
 
             _dialogService.Show("NotificationWindow", par, Callback);
         }
-        void Callback(IDialogResult result) {}
 
-        private DelegateCommand _showServerConfigCommand;
-        public DelegateCommand ShowServerConfigCommand => _showServerConfigCommand ?? (_showServerConfigCommand = new DelegateCommand(ShowServerConfigExecute));
+        private void Callback(IDialogResult result)
+        {
+            //Необходим для вызова диалогового окна
+        }
+
+        private void OnWebSocketConnected()
+        {
+            ServerConfigButtonName = "Server config (Connected)";
+            AuthorizeUserCommand.RaiseCanExecuteChanged();
+        }
+
+        private void OnWebSocketDisconnected()
+        {
+            ServerConfigButtonName = "Server config (Disconnected)";
+            AuthorizeUserCommand.RaiseCanExecuteChanged();
+        }
+
+        private void AuthorizeUserExecute()
+        {
+            _webSocketClient.Authorize(Login);
+        }
+
+        private bool AuthorizeUserCanExecute()
+        {
+            if (Login != null && Login != "" && _webSocketClient.IsConnected == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         private void ShowServerConfigExecute()
         {
             _dialogService.ShowDialog("ServerConfigDialog");
         }
+
+        #endregion //Methods
     }
 }

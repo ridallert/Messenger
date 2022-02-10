@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Requests
+﻿namespace Messenger.Network.Requests
 {
     public class GetChatListRequest
     {
+        #region Properties
+
         public int UserId { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public GetChatListRequest(int userId)
         {
             UserId = userId;
         }
+
+        #endregion //Constructors
+
+        #region Methods
+
         public MessageContainer GetContainer()
         {
             MessageContainer container = new MessageContainer
@@ -24,5 +29,7 @@ namespace Messenger.Network.Requests
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

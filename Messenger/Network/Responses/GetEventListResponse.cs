@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Messenger.Common;
-
-namespace Messenger.Network.Responses
+﻿namespace Messenger.Network.Responses
 {
+    using System.Collections.Generic;
+
+    using Messenger.DataObjects;
+
     public class GetEventListResponse
     {
+        #region Properties
+
         public string Result { get; set; }
+
         public List<LogEntry> EventList {get;set;}
+
+        #endregion //Properties
+
+        #region Constructors
 
         public GetEventListResponse(string result, List<LogEntry> eventList)
         {
@@ -18,11 +22,9 @@ namespace Messenger.Network.Responses
             EventList = eventList;
         }
 
-        //public GetEventListResponce(string result)
-        //{
-        //    Result = result;
-        //    EventList = new List<LogEntry>();
-        //}
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -34,5 +36,7 @@ namespace Messenger.Network.Responses
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

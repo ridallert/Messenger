@@ -1,17 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Requests
+﻿namespace Messenger.Network.Requests
 {
-    class SendMessageRequest
+    using System;
+
+    public class SendMessageRequest
     {
+        #region Properties
+
         public int SenderId { get; set; }
+
         public int ChatId { get; set; }
+
         public string Text { get; set; }
+
         public DateTime SendTime { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public SendMessageRequest(int senderId, int chatId, string text, DateTime sendTime)
         {
@@ -20,6 +25,10 @@ namespace Messenger.Network.Requests
             Text = text;
             SendTime = sendTime;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -31,5 +40,7 @@ namespace Messenger.Network.Requests
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

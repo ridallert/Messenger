@@ -1,17 +1,34 @@
 ﻿namespace Messenger.ViewModels
 {
-    using Messenger.Network;
-    using Prism.Commands;
-    using Prism.Mvvm;
-    using Prism.Services.Dialogs;
     using System;
     using System.Net;
 
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Prism.Services.Dialogs;
+
+    using Messenger.Network;
+
     class ServerConfigViewModel : BindableBase, IDialogAware
     {
+        #region Fields
+
+        private string _title = "ServerConfig";
         private WebSocketClient _webSocketClient;
         private string _address;
         private int _port;
+        private DelegateCommand _connectCommand;
+        private DelegateCommand _closeDialogCommand;
+
+        #endregion //Fields
+
+        #region Properties
+
+        public string Title
+        {
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
+        }
 
         public string Address
         {
@@ -25,6 +42,22 @@
             set { SetProperty(ref _port, value); }
         }
 
+        public DelegateCommand ConnectCommand => _connectCommand ??
+            (_connectCommand = new DelegateCommand(ConnectExecute, ConnectCanExecute));
+
+        public DelegateCommand CloseDialogCommand => _closeDialogCommand ??
+            (_closeDialogCommand = new DelegateCommand(CloseDialog));
+
+        #endregion //Properties
+
+        #region Events
+
+        public event Action<IDialogResult> RequestClose;
+
+        #endregion //Events
+
+        #region Constructors
+
         public ServerConfigViewModel(WebSocketClient webSocketClient)
         {
             _webSocketClient = webSocketClient;
@@ -32,8 +65,35 @@
             Port = 7890;
         }
 
-        private DelegateCommand _connectCommand;
-        public DelegateCommand ConnectCommand => _connectCommand ?? (_connectCommand = new DelegateCommand(ConnectExecute, ConnectCanExecute));
+        #endregion //Constructors
+
+        #region Methods
+
+        public void OnDialogOpened(IDialogParameters parameters)
+        {
+            //Необходим для реализации IDialogAware
+        }
+
+        public void OnDialogClosed()
+        {
+            //Необходим для реализации IDialogAware
+        }
+
+        public virtual bool CanCloseDialog()
+        {
+            return true;
+        }
+
+        public virtual void RaiseRequestClose(IDialogResult dialogResult)
+        {
+            RequestClose?.Invoke(dialogResult);
+        }
+
+        protected virtual void CloseDialog()
+        {
+            ButtonResult result = ButtonResult.None;
+            RaiseRequestClose(new DialogResult(result));
+        }
 
         private void ConnectExecute()
         {
@@ -46,43 +106,6 @@
             return _webSocketClient != null;
         }
 
-        public event Action<IDialogResult> RequestClose;
-
-        public virtual bool CanCloseDialog()
-        {
-            return true;
-        }
-
-        private DelegateCommand _closeDialogCommand;
-        public DelegateCommand CloseDialogCommand => _closeDialogCommand ?? (_closeDialogCommand = new DelegateCommand(CloseDialog));
-
-        protected virtual void CloseDialog()
-        {
-            ButtonResult result = ButtonResult.None;
-            RaiseRequestClose(new DialogResult(result));
-        }
-
-        public virtual void RaiseRequestClose(IDialogResult dialogResult)
-        {
-            RequestClose?.Invoke(dialogResult);
-        }
-
-        private string _title = "ServerConfig";
-
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
-
-        public void OnDialogClosed()
-        {
-            
-        }
-
-        public void OnDialogOpened(IDialogParameters parameters)
-        {
-
-        }
+        #endregion //Methods
     }
 }

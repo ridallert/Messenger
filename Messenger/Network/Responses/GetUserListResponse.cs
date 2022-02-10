@@ -1,13 +1,19 @@
-﻿using Messenger.Common;
-using System.Collections.Generic;
-
-
-namespace Messenger.Network.Responses
+﻿namespace Messenger.Network.Responses
 {
+    using System.Collections.Generic;
+    using Messenger.DataObjects;
+
     public class GetUserListResponse
     {
+        #region Properties
+
         public string Result { get; set; }
+
         public List<User> ContactList { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public GetUserListResponse(string result, List<User> contactList)
         {
@@ -15,11 +21,9 @@ namespace Messenger.Network.Responses
             ContactList = contactList;
         }
 
-        //public GetContactsResponse(string result)
-        //{
-        //    Result = result;
-        //    UserList = new List<User>();
-        //}
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -31,5 +35,7 @@ namespace Messenger.Network.Responses
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

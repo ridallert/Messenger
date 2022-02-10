@@ -1,21 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Requests
+﻿namespace Messenger.Network.Requests
 {
+    using System;
+
     public class GetEventListRequest
     {
+        #region Properties
+
         public DateTime From { get; set; }
+
         public DateTime To { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public GetEventListRequest(DateTime from, DateTime to)
         {
             From = from;
             To = to;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -27,5 +34,7 @@ namespace Messenger.Network.Requests
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

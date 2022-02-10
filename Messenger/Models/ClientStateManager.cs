@@ -1,24 +1,38 @@
 ﻿namespace Messenger.Models
 {
-    using Messenger.Common;
-    using Messenger.Network;
-    using Messenger.Network.Broadcasts;
-    using Messenger.Network.Responses;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Windows;
 
+    using Messenger.DataObjects;
+    using Messenger.Network;
+    using Messenger.Network.Broadcasts;
+    using Messenger.Network.Responses;
+
     public class ClientStateManager
     {
-        private WebSocketClient _webSocketClient;
+        #region Fields
+
+        private readonly WebSocketClient _webSocketClient;
+
+        #endregion //Fields
+
+        #region Properties
 
         public string Login { get; set; }
+
         public int? UserId { get; set; }
+
         public List<User> Users { get; set; }
+
         public List<Chat> Chats { get; set; }
-        public List<Message> PublicMessageList { get; set; }
+
         public List<LogEntry> EventList { get; set; }
+
+        #endregion //Properties
+
+        #region Events
 
         public event Action<User> UserStatusChanged;
         public event Action UserListChanged;
@@ -29,11 +43,14 @@
         public event Action<Message> MessageReceived;
         public event Action EventListChanged;
 
+        #endregion //Events
+
+        #region Constructors
+
         public ClientStateManager(WebSocketClient webSocketClient)
         {
             Users = new List<User>();
             Chats = new List<Chat>();
-            PublicMessageList = new List<Message>();
 
             _webSocketClient = webSocketClient;
             _webSocketClient.AuthorizationResponseСame += AuthorizeUser;
@@ -45,32 +62,14 @@
             _webSocketClient.GetEventListResponseCame += LoadEventLog;
         }
 
-        public void AuthorizeUser(AuthorizationResponse response)
-        {
-            if (response.Result == "Success")
-            {
-                Login = response.Name;
-                UserId = response.UserId;
-                UserAuthorized?.Invoke();
-            }
-        }
+        #endregion //Constructors
+
+        #region Methods
 
         public void LogOut()
         {
             Login = null;
             UserLoggedOut?.Invoke();
-        }
-
-        private void LoadUserList(GetUserListResponse getContactsResponse)
-        {
-            Users = new List<User>(getContactsResponse.ContactList);
-            UserListChanged?.Invoke();
-        }
-
-        private void LoadChatList(GetChatListResponse getChatListResponse)
-        {
-            Chats = new List<Chat>(getChatListResponse.ChatList);
-            ChatListLoaded?.Invoke();
         }
 
         public ObservableCollection<User> GetContactList()
@@ -90,10 +89,23 @@
             return result;
         }
 
-        private void AddNewChat(NewChatCreatedResponse response)
+        public ObservableCollection<Message> GetMessageList(int chatId)
         {
-            Chats.Add(response.Chat);
-            NewChatAdded?.Invoke(response.Chat.ToChatPresenter(Login));
+            List<Message> messages = Chats.Find(chat => chat.ChatId == chatId).Messages;
+
+            return new ObservableCollection<Message>(messages);
+        }
+
+        public ObservableCollection<LogEntry> GetEventLog(EventType type)
+        {
+            if (type == EventType.All)
+            {
+                return new ObservableCollection<LogEntry>(EventList);
+            }
+            else
+            {
+                return new ObservableCollection<LogEntry>(EventList.FindAll(entry => entry.Type == type));
+            }
         }
 
         public bool IsChatAlreadyExists(ObservableCollection<User> userList)
@@ -124,19 +136,35 @@
             return false;
         }
 
-        public bool IsChatNameTaken(string title)
+        private void AuthorizeUser(AuthorizationResponse response)
         {
-            foreach (Chat chat in Chats)
+            if (response.Result == "Success")
             {
-                if (chat.Title == title)
-                {
-                    return true;
-                }
+                Login = response.Name;
+                UserId = response.UserId;
+                UserAuthorized?.Invoke();
             }
-            return false;
         }
 
-        public void ChangeUserStatus(UserStatusChangedBroadcast broadcast)
+        private void LoadUserList(GetUserListResponse getContactsResponse)
+        {
+            Users = new List<User>(getContactsResponse.ContactList);
+            UserListChanged?.Invoke();
+        }
+
+        private void LoadChatList(GetChatListResponse getChatListResponse)
+        {
+            Chats = new List<Chat>(getChatListResponse.ChatList);
+            ChatListLoaded?.Invoke();
+        }
+
+        private void AddNewChat(NewChatCreatedResponse response)
+        {
+            Chats.Add(response.Chat);
+            NewChatAdded?.Invoke(response.Chat.ToChatPresenter(Login));
+        }
+
+        private void ChangeUserStatus(UserStatusChangedBroadcast broadcast)
         {
             bool isUserExist = false;
 
@@ -152,7 +180,7 @@
 
             if (!isUserExist)
             {
-                if (broadcast.Status == OnlineStatus.Online)
+                if (broadcast.Status == UserStatus.Online)
                 {
                     Application.Current.Dispatcher.InvokeAsync(() =>
                     {
@@ -165,14 +193,7 @@
             }
         }
 
-        public ObservableCollection<Message> GetMessageList(int chatId)
-        {
-            List<Message> messages = Chats.Find(chat => chat.ChatId == chatId).Messages;
-
-            return new ObservableCollection<Message>(messages);
-        }
-
-        public void AddMessage(MessageReceivedResponse response)
+        private void AddMessage(MessageReceivedResponse response)
         {
             Chat targetChat = Chats.Find(chat => chat.ChatId == response.ChatId);
             {
@@ -191,16 +212,6 @@
             EventListChanged?.Invoke();
         }
 
-        public ObservableCollection<LogEntry> GetEventLog(EventType type)
-        {
-            if (type == EventType.All)
-            {
-                return new ObservableCollection<LogEntry>(EventList);
-            }
-            else
-            {
-                return new ObservableCollection<LogEntry>(EventList.FindAll(entry => entry.Type == type));
-            }
-        }
+        #endregion //Methods
     }
 }

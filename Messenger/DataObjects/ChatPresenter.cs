@@ -1,18 +1,28 @@
-﻿namespace Messenger.Common
+﻿namespace Messenger.DataObjects
 {
     public class ChatPresenter : Chat
     {
-        private OnlineStatus? _isOnline;
-        public OnlineStatus? IsOnline
+        #region Fields
+
+        private UserStatus? _isOnline;
+        private int? _newMessageCounter;
+
+        #endregion //Fields
+
+        #region Properties
+
+        public UserStatus? IsOnline
         {
             get { return _isOnline; }
             set { SetProperty(ref _isOnline, value); }
         }
-        private int? _newMessageCounter;
+        
         public int? NewMessageCounter
         {
             get { return _newMessageCounter; }
             set { SetProperty(ref _newMessageCounter, value); }
         }
+
+        #endregion //Properties
     }
 }

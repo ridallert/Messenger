@@ -1,19 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Responses
+﻿namespace Messenger.Network.Responses
 {
+    using System;
+
     public class MessageReceivedResponse
     {
+        #region Properties
+
         public int MessageId { get; set; }
+
         public int SenderId { get; set; }
+
         public int ChatId { get; set; }
+
         public string SenderName { get; set; }
+
         public string Text { get; set; }
+
         public DateTime SendTime { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public MessageReceivedResponse(int messageId, int senderId, int chatId, string senderName, string text, DateTime sendTime)
         {
@@ -25,6 +32,10 @@ namespace Messenger.Network.Responses
             SendTime = sendTime;
         }
 
+        #endregion //Constructors
+
+        #region Methods
+
         public MessageContainer GetContainer()
         {
             MessageContainer container = new MessageContainer
@@ -35,5 +46,7 @@ namespace Messenger.Network.Responses
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

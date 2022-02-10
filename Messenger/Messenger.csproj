@@ -56,30 +56,25 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Common\ChatPresenter.cs" />
-    <Compile Include="Common\Chat.cs" />
-    <Compile Include="Common\EventType.cs" />
-    <Compile Include="Common\LogEntry.cs" />
-    <Compile Include="Common\User.cs" />
-    <Compile Include="Network\Broadcasts\PublicMessageDeliveredBroadcast.cs" />
+    <Compile Include="DataObjects\ChatPresenter.cs" />
+    <Compile Include="DataObjects\Chat.cs" />
+    <Compile Include="DataObjects\[Enums]\EventType.cs" />
+    <Compile Include="DataObjects\LogEntry.cs" />
+    <Compile Include="DataObjects\User.cs" />
     <Compile Include="Network\Broadcasts\UserStatusChangedBroadcast.cs" />
     <Compile Include="Network\MessageContainer.cs" />
-    <Compile Include="Common\OnlineStatus.cs" />
+    <Compile Include="DataObjects\[Enums]\UserStatus.cs" />
     <Compile Include="Network\Requests\AuthorizationRequest.cs" />
     <Compile Include="Network\Requests\CreateNewChatRequest.cs" />
     <Compile Include="Network\Requests\GetChatListRequest.cs" />
     <Compile Include="Network\Requests\GetEventListRequest.cs" />
-    <Compile Include="Network\Requests\GetMessageListRequest.cs" />
     <Compile Include="Network\Requests\GetUserListRequest.cs" />
-    <Compile Include="Network\Requests\LogOutRequest.cs" />
     <Compile Include="Network\Requests\SendMessageRequest.cs" />
     <Compile Include="Network\Responses\AuthorizationResponse.cs" />
     <Compile Include="Network\Responses\CreateNewChatResponse.cs" />
     <Compile Include="Network\Responses\GetChatListResponse.cs" />
     <Compile Include="Network\Responses\GetEventListResponse.cs" />
-    <Compile Include="Network\Responses\GetMessageListResponse.cs" />
     <Compile Include="Network\Responses\GetUserListResponse.cs" />
-    <Compile Include="Network\Responses\LogOutResponse.cs" />
     <Compile Include="Network\Responses\NewChatCreatedResponse.cs" />
     <Compile Include="Network\Responses\MessageReceivedResponse.cs" />
     <Compile Include="Network\Responses\SendMessageResponse.cs" />
@@ -142,7 +137,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\Message.cs" />
+    <Compile Include="DataObjects\Message.cs" />
     <Compile Include="Models\ClientStateManager.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
@@ -178,9 +173,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit">
-      <Version>4.2.0</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>

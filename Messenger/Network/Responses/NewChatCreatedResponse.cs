@@ -1,20 +1,25 @@
-﻿using Messenger.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Responses
+﻿namespace Messenger.Network.Responses
 {
+    using Messenger.DataObjects;
+
     public class NewChatCreatedResponse
     {
+        #region Properties
+
         public Chat Chat { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public NewChatCreatedResponse(Chat chat)
         {
             Chat = chat;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -26,5 +31,7 @@ namespace Messenger.Network.Responses
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

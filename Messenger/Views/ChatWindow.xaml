@@ -7,17 +7,22 @@
              Style="{StaticResource ChatWindowStyle}">
 
     <UserControl.InputBindings>
-        <KeyBinding Key="Enter" Command="{Binding SendMessageCommand}"/>
-        <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding NewLineCommand}"/>
+        <KeyBinding Key="Enter"
+                    Command="{Binding SendMessageCommand}"/>
+        <KeyBinding Key="Enter"
+                    Modifiers="Shift"
+                    Command="{Binding NewLineCommand}"/>
     </UserControl.InputBindings>
 
     <Grid>
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
         <Grid Grid.Column="0">
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="45"/>
                 <RowDefinition/>
@@ -31,14 +36,17 @@
                      HorizontalContentAlignment="Stretch"
                      SelectedItem="{Binding SelectedChat, UpdateSourceTrigger=PropertyChanged}"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
+                                
                                 <TextBlock Text="{Binding Title}"
                                            MaxWidth="185"
                                            FontWeight="Bold"
                                            TextTrimming="WordEllipsis"/>
+                                
                                 <TextBlock Margin="10,0,0,0"
                                            Foreground="CadetBlue"
                                            Text="{Binding NewMessageCounter, StringFormat=+\{0\}, TargetNullValue=''}"/>
@@ -50,13 +58,14 @@
             </ListBox>
 
             <Button Name="startNewChatButton"
-                          Content="New chat"
-                          Grid.Row="2"
-                          Margin="10,5,5,10"
-                          Command="{Binding StartNewChatCommand}"/>
+                    Content="New chat"
+                    Grid.Row="2"
+                    Margin="10,5,5,10"
+                    Command="{Binding StartNewChatCommand}"/>
         </Grid>
 
-        <DockPanel LastChildFill="True" Grid.Column="1">
+        <DockPanel LastChildFill="True"
+                   Grid.Column="1">
 
             <Label x:Name="meLabel"
                    Height="30"
@@ -68,6 +77,7 @@
                    Content="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Grid DockPanel.Dock="Bottom">
+
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="100"/>
@@ -84,7 +94,9 @@
                                    CaretPosition="{Binding CaretPosition}"
                                    SpellCheck.IsEnabled="True" Language="ru-ru"/>
 
-                <DockPanel Grid.Column="1" LastChildFill="False">
+                <DockPanel Grid.Column="1"
+                           LastChildFill="False">
+
                     <Button x:Name="sendButton"
                             Height="30"
                             Content="Send"
@@ -115,6 +127,7 @@
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
+
                             <Grid.RowDefinitions>
                                 <RowDefinition/>
                                 <RowDefinition/>
@@ -139,12 +152,9 @@
                                        TextWrapping="Wrap"
                                        Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </res:CustomListBox>
-
         </DockPanel>
     </Grid>
-
 </UserControl>

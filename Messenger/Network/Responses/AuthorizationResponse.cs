@@ -1,17 +1,20 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Responses
+﻿namespace Messenger.Network.Responses
 {
+    using Newtonsoft.Json;
+
     public class AuthorizationResponse
     {
+        #region Properties
+
         public string Result { get; set; }
+
         public string Name { get; set; }
+
         public int UserId { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         [JsonConstructor]
         public AuthorizationResponse(string result, string name, int userId) : this(result)
@@ -19,10 +22,15 @@ namespace Messenger.Network.Responses
             Name = name;
             UserId = userId;
         }
+
         public AuthorizationResponse(string result)
         {
             Result = result;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -34,5 +42,7 @@ namespace Messenger.Network.Responses
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

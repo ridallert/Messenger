@@ -1,24 +1,26 @@
 ﻿namespace Messenger.ViewModels
 {
-    using Messenger.Common;
-    using Messenger.Models;
-    using Messenger.Network;
-    using Messenger.Network.Responses;
-    using Prism.Commands;
-    using Prism.Mvvm;
-    using Prism.Services.Dialogs;
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
 
+    using Prism.Commands;
+    using Prism.Mvvm;
+    using Prism.Services.Dialogs;
+
+    using Messenger.DataObjects;
+    using Messenger.Models;
+    using Messenger.Network;
+    using Messenger.Network.Responses;
+
     public class ChatWindowViewModel : BindableBase
     {
-        private IDialogService _dialogService;
-        private WebSocketClient _webSocketClient;
-        private ClientStateManager _clientState;
+        #region Fields
 
+        private readonly IDialogService _dialogService;
+        private readonly WebSocketClient _webSocketClient;
+        private readonly ClientStateManager _clientState;
         private string _login;
         private int? _userId;
         private ObservableCollection<ChatPresenter> _chatList;
@@ -26,13 +28,21 @@
         private ObservableCollection<Message> _messageList;
         private string _newMessage;
         private int _caretPosition;
-
         private bool _isNewMessageEnabled;
+        private DelegateCommand _newLineCommand;
+        private DelegateCommand _sendMessageCommand;
+        private DelegateCommand _startNewChatCommand; 
+
+        #endregion //Fields
+
+        #region Properties
+
         public bool IsNewMessageEnabled
         {
             get { return _isNewMessageEnabled; }
             set { SetProperty(ref _isNewMessageEnabled, value); }
         }
+
         public string Login
         {
             get { return _login; }
@@ -46,6 +56,7 @@
                 }
             }
         }
+
         public ObservableCollection<ChatPresenter> ChatList
         {
             get { return _chatList; }
@@ -71,6 +82,7 @@
                 }
             }
         }
+
         public ObservableCollection<Message> MessageList
         {
             get { return _messageList; }
@@ -96,6 +108,19 @@
             set { SetProperty(ref _caretPosition, value); }
         }
 
+        public DelegateCommand NewLineCommand => _newLineCommand ??
+            (_newLineCommand = new DelegateCommand(NewLineExecute, NewLineCanExecute));
+
+        public DelegateCommand SendMessageCommand => _sendMessageCommand ??
+            (_sendMessageCommand = new DelegateCommand(SendMessageExecute, SendMessageCanExecute));
+
+        public DelegateCommand StartNewChatCommand => _startNewChatCommand ??
+            (_startNewChatCommand = new DelegateCommand(StartNewChatExecute, StartNewChatCanExecute));
+
+        #endregion //Properties
+
+        #region Constructors
+
         public ChatWindowViewModel(IDialogService dialogService, ClientStateManager state, WebSocketClient webSocketClient)
         {
             _dialogService = dialogService;
@@ -111,10 +136,15 @@
             _webSocketClient.SendMessageResponseCame += OnSendMessageResponseCame;
         }
 
+        #endregion //Constructors
+
+        #region Methods
+
         private void OnSendMessageResponseCame(SendMessageResponse response)
         {
             Application.Current.Dispatcher.InvokeAsync(() => ShowNotificationWindow(response.Result));
         }
+
         private void ShowNotificationWindow(string message)
         {
             var par = new DialogParameters
@@ -124,10 +154,11 @@
 
             _dialogService.Show("NotificationWindow", par, Callback);
         }
-        void Callback(IDialogResult result) { }
 
-        private DelegateCommand _newLineCommand;
-        public DelegateCommand NewLineCommand => _newLineCommand ?? (_newLineCommand = new DelegateCommand(NewLineExecute, NewLineCanExecute));
+        private void Callback(IDialogResult result)
+        {
+            //Необходим для вызова диалогового окна
+        }
 
         private void NewLineExecute()
         {
@@ -144,9 +175,6 @@
             return true;
         }
 
-        private DelegateCommand _sendMessageCommand;
-        public DelegateCommand SendMessageCommand => _sendMessageCommand ?? (_sendMessageCommand = new DelegateCommand(SendMessageExecute, SendMessageCanExecute));
-
         private void SendMessageExecute()
         {
             if (NewMessage != null)
@@ -159,25 +187,23 @@
                 NewMessage = null;
             }
         }
+
         private bool SendMessageCanExecute()
         {
             return Login != null &&
-                       ChatList != null &&
-                       ChatList.Count != 0 &&
-                       NewMessage != null &&
-                       NewMessage != "" &&
-                       SelectedChat != null;
+                   ChatList != null &&
+                   ChatList.Count != 0 &&
+                   NewMessage != null &&
+                   NewMessage != "" &&
+                   SelectedChat != null;
         }
 
-        private DelegateCommand<IList<object>> _startNewChatCommand;
-        public DelegateCommand<IList<object>> StartNewChatCommand => _startNewChatCommand ?? (_startNewChatCommand = new DelegateCommand<IList<object>>(StartNewChatExecute, StartNewChatCanExecute));
-
-        private void StartNewChatExecute(IList<object> selectedItems)
+        private void StartNewChatExecute()
         {
             _dialogService.ShowDialog("NewChatDialog");
         }
 
-        private bool StartNewChatCanExecute(IList<object> selectedItems)
+        private bool StartNewChatCanExecute()
         {
             return Login != null;
         }
@@ -191,6 +217,7 @@
                 if (tempUser != null)
                 {
                     tempUser.IsOnline = arg.IsOnline;
+
                     if (presenter.Users.Count == 2 && presenter.Title != "Public chat")
                     {
                         presenter.IsOnline = arg.IsOnline;
@@ -202,6 +229,7 @@
                 }
             }
         }
+
         private void OnUserAuthorized()
         {
             Login = _clientState.Login;
@@ -216,10 +244,12 @@
             MessageList = null;
             IsNewMessageEnabled = false;
         }
+
         private void OnChatListLoaded()
         {
             ChatList = _clientState.GetChatList();
         }
+
         private void OnNewChatAdded(ChatPresenter newChat)
         {
             Application.Current.Dispatcher.InvokeAsync(() =>
@@ -237,6 +267,7 @@
                     chat.NewMessageCounter = chat.NewMessageCounter.HasValue ? chat.NewMessageCounter += 1 : chat.NewMessageCounter = 1;
                 }
             }
+
             if (SelectedChat != null && message.ChatId == SelectedChat.ChatId)
             {
                 Application.Current.Dispatcher.InvokeAsync(() =>
@@ -245,5 +276,7 @@
                 });
             }
         }
+
+        #endregion //Methods
     }
 }

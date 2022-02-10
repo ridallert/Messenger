@@ -1,18 +1,18 @@
-﻿using Messenger.Views;
-using Messenger.ViewModels;
-using Prism.Ioc;
-using Prism.Modularity;
-using System.Windows;
-using Messenger.Models;
-using Messenger.Network;
-
-namespace Messenger
+﻿namespace Messenger
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
+    using System.Windows;
+
+    using Prism.Ioc;
+
+    using Messenger.Views;
+    using Messenger.ViewModels;
+    using Messenger.Models;
+    using Messenger.Network;
+
     public partial class App
     {
+        #region Methods
+
         protected override Window CreateShell()
         {
             return Container.Resolve<MainWindow>();
@@ -29,5 +29,7 @@ namespace Messenger
             container.RegisterSingleton<ClientStateManager>();
             container.RegisterSingleton<WebSocketClient>();
         }
+
+        #endregion //Methods
     }
 }

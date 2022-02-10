@@ -1,25 +1,31 @@
-﻿
-using Messenger.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Messenger.Network.Broadcasts
+﻿namespace Messenger.Network.Broadcasts
 {
+    using Messenger.DataObjects;
+
     public class UserStatusChangedBroadcast
     {
-        public string Name { get; set; }
-        public int UserId { get; set; }
-        public OnlineStatus Status { get; set; }
+        #region Properties
 
-        public UserStatusChangedBroadcast(string name, int userId, OnlineStatus status)
+        public string Name { get; set; }
+
+        public int UserId { get; set; }
+
+        public UserStatus Status { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
+
+        public UserStatusChangedBroadcast(string name, int userId, UserStatus status)
         {
             Name = name;
             UserId = userId;
             Status = status;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -31,5 +37,7 @@ namespace Messenger.Network.Broadcasts
 
             return container;
         }
+
+        #endregion //Methods
     }
 }

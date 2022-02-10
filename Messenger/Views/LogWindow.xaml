@@ -29,6 +29,7 @@
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+        
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="45"/>
@@ -44,6 +45,7 @@
                   FontFamily="Candara" FontSize="14"
                   Background="White"
                   RowHeaderWidth="0">
+            
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Event" Binding="{Binding Path=Type}" MinWidth="150"/>
                 <DataGridTextColumn Header="Message" Binding="{Binding Path=Message}" Width="*"/>

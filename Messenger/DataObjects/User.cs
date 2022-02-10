@@ -1,29 +1,41 @@
-﻿namespace Messenger.Common
+﻿namespace Messenger.DataObjects
 {
     using Newtonsoft.Json;
+
     using Prism.Mvvm;
 
     public class User: BindableBase
     {
-        private OnlineStatus _isOnline;
+        #region Fields
+
+        private UserStatus _isOnline;
+
+        #endregion //Fields
+
+        #region Properties
+
         public int UserId { get; set; }
+
         public string Name { get; set; }
-        public OnlineStatus IsOnline
+
+        public UserStatus IsOnline
         {
             get { return _isOnline; }
             set { SetProperty(ref _isOnline, value); }
         }
 
+        #endregion //Properties
+
+        #region Constructors
+
         [JsonConstructor]
-        public User(int userId, string name, OnlineStatus isOnline) : this(name, isOnline)
+        public User(int userId, string name, UserStatus isOnline)
         {
             UserId = userId;
-        }
-        public User(string name, OnlineStatus isOnline) : this()
-        {
             Name = name;
             IsOnline = isOnline;
         }
-        public User() {}
+
+        #endregion //Constructors
     }
 }

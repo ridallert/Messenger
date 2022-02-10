@@ -1,37 +1,45 @@
-﻿namespace Messenger.Common
+﻿namespace Messenger.DataObjects
 {
-    using Prism.Mvvm;
     using System.Collections.Generic;
+
+    using Prism.Mvvm;
+    
     public class Chat: BindableBase
     {
+        #region Fields
+
         private string _title;
         private List<User> _users;
         private List<Message> _messages;
+
+        #endregion //Fields
+
+        #region Properties
+
         public int ChatId { get; set; }
+
         public string Title
         {
             get { return _title; }
             set { SetProperty(ref _title, value); }
         }
+
         public List<User> Users
         {
             get { return _users; }
             set { SetProperty(ref _users, value); }
         }
+
         public List<Message> Messages
         {
             get { return _messages; }
             set { SetProperty(ref _messages, value); }
         }
-        public Chat(string title) : this()
-        {
-            Title = title;
-        }
-        public Chat()
-        {
-            Users = new List<User>();
-            Messages = new List<Message>();
-        }
+
+        #endregion //Properties
+
+        #region Methods
+
         public ChatPresenter ToChatPresenter(string login)
         {
             ChatPresenter presenter = new ChatPresenter();
@@ -48,8 +56,11 @@
                 presenter.Title = targetUser.Name;
                 presenter.IsOnline = targetUser.IsOnline;
             }
+
             presenter.Users = Users;
             return presenter;
         }
+
+        #endregion //Methods
     }
 }

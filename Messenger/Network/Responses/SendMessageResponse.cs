@@ -2,12 +2,22 @@
 {
     public class SendMessageResponse
     {
+        #region Properties
+
         public string Result { get; set; }
+
+        #endregion //Properties
+
+        #region Constructors
 
         public SendMessageResponse(string result)
         {
             Result = result;
         }
+
+        #endregion //Constructors
+
+        #region Methods
 
         public MessageContainer GetContainer()
         {
@@ -19,5 +29,7 @@
 
             return container;
         }
+
+        #endregion //Methods
     }
 }
