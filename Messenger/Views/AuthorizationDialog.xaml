@@ -47,10 +47,12 @@
                    VerticalAlignment="Center"/>
 
         <TextBox Name="loginTextBox"
+                 HorizontalContentAlignment="Center"
                  Text="{Binding Login, UpdateSourceTrigger=PropertyChanged}"
                  Grid.Column="1"
                  Grid.Row="0"
                  Grid.ColumnSpan="3"
+                 MaxLength="25"
                  Margin="0,5,5,5"/>
 
         <Button Name="loginButton"

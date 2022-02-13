@@ -6,7 +6,7 @@
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="{Binding Title}"
         Height="450" Width="880"
-        MinHeight="250" MinWidth="400"
+        MinHeight="250" MinWidth="550"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource WindowStyle}">
 

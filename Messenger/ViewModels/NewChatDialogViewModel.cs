@@ -32,7 +32,7 @@
         private DelegateCommand _removeUserCommand;
         private DelegateCommand _createCommand;
         private DelegateCommand _closeDialogCommand;
-        
+
         #endregion //Fields
 
         #region Properties
@@ -128,13 +128,14 @@
         {
             _webSocketClient.CreateNewChatResponseСame += ShowResult;
             _clientState.UserStatusChanged += OnUserStatusChanged;
+            _clientState.NewChatAdded += OnNewChatAdded;
         }
 
         public void OnDialogClosed()
         {
             //Необходим для реализации IDialogAware
         }
-        
+
         public bool CanCloseDialog()
         {
             return true;
@@ -145,6 +146,7 @@
             RequestClose?.Invoke(dialogResult);
             _webSocketClient.CreateNewChatResponseСame -= ShowResult;
             _clientState.UserStatusChanged -= OnUserStatusChanged;
+            _clientState.NewChatAdded -= OnNewChatAdded;
         }
 
         protected virtual void CloseDialog()
@@ -153,21 +155,29 @@
             RaiseRequestClose(new DialogResult(result));
         }
 
+        private void OnNewChatAdded(ChatPresenter obj)
+        {
+            CreateCommand.RaiseCanExecuteChanged();
+        }
+
         private void OnUserStatusChanged(User newUser)
         {
-            bool isUserExist=false;
+            if (newUser.IsOnline == UserStatus.Online)
+            {
+                bool isUserExist = false;
 
-            foreach (User user in AvailableUsers)
-            {
-                if (user.UserId == newUser.UserId)
+                foreach (User user in AvailableUsers)
                 {
-                    user.IsOnline = newUser.IsOnline;
-                    isUserExist = true;
+                    if (user.UserId == newUser.UserId)
+                    {
+                        user.IsOnline = newUser.IsOnline;
+                        isUserExist = true;
+                    }
                 }
-            }
-            if (!isUserExist)
-            {
-                AvailableUsers.Add(newUser);
+                if (!isUserExist)
+                {
+                    Application.Current.Dispatcher.InvokeAsync(() => AvailableUsers.Add(newUser));
+                }
             }
         }
 
@@ -182,7 +192,7 @@
         {
             return AvailableUsersSelectedItem != null;
         }
-        
+
         private void RemoveUserExecute()
         {
             AvailableUsers.Add(SelectedUsersSelectedItem);
@@ -194,7 +204,7 @@
         {
             return SelectedUsersSelectedItem != null;
         }
-        
+
         private void CreateExecute()
         {
             string newChatTitle = null;
@@ -242,7 +252,7 @@
                 return false;
             }
         }
-        
+
         private void ShowResult(CreateNewChatResponse response)
         {
             Application.Current.Dispatcher.InvokeAsync(CloseDialog);

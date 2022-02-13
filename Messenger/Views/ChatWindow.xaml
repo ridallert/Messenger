@@ -67,14 +67,32 @@
         <DockPanel LastChildFill="True"
                    Grid.Column="1">
 
-            <Label x:Name="meLabel"
-                   Height="30"
-                   Margin="5,10,5,5"
-                   ContentStringFormat="You are logged in as {0}"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Left"
-                   DockPanel.Dock="Top"
-                   Content="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid Height="30"
+                  Margin="5,10,5,5"
+                  DockPanel.Dock="Top">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MaxWidth="150"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="140"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" 
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           Foreground="#506482"
+                           FontWeight="Bold"
+                           TextTrimming="CharacterEllipsis"
+                           Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, StringFormat=You are {0}, TargetNullValue=''}"/>
+
+                <TextBlock Grid.Column="1"
+                           Margin="10,0,0,0"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Left"
+                           FontWeight="Bold"
+                           TextTrimming="CharacterEllipsis"
+                           Text="{Binding SelectedChat.Title, UpdateSourceTrigger=PropertyChanged, StringFormat=Chat: {0}, TargetNullValue=''}"/>
+            </Grid>
 
             <Grid DockPanel.Dock="Bottom">
 
